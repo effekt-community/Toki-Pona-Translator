@@ -2,4 +2,65 @@ module main // must be named same as the file!
 
 import src/lib
 
-def main(): Unit = println(helloWorld())
+effect treeError(message: String): Unit
+
+
+type Tree {
+  Leaf(value: String);
+  Node(left: Tree, value: String, right: Tree)
+}
+
+def getLeft(node: Tree): Tree / treeError= {
+  node match {
+    case Leaf(value) => do treeError("Excpectet Node, found Leaf"); Leaf(value)  
+    case Node(left, value, right) => left
+  }
+}
+
+def getValue(node: Tree): String / treeError = {
+  node match {
+    case Leaf(value) => value
+    case Node(left, value, right) => value
+  }
+}
+
+def getRight(node: Tree): Tree / treeError = {
+  node match {
+    case Leaf(value) => do treeError("Excpectet Node, found Leaf"); Leaf(value)  
+    case Node(left, value, right) => right
+  }
+}
+
+def findPhrases(sentence: List[String]): List[String] = {
+  return [findSubject(sentence), findPredicate(sentence), findObject(sentence)]
+}
+
+def findPredicate(sentence: List[String]): String = {
+  <>
+}
+
+def findObject(sentence: List[String]): String = {
+  <>
+} 
+
+def findSubject(sentence: List[String]): String = {
+  if (subjectMiOrSina(sentence)) {
+    <>
+  }
+  <>
+}
+
+def subjectMiOrSina(sentence: List[String]): Bool = {
+  try {
+    if (sentence.get(0) == "mi")
+      return true
+  } with Exception {
+      def OutOfBounds() = return false
+  } 
+}
+
+
+def main(): Unit = {
+  println("a")
+  <>
+}
