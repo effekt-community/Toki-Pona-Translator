@@ -19,7 +19,7 @@ def getLeft(node: Tree): Tree / treeError= {
 
 def getValue(node: Tree): String / treeError = {
   node match {
-    case Leaf(value) => value
+    case Leaf(leafValue) => leafValue
     case Node(left, value, right) => value
   }
 }
@@ -30,11 +30,11 @@ def getRight(node: Tree): Tree / treeError = {
     case Node(left, value, right) => right
   }
 }
-
-def findPhrases(sentence: List[String]): List[String] = {
-  return [findSubject(sentence), findPredicate(sentence), findObject(sentence)]
-}
-
+//
+//def findPhrases(sentence: List[String]): List[String] = {
+//  return [findSubject(sentence), findPredicate(sentence), findObject(sentence)]
+//}
+//
 def findPredicate(sentence: List[String]): String = {
   <>
 }
@@ -49,18 +49,30 @@ def findSubject(sentence: List[String]): String = {
   }
   <>
 }
+ //sentence[List[String]].all[String]{x =>  isLi(x)}) {
+def containsLi(sentence: List[String]): Bool = {
+  return sentence.all { x => x != "li" }
+}
 
 def subjectMiOrSina(sentence: List[String]): Bool = {
   try {
-    if (sentence.get(0) == "mi")
-      return true
-  } with Exception {
-      def OutOfBounds() = return false
-  } 
+  //with on[OutOfBounds].panic
+    if (sentence.get[String](0) == "mi") {
+          return true
+    }
+    else { 
+      return false
+    } 
+  } with Exception[OutOfBounds] { // TODO: Proper Error Handling for invalid sentences
+      def raise(exception: OutOfBounds, msg: String) = panic()
+  }  
 }
-
+ 
 
 def main(): Unit = {
+  val l: List[String] = Cons("mi", Cons("b", Cons("c", Nil())))
   println("a")
-  <>
+  if (subjectMiOrSina(l)) {
+    println("A")
+  }
 }

@@ -1,0 +1,9 @@
+module playground // must be named same as the file!
+
+import src/lib
+
+def main(): Unit = {
+  with on[OutOfBounds].panic
+  val a: List[String] = ["a", "b"]
+  println(a.get[String](0))
+}
