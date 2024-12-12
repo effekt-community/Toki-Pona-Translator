@@ -1,127 +1,38 @@
-# Effekt Template
+# Toki Pona Translator
 
-> [!WARNING]
-> This is a work-in-progress, feel free to contribute!
+## Links
+- Uses Effekt Project Template: https://github.com/jiribenes/effekt-template
+- Toki Pona is constructed language with a minmal vocabulary created by Sonja Lang: https://tokipona.org/
 
-This template provides a starting point for Effekt projects.
 
-## Table of contents
+## Description
 
-- [First steps](#first-steps)
-- [Useful commands](#useful-commands)
-  - [Effekt commands](#effekt-commands)
-  - [Nix-related commands](#nix-related-commands)
-- [Example projects](#example-projects-using-this-template)
-- [Repository structure](#repository-structure)
-- [CI](#ci)
+A tool for translating between the constructed language toki pona, which has a minimal vocabulary and simple grammar, and english. 
+Toki Pona is used by a rather large community on different discord servers and forums, but there doesn't yet exist a good translator, making the project potentially usefull for people trying to learn the language.
+The translating will be done by creating syntax trees for the toki pona sentence, which is fairly simple in toki pona since there aren't a lot of different sentence constructions, then translating every word individually, which is also fairly simply because of the limited vocabulary, and then constructing an english sentence using the syntax tree and translated words.
 
----
+## Must-have
 
-## First steps
+- User can Input any sentence, and if it follows the grammar of toki pona receive an english translation or multiple if the sentence is ambigous
 
-After using this template, follow these steps to set up your project:
+## Can-have
 
-1. Set up your development environment:
-   - Clone this repository locally.
-   - Open it in VSCode.
-   - Install the Effekt VSCode extension offered in the pop-up in the bottom right.
+- Translation of english sentences to toki pona, with a limited vocabulary and grammatic constructions
+- Spell checking for toki pona words, to detect what the user might say
+- A gui and/or web-interface to make it available to other people 
 
-2. Customize the project:
-   - Open `flake.nix` and update the project name and other relevant values (follow the comments).
-   - Push your `flake.nix` file after the changes and see if the CI agrees.
+## Will-not-have
 
-3. Set-up auto-update CI:
-   - Go to Settings -> Actions -> General and check "Allow GitHub Actions to create and approve pull requests"
-     in order to get weekly Pull Requests on Tuesday that update the Effekt version in CI.
-   - See the [CI](#ci) section for more details
+- Full translation between english and toki pona, since english grammar is to complex to be translated using simple algorithms or be expressed in toki pona
 
-3. Replace this `README` with your own!
-   - Please link back to this repo if you can :)
+## Effects and handlers
 
-## Useful commands
+- Since toki pona is based on words having a broad meaning, ambiguities could be handled with a handler that uses multiple continues
+- Misspelled words could be implemented as an effect, which has a handler that asks the user for clarification or corrects the word if it's close to a known one
+- Missing words in syntax trees could also be implemented as an effect, whith a handler that determines how the programm should continue
 
-### Effekt commands
 
-Run the main file:
-```sh
-effekt src/main.effekt
-```
-This (like many other Effekt commands) uses the JavaScript backend by default.
-To use a different backend, add the `--backend <backend>` flag.
+## FFI and libraries
 
-Run the tests:
-```sh
-effekt src/test.effekt
-```
-
-Open the REPL:
-```sh
-effekt
-```
-
-Build the project:
-```sh
-effekt --build src/main.effekt
-```
-This builds the project into the `out/` directory, creating a runnable file `out/main`.
-
-To see all available options and backends, run:
-```sh
-effekt --help
-```
-
-### Nix-related commands
-
-While Nix installation is optional, it provides several benefits:
-
-Update dependencies (also runs automatically in CI):
-```sh
-nix flake update
-```
-
-Open a shell with all necessary dependencies:
-```sh
-nix develop
-```
-
-Run the main entry point:
-```sh
-nix run
-```
-
-Build the project (output in `result/bin/`):
-```sh
-nix build
-```
-
-## Example projects using this template
-
-- [`effekt-stm`](https://github.com/jiribenes/effekt-stm)
-- This very project!
-
-## Repository structure
-
-- `.github/workflows/*.yml`: Contains the [CI](#ci) definitions
-- `src/`: Contains the source code
-  - `main.effekt`: Main entry point
-  - `test.effekt`: Entry point for tests
-  - `lib.effekt`: Library code imported by `main` and `test`
-- `flake.nix`: Package configuration in a Nix flake
-- `flake.lock`: Auto-generated lockfile for dependencies
-- `LICENSE`: Project license
-- `README`: This README file
-
-## CI
-
-Two GitHub Actions are set up:
-
-1. `flake-check`:
-   - Checks the `flake.nix` file, builds and tests the project
-   - Runs on demand, on `main`, and on PRs
-   - To run custom commands, add a step using:
-     - `nix run -- <ARGS>` to run the main entry point with the given arguments
-     - `nix develop -c '<bash command to run>'` to run commands in the correct environment
-
-2. `update-flake-lock`:
-   - Updates package versions in `flake.nix`
-   - Runs on demand and weekly (Tuesdays at 00:00 UTC)
+- For the syntax trees a tree like structure to store the data would be helpful. I don't think one exists in the standard library, but writing one should be fairly easy
+- The translating itself doesn't need any other FFI/libraries, only if I get to the point making a gui or web-interface this might be important, but there should be enought options that one works well.

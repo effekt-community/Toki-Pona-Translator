@@ -1,6 +1,6 @@
 {
   ## TODO: Change to your project's description:
-  description = "Nix template for Effekt projects";
+  description = "A translator between the constructed language toki pona and english ";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
