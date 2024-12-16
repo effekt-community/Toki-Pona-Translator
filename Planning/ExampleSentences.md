@@ -15,3 +15,8 @@ sina utala ala e waso suli - "You didn't fight the horse-sized duck."
 
 ## Fremdwörter
 lipu kulupu Wikipesija li sona e ijo mute - "The community-document Wikipedia knows a lot of things."
+
+
+## More complex Sentences
+waso anu kala li tawa - "The bird or the fish moves."
+waso li pali anu pakala e tomo - "Birds build or destroy the nest."

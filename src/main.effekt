@@ -1,40 +1,14 @@
 module main // must be named same as the file!
 
 import src/lib
+import src/trees
+import src/additionalLists
 
-effect treeError(message: String): Unit
 
-
-type Tree {
-  Leaf(value: String);
-  Node(left: Tree, value: String, right: Tree)
+def splitSentence(sentence: List[String]): SyntaxTree = {
+  Node2("Sentence", Leaf("Subject", findSubject(sentence)), Node2("VerbPhrase", Leaf("Predicate", findPredicate(sentence)), Leaf("Object", findObject(sentence))))
 }
 
-def getLeft(node: Tree): Tree / treeError= {
-  node match {
-    case Leaf(value) => do treeError("Excpectet Node, found Leaf"); Leaf(value)  
-    case Node(left, value, right) => left
-  }
-}
-
-def getValue(node: Tree): String / treeError = {
-  node match {
-    case Leaf(leafValue) => leafValue
-    case Node(left, value, right) => value
-  }
-}
-
-def getRight(node: Tree): Tree / treeError = {
-  node match {
-    case Leaf(value) => do treeError("Excpectet Node, found Leaf"); Leaf(value)  
-    case Node(left, value, right) => right
-  }
-}
-//
-//def findPhrases(sentence: List[String]): List[String] = {
-//  return [findSubject(sentence), findPredicate(sentence), findObject(sentence)]
-//}
-//
 def findPredicate(sentence: List[String]): List[String] = {
   var output = sentence
   output.getIndexOf("li") match {
@@ -62,55 +36,8 @@ def findSubject(sentence: List[String]): List[String] = {
 }
 
 
-def getIndexOf(l: List[String], v: String): Option[Int] = {
-  try {
-    var found: Bool = false 
-    var index: Int = -1
-    while (found == false) {
-      index = index + 1
-      if (l.get[String](index) == v) {
-        found = true
-      }
-    }
-  return Some(index)
-  } with Exception[OutOfBounds] {
-    def raise(exception: OutOfBounds, msg: String) = return None()
-  }
-}
-
-
-// Not needed anymore
-def subjectMiOrSina(sentence: List[String]): Bool = {
-  try {
-    if (sentence.get[String](0) == "mi" && sentence.all { x => x != "li" }) {
-          return true
-    }
-    else { 
-      return false
-    } 
-  } with Exception[OutOfBounds] { // TODO: Proper Error Handling for invalid sentences
-      def raise(exception: OutOfBounds, msg: String) = <>
-  }  
-}
-
-
 def main(): Unit = {
   val l1: List[String] = ["mi", "sona", "mute", "e", "toki", "pona"]
   val l2: List[String] = ["mama", "ona", "li", "sona", "mute", "e", "toki", "pona"]
-  println("Start")
-
-  println("Subjects")
-  println(l1.getIndexOf("li"))
-  println(show(findSubject(l1)))
-  println(l2.getIndexOf("li"))
-  println(show(findSubject(l2)))
-
-  println("Predicates")
-  println(show(findPredicate(l1)))
-  println(show(findPredicate(l2)))
-
-
-  println("Objects")
-  println(show(findObject(l1)))
-  println(show(findObject(l2)))
+  printTree(splitSentence(l1))
 }
