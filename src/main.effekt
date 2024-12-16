@@ -35,44 +35,82 @@ def getRight(node: Tree): Tree / treeError = {
 //  return [findSubject(sentence), findPredicate(sentence), findObject(sentence)]
 //}
 //
-def findPredicate(sentence: List[String]): String = {
-  <>
+def findPredicate(sentence: List[String]): List[String] = {
+  var output = sentence
+  output.getIndexOf("li") match {
+    case Some(index) => output = output.drop(index + 1) // + 1 to drop the li
+    case None() => output = output.drop(1)
+  }
+  output.getIndexOf("e") match {
+    case Some(index) => return output.take(index)
+    case None() => return output
+  }
 }
 
-def findObject(sentence: List[String]): String = {
-  <>
+def findObject(sentence: List[String]): List[String] = { // TODO: deal with Prepositions
+  sentence.getIndexOf("e") match {
+    case Some(index) => return sentence.drop(index + 1) // + 1 to drop the e
+    case None() => return Nil()
+  }
 } 
 
-def findSubject(sentence: List[String]): String = {
-  if (subjectMiOrSina(sentence)) {
-    <>
+def findSubject(sentence: List[String]): List[String] = {
+  sentence.getIndexOf("li") match {
+    case Some(index) => return sentence.take(index)
+    case None() => sentence.take(1)
   }
-  <>
-}
- //sentence[List[String]].all[String]{x =>  isLi(x)}) {
-def containsLi(sentence: List[String]): Bool = {
-  return sentence.all { x => x != "li" }
 }
 
+
+def getIndexOf(l: List[String], v: String): Option[Int] = {
+  try {
+    var found: Bool = false 
+    var index: Int = -1
+    while (found == false) {
+      index = index + 1
+      if (l.get[String](index) == v) {
+        found = true
+      }
+    }
+  return Some(index)
+  } with Exception[OutOfBounds] {
+    def raise(exception: OutOfBounds, msg: String) = return None()
+  }
+}
+
+
+// Not needed anymore
 def subjectMiOrSina(sentence: List[String]): Bool = {
   try {
-  //with on[OutOfBounds].panic
-    if (sentence.get[String](0) == "mi") {
+    if (sentence.get[String](0) == "mi" && sentence.all { x => x != "li" }) {
           return true
     }
     else { 
       return false
     } 
   } with Exception[OutOfBounds] { // TODO: Proper Error Handling for invalid sentences
-      def raise(exception: OutOfBounds, msg: String) = panic()
+      def raise(exception: OutOfBounds, msg: String) = <>
   }  
 }
- 
+
 
 def main(): Unit = {
-  val l: List[String] = Cons("mi", Cons("b", Cons("c", Nil())))
-  println("a")
-  if (subjectMiOrSina(l)) {
-    println("A")
-  }
+  val l1: List[String] = ["mi", "sona", "mute", "e", "toki", "pona"]
+  val l2: List[String] = ["mama", "ona", "li", "sona", "mute", "e", "toki", "pona"]
+  println("Start")
+
+  println("Subjects")
+  println(l1.getIndexOf("li"))
+  println(show(findSubject(l1)))
+  println(l2.getIndexOf("li"))
+  println(show(findSubject(l2)))
+
+  println("Predicates")
+  println(show(findPredicate(l1)))
+  println(show(findPredicate(l2)))
+
+
+  println("Objects")
+  println(show(findObject(l1)))
+  println(show(findObject(l2)))
 }
