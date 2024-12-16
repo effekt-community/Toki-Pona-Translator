@@ -1,19 +1,32 @@
 # Toki Pona Translator
 
+This project is part of the *Effective Programming with Effects* course.
+
+## Table of contents
+
+- [Links](#links)
+- [Description](#description)
+- [Must-Have](#must-have)
+- [Can-Have](#can-have)
+- [Will-not-Have](#will-not-have)
+- [Effects and Handlers](#effects-and-handlers)
+- [FFI and Libraries](#ffi-and-libraries)
+
 ## Links
 - Uses Effekt Project Template: https://github.com/jiribenes/effekt-template
-- Toki Pona is constructed language with a minmal vocabulary created by Sonja Lang: https://tokipona.org/
+- Toki Pona is constructed language with a minmal vocabulary created by Sonja Lang: https://tokipona.org/, 
+- Toki Pona doesn't have one offical guide to grammar, but the grammar for this translator is based on this guide, using the same naming conventions: https://github.com/kilipan/nasin-toki
 
 
 ## Description
 
-A tool for translating between the constructed language toki pona, which has a minimal vocabulary and simple grammar, and english. 
+A tool for translating between the constructed language toki pona and english. 
 Toki Pona is used by a rather large community on different discord servers and forums, but there doesn't yet exist a good translator, making the project potentially usefull for people trying to learn the language.
 The translating will be done by creating syntax trees for the toki pona sentence, which is fairly simple in toki pona since there aren't a lot of different sentence constructions, then translating every word individually, which is also fairly simply because of the limited vocabulary, and then constructing an english sentence using the syntax tree and translated words.
 
 ## Must-have
 
-- User can Input any sentence, and if it follows the grammar of toki pona receive an english translation or multiple if the sentence is ambigous
+- User can Input any sentence, and if it follows the grammar of toki pona, receive an english translation or multiple if the sentence is ambigous
 
 ## Can-have
 
@@ -23,7 +36,7 @@ The translating will be done by creating syntax trees for the toki pona sentence
 
 ## Will-not-have
 
-- Full translation between english and toki pona, since english grammar is to complex to be translated using simple algorithms or be expressed in toki pona
+- Full translation between english and toki pona, since english grammar is to complex to be translated using simple algorithms or to be expressed in toki pona
 
 ## Effects and handlers
 
