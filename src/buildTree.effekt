@@ -1,0 +1,37 @@
+module buildTree
+
+import src/lib
+import src/trees
+import src/additionalLists
+import src/translate
+
+
+def splitSentence(sentence: List[String]): SyntaxTree = {
+  Node2("Sentence", Node1("Subject", Leaf("Noun Phrase", findSubject(sentence))), Node2("VerbPhrase", Leaf("Verb Phrase", findVerb(sentence)), Leaf("Noun Phrase", findObject(sentence))))
+}
+
+def findVerb(sentence: List[String]): List[String] = {
+  var output = sentence
+  output.getIndexOf("li") match {
+    case Some(index) => output = output.drop(index + 1) // + 1 to drop the li
+    case None() => output = output.drop(1)
+  }
+  output.getIndexOf("e") match {
+    case Some(index) => return output.take(index)
+    case None() => return output
+  }
+}
+
+def findObject(sentence: List[String]): List[String] = { // TODO: deal with Prepositions
+  sentence.getIndexOf("e") match {
+    case Some(index) => return sentence.drop(index + 1) // + 1 to drop the e
+    case None() => return Nil()
+  }
+} 
+
+def findSubject(sentence: List[String]): List[String] = {
+  sentence.getIndexOf("li") match {
+    case Some(index) => return sentence.take(index)
+    case None() => sentence.take(1)
+  }
+}

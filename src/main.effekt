@@ -1,43 +1,16 @@
-module main // must be named same as the file!
+module main
 
 import src/lib
 import src/trees
 import src/additionalLists
+import src/translate
+import src/buildTree
 
-
-def splitSentence(sentence: List[String]): SyntaxTree = {
-  Node2("Sentence", Leaf("Subject", findSubject(sentence)), Node2("VerbPhrase", Leaf("Predicate", findPredicate(sentence)), Leaf("Object", findObject(sentence))))
-}
-
-def findPredicate(sentence: List[String]): List[String] = {
-  var output = sentence
-  output.getIndexOf("li") match {
-    case Some(index) => output = output.drop(index + 1) // + 1 to drop the li
-    case None() => output = output.drop(1)
-  }
-  output.getIndexOf("e") match {
-    case Some(index) => return output.take(index)
-    case None() => return output
-  }
-}
-
-def findObject(sentence: List[String]): List[String] = { // TODO: deal with Prepositions
-  sentence.getIndexOf("e") match {
-    case Some(index) => return sentence.drop(index + 1) // + 1 to drop the e
-    case None() => return Nil()
-  }
-} 
-
-def findSubject(sentence: List[String]): List[String] = {
-  sentence.getIndexOf("li") match {
-    case Some(index) => return sentence.take(index)
-    case None() => sentence.take(1)
-  }
-}
 
 
 def main(): Unit = {
-  val l1: List[String] = ["mi", "sona", "mute", "e", "toki", "pona"]
+  val l1: List[String] = ["mi", "moku", "e", "moku"]
   val l2: List[String] = ["mama", "ona", "li", "sona", "mute", "e", "toki", "pona"]
   printTree(splitSentence(l1))
+  printTree(traverseTree(splitSentence(l1)))
 }

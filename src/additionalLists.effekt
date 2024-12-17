@@ -1,0 +1,30 @@
+module main // must be named same as the file!
+
+import src/lib
+
+/// Gets the Index of a value 'v' if it's in the list, 'None()' if it's empty
+def getIndexOf(l: List[String], v: String): Option[Int] = {
+  try {
+    var found: Bool = false 
+    var index: Int = -1
+    while (found == false) {
+      index = index + 1
+      if (l.get[String](index) == v) {
+        found = true
+      }
+    }
+  return Some(index)
+  } with Exception[OutOfBounds] {
+    def raise(exception: OutOfBounds, msg: String) = return None()
+  }
+}
+
+
+def toString(l: List[String]): String = {
+  l.foldLeft("") { (b, a) => b ++ a}
+} 
+
+def main(): Unit = {
+  val l = ["a", "b", "c"]
+  println(toString(l))
+}

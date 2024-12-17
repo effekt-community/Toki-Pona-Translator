@@ -1,12 +1,14 @@
 module main // must be named same as the file!
 
 import src/lib
+import src/additionalLists
 
 effect treeError(message: String): Unit
 
 
 type SyntaxTree {
-  Empty()
+  Empty();
+  Value(value: String);
   Leaf(label: String, value: List[String]);
   Node1(label: String, first: SyntaxTree);
   Node2(label: String, first: SyntaxTree, second: SyntaxTree);
@@ -48,10 +50,12 @@ def getSecond(node: SyntaxTree): SyntaxTree / treeError = {
   }
 }
 
+
+
 def printTree(node: SyntaxTree): Unit = {
   def printNode(node: SyntaxTree, indent: String): Unit = {
     node match {
-      case Leaf(label, value) => println(indent ++ label ++ ": " ++ show(value))
+      case Leaf(label, value) => println(indent ++ label ++ ": " ++ toString(value))
       case Node1(label, first) => 
         println(indent ++ label)
         printNode(first, indent ++ "  ")
