@@ -2,9 +2,11 @@ module trees // must be named same as the file!
 
 import src/additionalLists
 
+
 effect treeError(message: String): Unit
 
 
+/// TODO: Switch Strings to Enumerations
 type SyntaxTree {
   Empty();
   Value(value: String);
@@ -12,6 +14,7 @@ type SyntaxTree {
   Node1(label: String, first: SyntaxTree);
   Node2(label: String, first: SyntaxTree, second: SyntaxTree);
 }
+
 
 def getfirst(node: SyntaxTree): SyntaxTree / treeError= {
   node match {
@@ -22,6 +25,7 @@ def getfirst(node: SyntaxTree): SyntaxTree / treeError= {
   }
 }
 
+
 def getLabel(node: SyntaxTree): String / treeError = {
   node match {
     case Leaf(label, value) => label 
@@ -31,6 +35,7 @@ def getLabel(node: SyntaxTree): String / treeError = {
   }
 }
 
+
 def getValue(leaf: SyntaxTree): List[String] / treeError = {
   leaf match {
     case Leaf(label, value) => value
@@ -39,6 +44,7 @@ def getValue(leaf: SyntaxTree): List[String] / treeError = {
     case _ => ["a"]
   }
 } 
+
 
 def getSecond(node: SyntaxTree): SyntaxTree / treeError = {
   node match {

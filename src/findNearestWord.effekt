@@ -1,5 +1,6 @@
 module findNearestWord
 
+
 /// TODO: Find nearest Word
 def findNearestWord(word: String): String = {
   println(word)

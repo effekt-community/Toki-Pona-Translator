@@ -6,6 +6,7 @@ import src/translateSentences
 import src/buildTree
 
 
+/// Turns Tree into a String, keeping the labels and line breaks 
 def deconstructTree(tree: SyntaxTree): String = {
   tree match {
     case Leaf(label, value) => label ++ ": " ++ showWords(value)
@@ -15,6 +16,8 @@ def deconstructTree(tree: SyntaxTree): String = {
   }
 }
 
+
+/// Turns Tree into a String, keeping only the words
 def formSentence(tree: SyntaxTree): String = {
   tree match {
     case Leaf(label, value) => showWords(value)
@@ -23,7 +26,6 @@ def formSentence(tree: SyntaxTree): String = {
     case _ => "a"
   }
 }
-
 
 
 def main(): Unit = {

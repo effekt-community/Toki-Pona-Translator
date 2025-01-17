@@ -8,7 +8,7 @@ import src/findNearestWord
 
 
 /// Translates single Words from Toki Pona to English using context given by other functions
-/// TODO: All Words, ambigous translations
+/// TODO: All Words, ambigous translations, dealing with unknown Words
 def translate(word: String, context: String): String = {
   try {
     Some(word) match {
