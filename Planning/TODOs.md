@@ -7,6 +7,8 @@
 - Enhancement
     - Switching out Context and Syntax Trees to Enumeration
     - Error Handling
+        - Catching Typos
+    - TUI
 - Basic
     - Multiple Subjects, Verbs and Objects
     - Prepositions
@@ -53,3 +55,11 @@
         - as normal modifier
         - as modifier for preverbs
         - as modifier for prepositions
+
+
+
+## Done
+- Sentences using li
+- Sentences using e
+- Sentences using mi or sina as subjects
+- Sentences using mi or sina as modifiers
