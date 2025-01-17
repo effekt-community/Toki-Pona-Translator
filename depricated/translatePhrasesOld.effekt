@@ -1,0 +1,68 @@
+module translatePhrasesOld
+
+import src/trees
+import src/additionalLists
+import src/buildTree
+import src/effects
+import src/translateWords
+
+
+
+/// Translates Noun Phrases with multiple word, 
+/// TODO: currently doesnt work with pronouns
+def translateLargeNounPhrase(nounPhrase: List[String]): List[String] = {
+  try {
+    var output: List[String] = nounPhrase.drop(1).reverse().extraMap() { x =>
+      translate(x, "adjectiv")
+    }
+    println(output)
+    if (nounPhrase.contains("mi")) {
+      output = output.remove("my")
+      output = output.insert(0, "my")
+    } else if (nounPhrase.contains("sina")) {
+      output = output.remove("sina")
+      output = output.insert(0, "your")
+    } else if (nounPhrase.contains("ona")) {
+      output = output.remove("ona")
+      output = output.insert(0, "their")
+    }
+    println(output)
+    println(nounPhrase)
+    return output.insert(nounPhrase.size(), translate(nounPhrase.get(0), "noun"))
+  } with Exception[OutOfBounds] {
+    def raise(OutOfBounds: OutOfBounds, msg: String) = {
+      println("Out of bounds")
+      return []
+    }
+  }
+}
+
+
+
+def translateLargeVerbPrhase(verbPhrase: List[String]): List[String] = {
+  try {
+    verbPhrase.drop(1).extraMap() { x =>
+      translate(x, "adverb")
+    }.insert(0, translate(verbPhrase.get(0), "verb"))
+  } with Exception[OutOfBounds] {
+    def raise(OutOfBounds: OutOfBounds, msg: String) = {
+      println("Out of bounds")
+      return []
+    }
+  }
+}
+
+
+
+
+
+
+def main(): Unit = {
+  val l1: List[String] = ["mi", "moku", "e", "moku"]
+  val l2: List[String] = ["mama", "ona", "li", "sona", "mute", "e", "toki", "pona"]
+  val l3: List[String] = ["soweli", "suli", "pimeja"]
+  val l4: List[String] = ["soweli", "mi"]
+  val l5: List[String] = ["lawa", "pona", "monsuta"]
+  val l6: List[String] = ["soweli", "pimeja", "mi"]
+  println(translateLargeNounPhrase(l6))
+}

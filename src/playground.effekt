@@ -1,0 +1,15 @@
+module playground
+
+import src/trees
+import src/additionalLists
+
+
+
+/// For testing out Parts of Code
+def main(): Unit = {
+  val tree1: SyntaxTree = Node2("Sentence", Node1("NP", Leaf("Noun", ["Soweli"])), Node2("VP", Leaf("Pred", ["moli"]), Node1("NP", Leaf("Noun", ["Soweli"]))));
+  val l1: List[String] = ["mi", "sona", "mute", "e", "toki", "pona"]
+  val l2: List[String] = ["mama", "ona", "li", "sona", "mute", "e", "toki", "pona"]
+  println("a")
+  printTree(tree1)
+}

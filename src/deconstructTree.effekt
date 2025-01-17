@@ -1,0 +1,34 @@
+module src/deconstructTree
+
+import src/trees
+import src/additionalLists
+import src/translateSentences
+import src/buildTree
+
+
+/// Turns Tree into a String, keeping the labels and line breaks 
+def deconstructTree(tree: SyntaxTree): String = {
+  tree match {
+    case Leaf(label, value) => label ++ ": " ++ showWords(value)
+    case Node1(label, first) => label ++ "\n" ++ deconstructTree(first)
+    case Node2(label, first, second) => label ++ "\n" ++ deconstructTree(first) ++ "\n" ++ deconstructTree(second)
+    case _ => "a"
+  }
+}
+
+
+/// Turns Tree into a String, keeping only the words
+def formSentence(tree: SyntaxTree): String = {
+  tree match {
+    case Leaf(label, value) => showWords(value)
+    case Node1(label, first) => formSentence(first)
+    case Node2(label, first, second) => formSentence(first) ++ formSentence(second)
+    case _ => "a"
+  }
+}
+
+
+def main(): Unit = {
+  val l1: List[String] = ["mi", "moku", "e", "moku"]
+  println(formSentence(splitSentence(l1)))
+}

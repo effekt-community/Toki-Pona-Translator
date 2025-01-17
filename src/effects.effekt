@@ -1,0 +1,8 @@
+module effects
+
+
+/// Currently not used for anything
+effect additionalContext(context: String): Unit
+
+/// Used when word isn't known
+effect unknownWord(word: String): String

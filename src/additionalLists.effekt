@@ -1,0 +1,83 @@
+module main // must be named same as the file!
+
+
+/// turns a list into a string with spaces between the elements
+def showWords(l: List[String]): String = {
+  var output: String = ""
+  l.foreach { el => output = output ++ el ++ " " }
+  return output
+}
+
+
+/// Gets the Index of a value 'v' if it's in the list, 'None()' if it's empty
+def getIndexOf(l: List[String], v: String): Option[Int] = {
+  try {
+    var found: Bool = false 
+    var index: Int = -1
+    while (found == false) {
+      index = index + 1
+      if (l.get[String](index) == v) {
+        found = true
+      }
+    }
+  return Some(index)
+  } with Exception[OutOfBounds] {
+    def raise(exception: OutOfBounds, msg: String) = return None()
+  }
+}
+
+
+/// Removes the first occurence of a value from the list
+def remove(l: List[String], v: String): List[String] = {
+  try {
+    var output: List[String] = l
+    var index: Int = -1
+    while (index != output.size) {
+      index = index + 1
+      if(l.get[String](index) == v) {
+        output = output.deleteAt(index)
+      }
+    }
+    return output
+  } with Exception[OutOfBounds] {
+  def raise(exception: OutOfBounds, msg: String) = []
+  }
+}
+
+
+/// Checks if a value is in the list
+def contains(l:List[String], v: String): Bool = {
+  try {
+    var found: Bool = false
+    var index: Int = -1
+    while (found == false) {
+      index = index + 1
+      if (l.get[String](index) == v) {
+        found = true
+      }
+    }
+    return found
+  } with Exception[OutOfBounds] {
+  def raise(exception: OutOfBounds, msg: String) = return false
+  }
+} 
+
+
+/// Turns a list into a string
+def toString(l: List[String]): String = {
+  l.foldLeft("") { (b, a) => b ++ a}
+} 
+
+
+/// Copy of the map function from the standard library, because it had trouple finding the right function
+def extraMap[A, B](l: List[A]) { f: A => B } : List[B] = {
+  var acc = Nil[B]()
+  l.foreach { el => acc = Cons(f(el), acc) }
+  acc.reverse
+}
+
+
+def main(): Unit = {
+  val l = ["a", "b", "c"]
+  println(show(l.remove("b")))
+}
