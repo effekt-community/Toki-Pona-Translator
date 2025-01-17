@@ -13,6 +13,38 @@ type SyntaxTree {
   Leaf(label: String, value: List[String]);
   Node1(label: String, first: SyntaxTree);
   Node2(label: String, first: SyntaxTree, second: SyntaxTree);
+
+  Sentence(subPhrases: SyntaxTree, predPphrases: SyntaxTree, prepPhrases: SyntaxTree);
+  SubjectPhrases(subjectPhrase: SyntaxTree, subjectPhrases: SyntaxTree);
+  PredPhrases(predPhrase: SyntaxTree, predPhrases: SyntaxTree);
+  PrepPhrases(pprepPhrase: SyntaxTree, prepPhrases: SyntaxTree);
+  SubjectPhrase(head: String, modifiers: List[String])
+  PredPhrase(verbPhrase: SyntaxTree, objectPhrase: SyntaxTree)
+  PrepPhrase(preposition: String, objectPhrase: SyntaxTree)
+  VerbPhrase(head: String, modifiers: List[String])
+  ObjectPhrase(head: String, modifiers: List[String])
+  Phrase(label: String, head: String, modifiers: List[String])
+}
+
+
+def append(tree: SyntaxTree, node: SyntaxTree): SyntaxTree = {
+  try {
+    tree match {
+      case Sentence(subjectPhrases, predPhrases, prepPhrases) => {
+        node match {
+          case SubjectPhrase(head, modifiers) => <>
+          case PredPhrase(verbPhrase, objectPhrase) => <>
+          case VerbPhrase(head, modifiers) => <>
+          case ObjectPhrase(head, modifiers) => <>
+          case _ => <>
+        }
+      }
+      case _ => <>
+    }
+  } with treeError { msg =>
+    println(msg)
+    return Empty()
+  }
 }
 
 

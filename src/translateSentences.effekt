@@ -1,6 +1,5 @@
 module translateSentences
 
-
 import src/trees
 import src/additionalLists
 import src/buildTree
@@ -99,7 +98,7 @@ def translateNounPhrase(nounPhrase: List[String]): List[String] / additionalCont
 
 
 // Translates Toki Pona Verb Phrase
-// TODO: Error Handling
+// TODO: Error Handling, Preverbs
 def translateVerbPhrase(verbPhrase: List[String]): List[String] / additionalContext = {
   try {
     if (verbPhrase.size() == 1) {
@@ -116,8 +115,6 @@ def translateVerbPhrase(verbPhrase: List[String]): List[String] / additionalCont
     }
   }
 }
-
-
 
 
 

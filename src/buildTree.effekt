@@ -10,6 +10,28 @@ def splitSentence(sentence: List[String]): SyntaxTree = {
   Node2("Sentence", Node1("Subject", Leaf("Noun Phrase", findSubject(sentence))), Node2("VerbPhrase", Leaf("Verb Phrase", findVerb(sentence)), Leaf("Noun Phrase", findObject(sentence))))
 }
 
+def splitSentence2(sentence: List[String]): SyntaxTree = {
+  var output: SyntaxTree = Empty()
+  try {
+    <>
+  } with append { t => 
+    <>
+  }
+  <>
+}
+
+def findAndRemoveSubject(sentence: List[String]): List[String] / append = {
+  <>
+}
+
+def findAndRemovePredicates(sentence: List[String]): List[List[String]] / append = {
+  <>
+}
+
+def findAndRemovePrepositions(sentence: List[String]): List[String] / append = {
+  <>
+}
+
 
 /// Finds and isolates Verb in Toki Pona Sentence
 def findVerb(sentence: List[String]): List[String] = {

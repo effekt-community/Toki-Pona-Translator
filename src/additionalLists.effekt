@@ -9,6 +9,29 @@ def showWords(l: List[String]): String = {
 }
 
 
+def getIndexesOf(l:List[String], v: String): List[Int] = {
+  try {
+    var done: Bool = false
+    var index: Int = -1
+    var indexes: List[Int] = []
+    while (done == false) {
+      index = index + 1
+      if (l.get[String](index) == v) {
+        indexes = indexes.insert(indexes.size, index)
+      }
+      if (index == l.size - 1) {
+        done = true
+      }
+    }
+    return indexes
+  } with Exception[OutOfBounds] {
+    def raise(exception: OutOfBounds, msg: String) = {
+      println(msg)
+      return []
+    }
+  }
+}
+
 /// Gets the Index of a value 'v' if it's in the list, 'None()' if it's empty
 def getIndexOf(l: List[String], v: String): Option[Int] = {
   try {
@@ -78,6 +101,6 @@ def extraMap[A, B](l: List[A]) { f: A => B } : List[B] = {
 
 
 def main(): Unit = {
-  val l = ["a", "b", "c"]
-  println(show(l.remove("b")))
+  val l = ["a", "b", "c", "b"]
+  println(show(getIndexesOf(l, "b")))
 }

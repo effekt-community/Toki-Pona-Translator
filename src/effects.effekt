@@ -1,8 +1,13 @@
 module effects
 
+import src/trees
+
 
 /// Currently not used for anything
 effect additionalContext(context: String): Unit
 
 /// Used when word isn't known
 effect unknownWord(word: String): String
+
+// Used to append something to a Syntax Tree
+effect append(l: SyntaxTree): Unit

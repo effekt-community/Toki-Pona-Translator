@@ -28,3 +28,8 @@ lipu kulupu Wikipesija li sona e ijo mute - "The community-document Wikipedia kn
 waso anu kala li tawa - "The bird or the fish moves."
 waso li pali anu pakala e tomo - "Birds build or destroy the nest."
 jan Pin li sama jan Po li sama jan Kiko. - "Finn is like Bob and like Rico."
+
+s
+## Multiple li's and e's
+soweli li moku e kili e soweli li lawa e kili e soweli - "An Animal eats plants and animal and leads plants and animalss"
+mi moku e kili e soweli li lawa e kili e soweli - "I eat plants and animals and lead plants and animal"
