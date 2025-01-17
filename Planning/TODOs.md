@@ -1,6 +1,8 @@
-## List
-
 ## Next
+- Multiple Subjects, Verbs and Objects
+    - Split sentences right
+- Prepositions
+- Preverbs
 
 
 ## All
