@@ -1,6 +1,5 @@
-module main // must be named same as the file!
+module trees // must be named same as the file!
 
-import src/lib
 import src/additionalLists
 
 effect treeError(message: String): Unit
@@ -51,11 +50,10 @@ def getSecond(node: SyntaxTree): SyntaxTree / treeError = {
 }
 
 
-
 def printTree(node: SyntaxTree): Unit = {
   def printNode(node: SyntaxTree, indent: String): Unit = {
     node match {
-      case Leaf(label, value) => println(indent ++ label ++ ": " ++ toString(value))
+      case Leaf(label, value) => println(indent ++ label ++ ": " ++ showWords(value))
       case Node1(label, first) => 
         println(indent ++ label)
         printNode(first, indent ++ "  ")

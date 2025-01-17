@@ -1,0 +1,124 @@
+module translateSentences
+
+import src/trees
+import src/additionalLists
+import src/buildTree
+import src/effects
+import src/findNearestWord
+
+
+/// Translates single Words from Toki Pona to English using context given by other functions
+/// TODO: All Words, ambigous translations
+def translate(word: String, context: String): String = {
+  try {
+    Some(word) match {
+      case Some("mi") => {
+        if (context == "adjectiv") { 
+          return "my"
+        } else if (context == "noun") {
+          return "I"
+        } else if (context == "subject") {
+          return "I";
+        } else return ""
+      }
+      case Some("ona") => {
+        context match {
+          case "verb" => ""
+          case "adjectiv" => "your"
+          case "noun" => "you"
+          case _ => ""
+        }
+      }
+      case Some("mama") => {
+        context match {
+          case "verb" => "parent"
+          case "adjectiv" => "parental"
+          case "noun" => "parent"
+          case _ => ""
+        }
+      }
+      case Some("moku") => {
+        context match {
+          case "verb" => "eat"
+          case "adjectiv" => "food related"
+          case "noun" => "food"
+          case _ => ""
+        }
+      }
+      case Some("soweli") => {
+        context match {
+          case "verb" => "animal"
+          case "adjectiv" => "animal related"
+          case "noun" => "animal"
+          case _ => ""
+        }
+      }
+      case Some("suli") => {
+        context match {
+          case "verb" => "enlarge"
+          case "adjectiv" => "big"
+          case "noun" => "size"
+          case _ => ""
+        }
+      }
+      case Some("pimeja") => {
+        context match {
+          case "verb" => "blacken"
+          case "adjectiv" => "black"
+          case "noun" => "darkness"
+          case _ => ""
+        }
+      }
+      case Some("lawa") => {
+        context match {
+          case "verb" => "lead"
+          case "adjectiv" => "leading"
+          case "noun" => "leader"
+          case "adverb" => "leadingly"
+          case _ => ""
+        }
+      }
+      case Some("pona") => {
+        context match {
+          case "verb" => "improve"
+          case "adjectiv" => "good"
+          case "noun" => "goodness"
+          case "adverb" => "well"
+          case _ => ""
+        }
+      }
+      case Some("sona") => {
+        context match {
+          case "verb" => "know"
+          case "adjectiv" => "wise"
+          case "noun" => "knowledge"
+          case "adverb" => "wisely"
+          case _ => ""
+        }
+      }
+      case Some("mute") => {
+        context match {
+          case "verb" => "amplify"
+          case "adjectiv" => "much"
+          case "noun" => "mute"
+          case "adverb" => "a lot"
+          case _ => ""
+        }
+      }
+      case Some("monsuta") => {
+        context match {
+          case "verb" => "scare"
+          case "adjectiv" => "scary"
+          case "noun" => "monster"
+          case "adverb" => "scarily"
+          case _ => ""
+        }
+      }
+      case Some(otherWord) => return do unknownWord(otherWord)
+      case None() => return ""
+    }
+  } with unknownWord { word => 
+    findNearestWord(word)
+    return ""
+  }
+}

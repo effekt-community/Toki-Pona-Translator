@@ -1,15 +1,16 @@
 module buildTree
 
-import src/lib
 import src/trees
 import src/additionalLists
-import src/translate
+import src/effects
 
-
+/// Splits Toki Pona Sentences into Syntax Tree
 def splitSentence(sentence: List[String]): SyntaxTree = {
   Node2("Sentence", Node1("Subject", Leaf("Noun Phrase", findSubject(sentence))), Node2("VerbPhrase", Leaf("Verb Phrase", findVerb(sentence)), Leaf("Noun Phrase", findObject(sentence))))
 }
 
+
+/// Finds and isolates Verb in Toki Pona Sentence
 def findVerb(sentence: List[String]): List[String] = {
   var output = sentence
   output.getIndexOf("li") match {
@@ -22,6 +23,8 @@ def findVerb(sentence: List[String]): List[String] = {
   }
 }
 
+
+/// Finds and isolates Object in Toki Pona Sentence
 def findObject(sentence: List[String]): List[String] = { // TODO: deal with Prepositions
   sentence.getIndexOf("e") match {
     case Some(index) => return sentence.drop(index + 1) // + 1 to drop the e
@@ -29,9 +32,15 @@ def findObject(sentence: List[String]): List[String] = { // TODO: deal with Prep
   }
 } 
 
+/// Finds and isolates Subject in Toki Pona Sentence
 def findSubject(sentence: List[String]): List[String] = {
   sentence.getIndexOf("li") match {
     case Some(index) => return sentence.take(index)
     case None() => sentence.take(1)
   }
+}
+
+
+def main(): Unit = {
+  println("a")
 }

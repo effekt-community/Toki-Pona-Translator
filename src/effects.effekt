@@ -1,0 +1,5 @@
+module effects
+
+effect additionalContext(context: String): Unit
+
+effect unknownWord(word: String): String
