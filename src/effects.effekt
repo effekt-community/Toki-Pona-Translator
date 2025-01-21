@@ -11,3 +11,6 @@ effect unknownWord(word: String): String
 
 // Used to append something to a Syntax Tree
 effect append(l: SyntaxTree): Unit
+
+effect sentenceError(msg: String): Unit
+

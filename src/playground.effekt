@@ -5,6 +5,19 @@ import src/additionalLists
 
 
 
+  def findAndRemovePredicates(sentence: List[String]): List[String] / {append, sentenceError} = {
+  try {
+    <>
+  } with append { n =>
+    appendPredicate(sentence, n)
+    resume(())
+  } with sentenceError { msg => 
+    println(msg)
+    return []
+  }
+}
+
+
 /// For testing out Parts of Code
 def main(): Unit = {
   val tree1: SyntaxTree = Node2("Sentence", Node1("NP", Leaf("Noun", ["Soweli"])), Node2("VP", Leaf("Pred", ["moli"]), Node1("NP", Leaf("Noun", ["Soweli"]))));
@@ -13,3 +26,5 @@ def main(): Unit = {
   println("a")
   printTree(tree1)
 }
+
+

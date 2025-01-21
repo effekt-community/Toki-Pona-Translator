@@ -2,114 +2,92 @@ module trees // must be named same as the file!
 
 import src/additionalLists
 
-
-effect treeError(message: String): Unit
-
-
-/// TODO: Switch Strings to Enumerations
 type SyntaxTree {
-  Empty();
-  Value(value: String);
-  Leaf(label: String, value: List[String]);
-  Node1(label: String, first: SyntaxTree);
-  Node2(label: String, first: SyntaxTree, second: SyntaxTree);
-
-  Sentence(subPhrases: SyntaxTree, predPphrases: SyntaxTree, prepPhrases: SyntaxTree);
-  SubjectPhrases(subjectPhrase: SyntaxTree, subjectPhrases: SyntaxTree);
-  PredPhrases(predPhrase: SyntaxTree, predPhrases: SyntaxTree);
-  PrepPhrases(pprepPhrase: SyntaxTree, prepPhrases: SyntaxTree);
-  SubjectPhrase(head: String, modifiers: List[String])
-  PredPhrase(verbPhrase: SyntaxTree, objectPhrase: SyntaxTree)
-  PrepPhrase(preposition: String, objectPhrase: SyntaxTree)
-  VerbPhrase(head: String, modifiers: List[String])
-  ObjectPhrase(head: String, modifiers: List[String])
-  Phrase(label: String, head: String, modifiers: List[String])
+  Empty()
+  Sentence(subjects: SyntaxTree, predicates: SyntaxTree);
+  PhraseList(label: String, front: SyntaxTree, back: SyntaxTree);
+  Predicate(verb: SyntaxTree, objects: SyntaxTree, predicates: SyntaxTree)
+  ObjectLeaf(label: String, prep: String, head: String, modifiers: List[String]);
+  VerbLeaf(label: String, preverb: List[String], verb: String, modifiers: List[String]);
 }
 
-
-def append(tree: SyntaxTree, node: SyntaxTree): SyntaxTree = {
-  try {
-    tree match {
-      case Sentence(subjectPhrases, predPhrases, prepPhrases) => {
-        node match {
-          case SubjectPhrase(head, modifiers) => <>
-          case PredPhrase(verbPhrase, objectPhrase) => <>
-          case VerbPhrase(head, modifiers) => <>
-          case ObjectPhrase(head, modifiers) => <>
-          case _ => <>
+def append(sentence: SyntaxTree, node: SyntaxTree): SyntaxTree = {
+  sentence match {
+    case Sentence(subjects, predicates) => {
+      node match {
+        case ObjectLeaf(label, prep, head, list) => {
+          if (label == "Subject Phrase") {
+            return Sentence(append(subjects, node), predicates)
+          } else {
+            return Empty()
+          }
+        }
+        case Predicate(verb, objects, prepositions) => {
+          return Sentence(subjects, append(predicates, node))
+        }
+        case _ => return Empty()}
+    }
+    case PhraseList(label, front, back) => {
+      front match {
+        case Empty() => {
+          return PhraseList(label, node, back)
+        }
+        case _ => back match {
+          case Empty() => return PhraseList(label, front, PhraseList("List", node, Empty()))
+          case _ => return PhraseList(label, front, append(back, node))
         }
       }
-      case _ => <>
     }
-  } with treeError { msg =>
-    println(msg)
-    return Empty()
+    case _ => return Empty()
   }
 }
 
 
-def getfirst(node: SyntaxTree): SyntaxTree / treeError= {
-  node match {
-    case Leaf(label, value) => do treeError("Excpectet Node4, found Leaf"); Leaf(label, value)  
-    case Node1(label, first) => first
-    case Node2(label, first, second) => first
-    case _ => Leaf("a", ["b"])
+def appendObjects(sentence: SyntaxTree, node: SyntaxTree): SyntaxTree = {
+  sentence match {
+    case PhraseList(label, front, back) => {
+      front match {
+        case Empty() => {
+          return PhraseList(label, node, back)
+        }
+        case _ => back match {
+          case Empty() => return PhraseList(label, front, PhraseList("List", node, Empty()))
+          case _ => return PhraseList(label, front, append(back, node))
+        }
+      }
+    }
+    case _ => return Empty()
   }
 }
+    
 
 
-def getLabel(node: SyntaxTree): String / treeError = {
-  node match {
-    case Leaf(label, value) => label 
-    case Node1(label, first) => label
-    case Node2(label, first, second) => label
-    case _ => "a"
-  }
-}
-
-
-def getValue(leaf: SyntaxTree): List[String] / treeError = {
-  leaf match {
-    case Leaf(label, value) => value
-    case Node1(label, first) => do treeError("Excpectet Leaf, found Node4"); Nil()
-    case Node2(label, first, second) => do treeError("Excpectet Leaf, found Node4"); Nil()
-    case _ => ["a"]
-  }
-} 
-
-
-def getSecond(node: SyntaxTree): SyntaxTree / treeError = {
-  node match {
-    case Leaf(label, value) => do treeError("Excpectet Node4, found Leaf"); Leaf(label, value) 
-    case Node1(label, first) => first
-    case Node2(label, first, second) => second
-    case _ => Leaf("a", ["b"])
-  }
-}
 
 
 def printTree(node: SyntaxTree): Unit = {
   def printNode(node: SyntaxTree, indent: String): Unit = {
     node match {
-      case Leaf(label, value) => println(indent ++ label ++ ": " ++ showWords(value))
-      case Node1(label, first) => 
+      case Sentence(subjects, predicates) => 
+        println(indent ++ "Sentence")
+        printNode(subjects, indent ++ "  ")
+        printNode(predicates, indent ++ "  ")
+      case PhraseList(label, front, back) => 
         println(indent ++ label)
-        printNode(first, indent ++ "  ")
-      case Node2(label, first, second) => 
-        println(indent ++ label)
-        printNode(first, indent ++ "  ")
-        printNode(second, indent ++ "  ")
-      case _ => println(indent ++ "Unknown node")
+        printNode(front, indent ++ "  ")
+        printNode(back, indent ++ "  ")
+      case ObjectLeaf(label, prep, head, modifiers) =>
+        println(indent ++ label  ++ prep ++ head ++ showWords(modifiers))
+      case Predicate(verb, objects, predicates) => {
+        println(indent ++ "Predicate")
+        printNode(verb, indent ++ "  ")
+        printNode(objects, indent ++ "  ")
+        printNode(predicates, indent ++ "  ")
+      }
+      case VerbLeaf(label, preverb, verb, modifiers) =>
+        println(indent ++ label ++ ": " ++ showWords(preverb) ++ verb ++ showWords(modifiers))
+      case Empty() => println(indent ++ "Empty")
+      /// case _ => println(indent ++ "Unknown node")
     }
   }
   printNode(node, "")
-}
-
-
-def main(): Unit = {
-  val tree1: SyntaxTree = Node2("Sentence", Node1("NP", Leaf("Noun", ["Soweli"])), Node2("VP", Leaf("Pred", ["moli"]), Node1("NP", Leaf("Noun", ["Soweli"]))));
-  val l1: List[String] = ["mi", "sona", "mute", "e", "toki", "pona"]
-  val l2: List[String] = ["mama", "ona", "li", "sona", "mute", "e", "toki", "pona"]
-  println("a")
-  printTree(tree1)
 }
