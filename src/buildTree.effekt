@@ -53,7 +53,6 @@ def findAndRemoveSubjects(sentence: List[String]): List[String] / {append, sente
 
 /// TODO: Preverbs
 def findAndRemovePredicates(sentence: List[String]): List[String] / {append, sentenceError} = {
-  println(showWords(sentence))
   val endOfPredicate = {
     sentence.getIndexOf("li") match {
       case Some(index) => index
