@@ -4,62 +4,31 @@ import src/additionalLists
 
 type SyntaxTree {
   Empty()
-  Sentence(subjects: SyntaxTree, predicates: SyntaxTree);
-  PhraseList(label: String, front: SyntaxTree, back: SyntaxTree);
-  Predicate(verb: SyntaxTree, objects: SyntaxTree, predicates: SyntaxTree)
-  ObjectLeaf(label: String, prep: String, head: String, modifiers: List[String]);
-  VerbLeaf(label: String, preverb: List[String], verb: String, modifiers: List[String]);
+  Sentence(subjects: List[SyntaxTree], predicates: List[SyntaxTree])
+  Predicate(verb: SyntaxTree, objects: List[SyntaxTree], prepositions: List[SyntaxTree])
+  VerbLeaf(preverb: List[String], head: List[String], modifiers: List[String])
+  ObjectLeaf(head: List[String], modifiers: List[String])
+  SubjectLeaf(head: List[String], modifiers: List[String])
+  PrepositionsLeaf(prep: List[String], head: List[String], modifiers: List[String])
 }
 
-def append(sentence: SyntaxTree, node: SyntaxTree): SyntaxTree = {
-  sentence match {
+
+def appendToSentence(tree: SyntaxTree, node: SyntaxTree): SyntaxTree = {
+  tree match {
     case Sentence(subjects, predicates) => {
       node match {
-        case ObjectLeaf(label, prep, head, list) => {
-          if (label == "Subject Phrase") {
-            return Sentence(append(subjects, node), predicates)
-          } else {
-            return Empty()
-          }
+        case SubjectLeaf(head, modifiers) => {
+          return Sentence(subjects.append([node]), predicates)
         }
         case Predicate(verb, objects, prepositions) => {
-          return Sentence(subjects, append(predicates, node))
+          return Sentence(subjects, predicates.append([node]))
         }
-        case _ => return Empty()}
-    }
-    case PhraseList(label, front, back) => {
-      front match {
-        case Empty() => {
-          return PhraseList(label, node, back)
-        }
-        case _ => back match {
-          case Empty() => return PhraseList(label, front, PhraseList("List", node, Empty()))
-          case _ => return PhraseList(label, front, append(back, node))
-        }
+        case _ => return Empty()
       }
     }
     case _ => return Empty()
   }
 }
-
-
-def appendObjects(sentence: SyntaxTree, node: SyntaxTree): SyntaxTree = {
-  sentence match {
-    case PhraseList(label, front, back) => {
-      front match {
-        case Empty() => {
-          return PhraseList(label, node, back)
-        }
-        case _ => back match {
-          case Empty() => return PhraseList(label, front, PhraseList("List", node, Empty()))
-          case _ => return PhraseList(label, front, append(back, node))
-        }
-      }
-    }
-    case _ => return Empty()
-  }
-}
-    
 
 
 
@@ -67,27 +36,51 @@ def appendObjects(sentence: SyntaxTree, node: SyntaxTree): SyntaxTree = {
 def printTree(node: SyntaxTree): Unit = {
   def printNode(node: SyntaxTree, indent: String): Unit = {
     node match {
-      case Sentence(subjects, predicates) => 
-        println(indent ++ "Sentence")
-        printNode(subjects, indent ++ "  ")
-        printNode(predicates, indent ++ "  ")
-      case PhraseList(label, front, back) => 
-        println(indent ++ label)
-        printNode(front, indent ++ "  ")
-        printNode(back, indent ++ "  ")
-      case ObjectLeaf(label, prep, head, modifiers) =>
-        println(indent ++ label  ++ prep ++ head ++ showWords(modifiers))
-      case Predicate(verb, objects, predicates) => {
-        println(indent ++ "Predicate")
-        printNode(verb, indent ++ "  ")
-        printNode(objects, indent ++ "  ")
-        printNode(predicates, indent ++ "  ")
+      case Sentence(subjects, predicates) => {
+        println(indent ++ "SENTENCE:")
+        println(indent ++ "  " ++ "SUBJECTS:")
+        subjects.foreach{ n => printNode(n, indent ++ "    ")}
+        println(indent ++ "  " ++ "PREDICATES:")
+        predicates.foreach{ n => printNode(n, indent ++ "    ")}
+     }
+      case SubjectLeaf(head, modifiers) => {
+      println(indent ++ "SUBJECTLEAF: Head: " ++ showWords(head) ++ "  Modifiers: " ++ showWords(modifiers))
       }
-      case VerbLeaf(label, preverb, verb, modifiers) =>
-        println(indent ++ label ++ ": " ++ showWords(preverb) ++ verb ++ showWords(modifiers))
-      case Empty() => println(indent ++ "Empty")
-      /// case _ => println(indent ++ "Unknown node")
-    }
-  }
+      case ObjectLeaf(head, modifiers) => {
+        println(indent ++ "OBJECTLEAF: Head: " ++ showWords(head) ++ "  Modifiers: " ++ showWords(modifiers))
+      }
+      case VerbLeaf(preverb, head, modifiers) => {
+        println(indent ++ "VERBLEAF: Preverbs: " ++ showWords(preverb) ++ "  Head: " ++ showWords(head) ++ "  Modifiers: " ++ showWords(modifiers))
+      }
+      case PrepositionsLeaf(prep, head, modifiers) => {
+        println(indent ++ "PREPOSITIONSLEAF: Preposition: " ++ showWords(prep) ++ "  Head: " ++ showWords(head) ++ "  Modifiers: " ++ showWords(modifiers))
+      }
+      case Predicate(verb, objects, prepositions) => {
+        println(indent ++ "PREDICATE:")
+        printNode(verb, indent ++ "  ")
+        objects match {
+          case Nil() => println(indent ++ "  " ++ "OBJECTLEAF: Empty")
+          case Cons(_, _) => objects.foreach{ n => printNode(n, indent ++ "  ")}
+        }
+        prepositions match {
+          case Nil() => println(indent ++ "  " ++ "PREPOSITIONSLEAF: Empty")
+          case Cons(_, _) => prepositions.foreach{ n => printNode(n, indent ++ "  ")}
+        }
+      }
+      case Empty() => {
+        println(indent ++ "Empty")
+      }
+   }
+  } 
   printNode(node, "")
+}
+
+def main(): Unit = {
+  val tree1: SyntaxTree = Sentence([SubjectLeaf(["Soweli"], ["pimeja"]), SubjectLeaf(["Soweli"], ["pimeja"])], [Predicate(VerbLeaf([], ["lili"], ["suli", "pimeja"]), [Empty()], [PrepositionsLeaf(["lon"], [], [])])])
+  var tree2: SyntaxTree = Sentence([], [])
+  tree2 = appendToSentence(tree2, SubjectLeaf(["Soweli"], ["pimeja"]))
+  //printTree(tree2.appendToSentence(SubjectLeaf(["Soweli"], ["pimeja"])))
+  //printTree(tree2.appendToSentence(SubjectLeaf(["Soweli"], ["pimeja"])).appendToSentence(SubjectLeaf(["Soweli"], ["pimeja"])))
+  //printTree(tree2.appendToSentence(Predicate(Empty(), [Empty()], [Empty()])))
+  printTree(tree1)
 }

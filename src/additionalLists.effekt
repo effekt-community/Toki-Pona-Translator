@@ -4,8 +4,15 @@ module main // must be named same as the file!
 /// turns a list into a string with spaces between the elements
 def showWords(l: List[String]): String = {
   var output: String = ""
-  l.foreach{ el => output = output ++ el ++ " "}
+  l.foreachIndex{ (index, el) =>
+    if (index == 0) output = el
+    else output = output ++ " " ++ el
+  }
   return output
+}
+
+def showWords2(l: List[String]): String = {
+  l.foldLeft("") { (b, a) => b ++ a ++ " "}
 }
 
 def getIndexesOf(l:List[String], v: String): List[Int] = {
@@ -117,6 +124,5 @@ def extraMap[A, B](l: List[A]) { f: A => B } : List[B] = {
 
 def main(): Unit = {
   val l = ["a", "b", "c", "b"]
-  println(show(getIndexesOf(l, "b")))
-  println(showWords(l))
+  println(show(getIndexOf(l, ["c", "b"])))
 }
