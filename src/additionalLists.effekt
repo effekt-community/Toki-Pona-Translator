@@ -1,12 +1,18 @@
 module main // must be named same as the file!
 
+import src/effects
+
 
 /// turns a list into a string with spaces between the elements
-def showWords(l: List[String]): String = {
+def showWords(l: List[(String, Context2)]): String = {
   var output: String = ""
   l.foreachIndex{ (index, el) =>
-    if (index == 0) output = el
-    else output = output ++ " " ++ el
+    el match {
+      case (word, context) => {
+        if (index == 0) output = word
+        else output = output ++ " " ++ word
+      } 
+    }
   }
   return output
 }
@@ -124,5 +130,7 @@ def extraMap[A, B](l: List[A]) { f: A => B } : List[B] = {
 
 def main(): Unit = {
   val l = ["a", "b", "c", "b"]
+  val l2 = [("a", Nothing()), ("b", Nothing()), ("c", Nothing()), ("b", Nothing())]
   println(show(getIndexOf(l, ["c", "b"])))
+  println(showWords(l2))
 }

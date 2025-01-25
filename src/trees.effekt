@@ -7,10 +7,10 @@ type SyntaxTree {
   Empty()
   Sentence(subjects: List[SyntaxTree], predicates: List[SyntaxTree])
   Predicate(verb: SyntaxTree, objects: List[SyntaxTree], prepositions: List[SyntaxTree])
-  VerbLeaf(preverb: List[String], head: List[String], modifiers: List[String])
-  ObjectLeaf(head: List[String], modifiers: List[String])
-  SubjectLeaf(head: List[String], modifiers: List[String])
-  PrepositionsLeaf(prep: List[String], head: List[String], modifiers: List[String])
+  VerbLeaf(preverb: List[String, Context2], head: List[String], modifiers: List[String, Context2])
+  ObjectLeaf(head: List[String, Context2], modifiers: List[String, Context2])
+  SubjectLeaf(head: List[String, Context2], modifiers: List[String, Context2])
+  PrepositionsLeaf(prep:List[String, Context2], head: List[String, Context2], modifiers: List[String, Context2])
 }
 
 
