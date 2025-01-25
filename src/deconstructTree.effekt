@@ -4,31 +4,94 @@ import src/trees
 import src/additionalLists
 import src/translateSentences
 import src/buildTree
+import src/effects
 
 
-/// Turns Tree into a String, keeping the labels and line breaks 
-def deconstructTree(tree: SyntaxTree): String = {
-  tree match {
-    case Leaf(label, value) => label ++ ": " ++ showWords(value)
-    case Node1(label, first) => label ++ "\n" ++ deconstructTree(first)
-    case Node2(label, first, second) => label ++ "\n" ++ deconstructTree(first) ++ "\n" ++ deconstructTree(second)
-    case _ => "a"
+def deconstructTree(tree: SyntaxTree): String / ambiguity[Plural] = {
+  var output = ""
+  try {
+    def deconstructTreeHelper(index: Int, tree: SyntaxTree): Unit / ambiguity[Plural] = {
+      tree match {
+        case Sentence(subjects, predicates) => {
+          subjects.foreachIndex{ (index, x) => deconstructTreeHelper(index, x)}
+          predicates.foreachIndex{ (index, x) => deconstructTreeHelper(index, x)}
+        }
+        case SubjectLeaf(head, modifiers) => {
+          modifiers.foreachIndex{ (index, x) => 
+            do addToSentence(x)
+          }
+          head.foreachIndex{ (index, x) => 
+            do addToSentence(x)
+          }
+        }
+        case Predicate(verb, objects, prepositions) => {
+          deconstructTreeHelper(index, verb)
+          objects.foreachIndex{ (index, x) => deconstructTreeHelper(index, x)}
+          prepositions.foreachIndex{ (index, x) => deconstructTreeHelper(index, x)}
+        }
+        case VerbLeaf(preverb, head, modifiers) => {
+          if (index != 0) {
+            do addToSentence("and")
+          }
+          preverb.foreachIndex{ (newIndex, x) => 
+            do addToSentence(x)
+          }
+          head.foreachIndex{ (newIndex, x) => 
+            do addToSentence(x ++ "s")
+          }
+          modifiers.foreachIndex{ (newIndex, x) => 
+            do addToSentence(x)
+          }
+        }
+        case ObjectLeaf(head, modifiers) => {
+          if (index != 0) {
+            do addToSentence("and")
+          }
+          val newIndex = index + 1
+          modifiers.extraMap{ x => 
+            do addToSentence(x)
+          }
+          head.extraMap{ x => 
+            do addToSentence(x)
+          }
+          return ()
+        }
+        case PrepositionsLeaf(prep, head, modifiers) => {
+          if (index != 0) {
+            do addToSentence("and")
+          }
+          prep.extraMap{ x => 
+            do addToSentence(x)
+          }
+          modifiers.extraMap{ x => 
+            do addToSentence(x)
+          }
+          head.extraMap{ x => 
+            do addToSentence(x)
+          }
+          return ()
+        }
+        case _ => return ()
+      }
+    }
+    deconstructTreeHelper(0, tree)
+    return output
+  } with addToSentence { x => 
+    output = output ++ x ++ " "
+    resume(())
   }
 }
 
-
-/// Turns Tree into a String, keeping only the words
-def formSentence(tree: SyntaxTree): String = {
-  tree match {
-    case Leaf(label, value) => showWords(value)
-    case Node1(label, first) => formSentence(first)
-    case Node2(label, first, second) => formSentence(first) ++ formSentence(second)
-    case _ => "a"
-  }
-}
 
 
 def main(): Unit = {
-  val l1: List[String] = ["mi", "moku", "e", "moku"]
-  println(formSentence(splitSentence(l1)))
+  try {
+    val tree = traverseTree(splitSentence(["soweli", "pimeja", "suli", "li", "moku", "pona", "e", "jan", "ale", "e", "kili", "kepeken", "uta", "suli"]))
+    //printTree(tree)
+    println(deconstructTree(tree))
+  } with ambiguity[Plural] { (first, second) =>
+    resume(first)
+    resume(second)
+  }
+
 }

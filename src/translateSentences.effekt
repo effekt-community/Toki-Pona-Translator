@@ -8,7 +8,7 @@ import src/translateWords
 
 
 /// Goes through Syntax Tree and translates the leafs into english
-def traverseTree(tree: SyntaxTree): SyntaxTree = {
+def traverseTree(tree: SyntaxTree): SyntaxTree / ambiguity[Plural] = {
   try {
     do additionalContext("a")
     tree match {
@@ -26,7 +26,7 @@ def traverseTree(tree: SyntaxTree): SyntaxTree = {
 }
 
 /// Translates the leafs of a Syntax Tree into english
-def translateLeaf(tree: SyntaxTree): SyntaxTree = {
+def translateLeaf(tree: SyntaxTree): SyntaxTree / ambiguity[Plural] = {
   tree match {
     case SubjectLeaf(head, modifiers) => {
       return SubjectLeaf(head.extraMap{x => translate(x, Subject())}, modifiers.extraMap{x => translate(x, Modifier())})
@@ -45,7 +45,14 @@ def translateLeaf(tree: SyntaxTree): SyntaxTree = {
 }
 
 def main(): Unit = {
-  val tree = splitSentence(["mi", "moku", "e", "kili"])
-  val translatedTree = traverseTree(tree)
+  try {
+    val tree = splitSentence(["", "moku", "e", "kili"])
+    val translatedTree = traverseTree(tree)
   printTree(translatedTree)
+  } with ambiguity[Plural] { (first, second) =>
+    println("resume first:")
+    resume(first)
+    println("resume second:")
+    resume(second)
+  }
 }

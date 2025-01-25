@@ -1,6 +1,7 @@
 module trees // must be named same as the file!
 
 import src/additionalLists
+import src/effects
 
 type SyntaxTree {
   Empty()
@@ -29,7 +30,6 @@ def appendToSentence(tree: SyntaxTree, node: SyntaxTree): SyntaxTree = {
     case _ => return Empty()
   }
 }
-
 
 
 
