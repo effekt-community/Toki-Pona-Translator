@@ -1,0 +1,85 @@
+module src/deconstructTree2
+
+import src/trees
+import src/additionalLists
+import src/translateSentences
+import src/buildTree
+import src/effects
+
+def deconstructTree(tree: SyntaxTree): String = {
+  var output = ""
+  try {
+    def deconstructTreeHelper(index: Int, tree: SyntaxTree): Unit = {
+      tree match {
+        case Sentence(subjects, predicates) => {
+          subjects.foreachIndex{ (index, x) => deconstructTreeHelper(index, x)}
+          predicates.foreachIndex{ (index, x) => deconstructTreeHelper(index, x)}
+          ()
+        }
+        case SubjectLeaf(head, modifiers) => {
+          modifiers.foreachIndex{ (index, x) => 
+            do addToSentence(x)
+          }
+          head.foreachIndex{ (index, x) => 
+            do addToSentence(x)
+          }
+          ()
+        }
+        case Predicate(verb, objects, prepositions) => {
+          deconstructTreeHelper(index, verb)
+          objects.foreachIndex{ (index, x) => deconstructTreeHelper(index, x)}
+          prepositions.foreachIndex{ (index, x) => deconstructTreeHelper(index, x)}
+          ()
+        }
+        case VerbLeaf(preverb, head, modifiers) => {
+          preverb.foreachIndex{ (index, x) => 
+            do addToSentence(x)
+          }
+          head.foreachIndex{ (index, x) => 
+            do addToSentence(x)
+          }
+          modifiers.foreachIndex{ (index, x) => 
+            do addToSentence(x)
+          }
+          ()
+        }
+        case ObjectLeaf(head, modifiers) => {
+          head.extraMap{ x => 
+            do addToSentence(x)
+          }
+          modifiers.extraMap{ x => 
+            do addToSentence(x)
+          }
+          ()
+        }
+        case PrepositionsLeaf(prep, head, modifiers) => {
+          prep.extraMap{ x => 
+            do addToSentence(x)
+          }
+          head.extraMap{ x => 
+            do addToSentence(x)
+          }
+          modifiers.extraMap{ x => 
+            do addToSentence(x)
+          }
+          ()
+        }
+        case _ => println("a")
+      }
+    }
+    deconstructTreeHelper(0, tree)
+    do addToSentence("")
+    return output
+  } with addToSentence { x => 
+    output = output ++ x ++ " "
+    resume(())
+  }
+}
+
+
+
+def main(): Unit = {
+  val tree = traverseTree(splitSentence(["mi", "moku", "e", "kili"]))
+  printTree(tree)
+  println(deconstructTree(tree))
+}

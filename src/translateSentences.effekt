@@ -7,119 +7,45 @@ import src/effects
 import src/translateWords
 
 
-/// Translates Toki Pona Syntax Tree into English Syntax Tree
+/// Goes through Syntax Tree and translates the leafs into english
 def traverseTree(tree: SyntaxTree): SyntaxTree = {
-  var firstOrSecondPerson: Bool = false
-  var subjectFound: Bool = false
   try {
+    do additionalContext("a")
     tree match {
-      case Node2(label, first, second) => {
-        Node2(label, traverseTree(first), traverseTree(second))
+      case Sentence(subjects, predicates) => {
+        return Sentence(subjects.extraMap{ x => translateLeaf(x)}, predicates.extraMap{ x => traverseTree(x)})
       }
-      case Node1(label, first) => {
-        Node1(label, traverseTree(first))
+      case Predicate(verb, objects, prepositions) => {
+        return Predicate(translateLeaf(verb), objects.extraMap{ x => translateLeaf(x)}, prepositions.extraMap{ x => translateLeaf(x)})
       }
-      case Leaf(label, value) => {
-        label match {
-          // case "Subject Phrase" => Leaf(label, translateSubjectPhrase(value))
-          case "Noun Phrase" => Leaf(label, translateNounPhrase(value))
-          case "Verb Phrase" => Leaf(label, translateVerbPhrase(value))
-          case _ => Leaf(label, value)
-        }
-      }
-      case _ => {
-        Empty()
-      }
+      case _ => return Empty()
     }
-  } with additionalContext { context =>
-    context match {
-      case "firstOrSecondPerson" => firstOrSecondPerson = true
-      case "subjectTranslated" => subjectFound = true
-      case _ => ()
-    }
+  } with additionalContext { context => 
     resume(())
   }
 }
 
-
-/// Depricated
-def translateSubjectPhrase(subjectPhrase: List[String]): List[String] / additionalContext = {
-  if (subjectPhrase.size() == 1) {
-    subjectPhrase.headOption() match {
-      case Some("mi") => {
-        do additionalContext("firstOrSecondPerson");
-        <>
-      }
-      case Some("sina") => {
-        do additionalContext("firstOrSecondPerson");
-        <>
-      }
-      case Some(word) => {
-        <>
-      }
-      case None() => []
+/// Translates the leafs of a Syntax Tree into english
+def translateLeaf(tree: SyntaxTree): SyntaxTree = {
+  tree match {
+    case SubjectLeaf(head, modifiers) => {
+      return SubjectLeaf(head.extraMap{x => translate(x, Subject())}, modifiers.extraMap{x => translate(x, Modifier())})
     }
-  }
-  else return ["a"]
-}
-
-
-/// Translates Toki Pona Noun Phrase
-/// TODO: Error Handling
-def translateNounPhrase(nounPhrase: List[String]): List[String] / additionalContext = {
-  try {
-    if (nounPhrase.size() == 1) {
-      return [translate(nounPhrase.get(0), "noun")]
-    } else {
-      var output: List[String] = nounPhrase.drop(1).reverse().extraMap() { x =>
-        translate(x, "adjectiv")
-      }
-      /// Checks for Pronouns, as they need to be covered Seperatly
-      if (nounPhrase.contains("mi")) {
-        output = output.remove("my")
-        output = output.insert(0, "my")
-      } else if (nounPhrase.contains("sina")) {
-        output = output.remove("sina")
-        output = output.insert(0, "your")
-      } else if (nounPhrase.contains("ona")) {
-        output = output.remove("ona")
-        output = output.insert(0, "their")
-      }
-      return output.insert(nounPhrase.size(), translate(nounPhrase.get(0), "noun"))
+    case VerbLeaf(preverbs, head, modifiers) => {
+      return VerbLeaf(preverbs.extraMap{x => translate(x, Preverb())}, head.extraMap{x => translate(x, Verb())}, modifiers.extraMap{x => translate(x, Adverb())})
     }
-  } with Exception[OutOfBounds] {
-    def raise(OutOfBounds: OutOfBounds, msg: String) = {
-      println(msg)
-      return []
+    case ObjectLeaf(head, modifiers) => {
+      return ObjectLeaf(head.extraMap{x => translate(x, Object())}, modifiers.extraMap{x => translate(x, Modifier())})
     }
+    case PrepositionsLeaf(prepositions, head, modifiers) => {
+      return PrepositionsLeaf(prepositions.extraMap{x => translate(x, Preposition())}, head.extraMap{x => translate(x, Object())}, modifiers.extraMap{x => translate(x, Modifier())})
+    }
+    case _ => return Empty()
   }
 }
-
-
-
-// Translates Toki Pona Verb Phrase
-// TODO: Error Handling, Preverbs
-def translateVerbPhrase(verbPhrase: List[String]): List[String] / additionalContext = {
-  try {
-    if (verbPhrase.size() == 1) {
-      return [translate(verbPhrase.get(0), "verb")]
-    } else {
-      verbPhrase.drop(1).extraMap() { x =>
-        translate(x, "adverb")
-      }.insert(0, translate(verbPhrase.get(0), "verb"))
-    }
-  } with Exception[OutOfBounds] {
-    def raise(OutOfBounds: OutOfBounds, msg: String) = {
-      println(msg)
-      return []
-    }
-  }
-}
-
-
 
 def main(): Unit = {
-  val l1: List[String] = ["mi", "moku", "e", "moku"]
-  val l2: List[String] = ["mama", "ona", "li", "sona", "mute", "e", "toki", "pona"]
-  printTree(traverseTree(splitSentence(l2)))
+  val tree = splitSentence(["mi", "moku", "e", "kili"])
+  val translatedTree = traverseTree(tree)
+  printTree(translatedTree)
 }

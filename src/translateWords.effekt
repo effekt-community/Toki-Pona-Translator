@@ -1,124 +1,118 @@
-module translateSentences
+module translateWords
 
 import src/trees
 import src/additionalLists
-import src/buildTree
 import src/effects
 import src/findNearestWord
+
+type Context {
+  Subject()
+  Object()
+  Verb()
+  Preposition()
+  Modifier()
+  Preverb()
+  Adverb()
+}
 
 
 /// Translates single Words from Toki Pona to English using context given by other functions
 /// TODO: All Words, ambigous translations, dealing with unknown Words
-def translate(word: String, context: String): String = {
+def translate(word: String, context: Context): String = {
   try {
-    Some(word) match {
-      case Some("mi") => {
-        if (context == "adjectiv") { 
-          return "my"
-        } else if (context == "noun") {
-          return "I"
-        } else if (context == "subject") {
-          return "I";
-        } else return ""
-      }
-      case Some("ona") => {
+    word match {
+      /// Pronouns
+      case "mi" => {
         context match {
-          case "verb" => ""
-          case "adjectiv" => "your"
-          case "noun" => "you"
-          case _ => ""
+          case Subject() => "I"
+          case Object() => "me"
+          case Modifier() => "my"
+          case _ => do wrongContext("mi"); return ""
         }
       }
-      case Some("mama") => {
+      case "sina" => {
         context match {
-          case "verb" => "parent"
-          case "adjectiv" => "parental"
-          case "noun" => "parent"
-          case _ => ""
+          case Subject() => "you"
+          case Object() => "you"
+          case Modifier() => "your"
+          case _ => do wrongContext("sina"); return ""
         }
       }
-      case Some("moku") => {
+      /// Prepositions
+      case "kepeken" => {
         context match {
-          case "verb" => "eat"
-          case "adjectiv" => "food related"
-          case "noun" => "food"
-          case _ => ""
+          case Preposition() => "using"
+          case _ => do wrongContext("kepeken"); return ""
         }
       }
-      case Some("soweli") => {
+      /// Preverbs
+      case "wile" => {
         context match {
-          case "verb" => "animal"
-          case "adjectiv" => "animal related"
-          case "noun" => "animal"
-          case _ => ""
+          case Verb() => "want"
+          case Preverb() => "want to"
+          case _ => do wrongContext("wile"); return ""
         }
       }
-      case Some("suli") => {
+      /// Random Words
+      case "moku" => {
         context match {
-          case "verb" => "enlarge"
-          case "adjectiv" => "big"
-          case "noun" => "size"
-          case _ => ""
+          case Subject() => "food"
+          case Object() => "food"
+          case Verb() => "eat"
+          case Modifier() => "food related"
+          case _ => do wrongContext("moku"); return ""
         }
       }
-      case Some("pimeja") => {
+      case "kili" => {
         context match {
-          case "verb" => "blacken"
-          case "adjectiv" => "black"
-          case "noun" => "darkness"
-          case _ => ""
+          case Subject() => "plant"
+          case Object() => "plant"
+          case Verb() => "plant"
+          case Modifier() => "plant related"
+          case _ => do wrongContext("kili"); return ""
         }
       }
-      case Some("lawa") => {
+      case "soweli" => {
         context match {
-          case "verb" => "lead"
-          case "adjectiv" => "leading"
-          case "noun" => "leader"
-          case "adverb" => "leadingly"
-          case _ => ""
+          case Subject() => "animal"
+          case Object() => "animal"
+          case Modifier() => "animal related"
+          case _ => do wrongContext("soweli"); return ""
         }
       }
-      case Some("pona") => {
+      case "pimeja" => {
         context match {
-          case "verb" => "improve"
-          case "adjectiv" => "good"
-          case "noun" => "goodness"
-          case "adverb" => "well"
-          case _ => ""
+          case Subject() => "darkness"
+          case Object() => "darkness"
+          case Verb() => "darken"
+          case Modifier() => "dark"
+          case _ => do wrongContext("mi"); return ""
         }
       }
-      case Some("sona") => {
+      case "suli" => {
         context match {
-          case "verb" => "know"
-          case "adjectiv" => "wise"
-          case "noun" => "knowledge"
-          case "adverb" => "wisely"
-          case _ => ""
+          case Verb() => "enlarge"
+          case Modifier() => "big"
+          case _ => do wrongContext("suli"); return ""
         }
       }
-      case Some("mute") => {
+      case "pona" => {
         context match {
-          case "verb" => "amplify"
-          case "adjectiv" => "much"
-          case "noun" => "mute"
-          case "adverb" => "a lot"
-          case _ => ""
+          case Subject() => "Goodness"
+          case Object() => "Goodness"
+          case Verb() => "improve"
+          case Modifier() => "good"
+          case Adverb() => "well"
+          case _ => do wrongContext("wile"); return ""
         }
       }
-      case Some("monsuta") => {
-        context match {
-          case "verb" => "scare"
-          case "adjectiv" => "scary"
-          case "noun" => "monster"
-          case "adverb" => "scarily"
-          case _ => ""
-        }
-      }
-      case Some(otherWord) => return do unknownWord(otherWord)
-      case None() => return ""
+      case unknownWord => do unknownWord(unknownWord); return ""
     }
-  } with unknownWord { word => 
-    findNearestWord(word)
+  } with unknownWord { word =>
+    println("UNKNOWN WORD: " ++ word)
     return ""
-  }
+  } with wrongContext { msg =>
+    println("WRONG CONTEXT: " ++ msg)
+    return ""
+    }
 }

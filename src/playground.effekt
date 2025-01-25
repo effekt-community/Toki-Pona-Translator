@@ -4,19 +4,23 @@ import src/trees
 import src/additionalLists
 
 
-
-  def findAndRemovePredicates(sentence: List[String]): List[String] / {append, sentenceError} = {
-  try {
-    <>
-  } with append { n =>
-    appendPredicate(sentence, n)
-    resume(())
-  } with sentenceError { msg => 
-    println(msg)
-    return []
-  }
-}
-
+test("build Tree: simple sentence with sina") {
+      val l1: List[String] = ["sina", "moku", "e", "moku"]
+      val tree: SyntaxTree = splitSentence(l1)
+      assertEqual(splitSentence(l1), Node2("Sentence", Node1("Subject", Leaf("Noun Phrase", ["sina"])), Node2("VerbPhrase", Leaf("Verb Phrase", ["moku"]), Leaf("Noun Phrase", ["moku"]))))
+    }
+    test("build Tree: simple sentence with mi") {
+      val l1: List[String] = ["mi", "moku", "e", "moku"]
+      val tree: SyntaxTree = splitSentence(l1)
+      assertEqual(splitSentence(l1), Node2("Sentence", Node1("Subject", Leaf("Noun Phrase", ["mi"])), Node2("VerbPhrase", Leaf("Verb Phrase", ["moku"]), Leaf("Noun Phrase", ["moku"]))))
+    }
+    test("build Tree: complex sentence") {
+      val l2: List[String] = ["mama", "ona", "li", "sona", "mute", "e", "toki", "pona"]
+      assertEqual(splitSentence(l2),  Node2("Sentence", Node1("Subject", Leaf("Noun Phrase", ["mama", "ona"])), Node2("VerbPhrase", Leaf("Verb Phrase", ["sona", "mute"]), Leaf("Noun Phrase", ["toki", "pona"]))))
+    }
+    test("translate Sentences: simple sentence") {
+      val l1: List[String] = ["mi", "moku", "e", "moku"]
+      assertEqual(formSentence(traverseTree(splitSentence(l1))), "I eat food ")
 
 /// For testing out Parts of Code
 def main(): Unit = {

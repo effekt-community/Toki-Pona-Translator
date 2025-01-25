@@ -14,3 +14,7 @@ effect append(l: SyntaxTree): Unit
 
 // Used to signal an error in the sentence
 effect sentenceError(msg: String): Unit
+
+effect wrongContext(msg: String): Unit
+
+effect addToSentence(msg: String): Unit
