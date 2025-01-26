@@ -5,43 +5,175 @@ import src/additionalLists
 import src/effects
 
 
-/// Splits Toki Pona Sentences into Syntax Tree
+/// Takes a Toki Pona sentence and turns it into a syntax tree
 def splitSentence(sentence: List[String]): SyntaxTree = {
-  Node2("Sentence", Node1("Subject", Leaf("Noun Phrase", findSubject(sentence))), Node2("VerbPhrase", Leaf("Verb Phrase", findVerb(sentence)), Leaf("Noun Phrase", findObject(sentence))))
-}
-
-
-/// Finds and isolates Verb in Toki Pona Sentence
-def findVerb(sentence: List[String]): List[String] = {
-  var output = sentence
-  output.getIndexOf("li") match {
-    case Some(index) => output = output.drop(index + 1) // + 1 to drop the li
-    case None() => output = output.drop(1)
-  }
-  output.getIndexOf("e") match {
-    case Some(index) => return output.take(index)
-    case None() => return output
+  var tree: SyntaxTree = Sentence([], [])
+  try {
+    sentence.findAndRemoveSubjects().findAndRemovePredicates()
+    return tree
+  } with append { n => 
+    tree = appendToSentence(tree, n)
+    resume(())
+  } with sentenceError { msg => 
+    println("SENTENCE ERROR: " ++ msg)
+    return Empty()
   }
 }
 
 
-/// Finds and isolates Object in Toki Pona Sentence
-def findObject(sentence: List[String]): List[String] = { // TODO: deal with Prepositions
-  sentence.getIndexOf("e") match {
-    case Some(index) => return sentence.drop(index + 1) // + 1 to drop the e
-    case None() => return Nil()
+/// Takes a Toki Pona sentence finds, removes and adds them to the syntax tree
+def findAndRemoveSubjects(sentence: List[String]): List[String] / { append, sentenceError } = {
+  if (sentence.subjectOnlyMiSina()) {
+    do append(SubjectLeaf(sentence.take(1), Nil()))
+    return sentence.drop(1)
   }
-} 
-
-/// Finds and isolates Subject in Toki Pona Sentence
-def findSubject(sentence: List[String]): List[String] = {
-  sentence.getIndexOf("li") match {
-    case Some(index) => return sentence.take(index)
-    case None() => sentence.take(1)
+  else {
+    sentence.getIndexOf("en") match {
+      case Some(index) => {
+        do append(SubjectLeaf(sentence.take(1), sentence.slice(1, index)))
+        return findAndRemoveSubjects(sentence.drop(index + 1))
+        }
+      case None() => {
+        sentence.getIndexOf("li") match {
+          case Some(index) => {
+            do append(SubjectLeaf(sentence.take(1), sentence.slice(1, index)))
+            return sentence.drop(index + 1)
+          }
+          case None() => {
+            return sentence
+          }
+        }
+      }
+    }
   }
 }
+
+
+/// Checks if the Subject is only Mi or Sina
+def subjectOnlyMiSina(sentence: List[String]): Bool / sentenceError = {
+  sentence match {
+    case Cons("mi", Cons("li", _)) => do sentenceError("If mi is subject, li is not needed"); false
+    case Cons("mi", Cons("en", _)) => false
+    case Cons("mi", notEn) => true
+    case Cons("sina", Cons("li", _)) => do sentenceError("If sina is subject, li is not needed"); false
+    case Cons("sina", Cons("en", _)) => false
+    case Cons("sina", notEn) => true
+    case _ => false
+  }
+}
+
+
+// Takes a Toki Pona Sentence without the subject and finds, removes and adds the predicates to the Syntax Tree
+def findAndRemovePredicates(sentence: List[String]): List[String] / {append, sentenceError} = {
+  val endOfVerb = {
+    sentence.getIndexOf(["lon", "kepeken", "tawa", "tan", "sama", "li", "e"]) match {
+      case Some(index) => index
+      case None() => sentence.size()
+    }
+  }
+  //println("end Of Verb" ++ show(endOfVerb))
+  // TODO: Clear Ambiguity
+  val endOfPreverbs = {
+    sentence.getIndexOf(["wile", "sona", "awen", "kama", "ken", "lukin"]) match {
+      case Some(index) => if (endOfVerb > 1) 1 else 0
+      case None() => 0
+    }
+  }
+  val endOfPredicate = {
+    sentence.getIndexOf("li") match {
+      case Some(index) => index
+      case None() => sentence.size()
+    }
+  } 
+  val endOfObjects = {
+    sentence.getIndexOf(["lon", "kepeken", "tawa", "tan", "sama", "li"]) match {
+      case Some(index) => index
+      case None() => endOfPredicate
+    }
+  }
+  val verb = VerbLeaf(sentence.take(endOfPreverbs), sentence.slice(endOfPreverbs, endOfPreverbs + 1), sentence.slice(endOfPreverbs + 1, endOfVerb))
+  val objects = splitObjects(sentence.slice(endOfVerb + 1, endOfObjects))
+  //println("DEBUG: objects: " ++ showWords(sentence.slice(endOfVerb + 1, endOfObjects)))
+  val prepositions = splitPrepositions(sentence.slice(endOfObjects, endOfPredicate))
+  do append(Predicate(verb, objects, prepositions))
+  if(endOfPredicate == sentence.size()) return []
+  else return findAndRemovePredicates(sentence.drop(endOfPredicate + 1))
+}
+
+
+
+/// Takes a list of Objects split by prepositionsand turns them into Prepositions Leafs
+def splitPrepositions(sentence: List[String]): List[SyntaxTree] = {
+  var output: List[SyntaxTree] = []
+  try {
+    def splitPrepositionsHelper(sentence: List[String]): Unit / append = {
+      if (sentence.size == 0) {
+        return ()
+      }
+      else {
+        sentence.drop(1).getIndexOf(["lon", "kepeken", "tawa", "tan", "sama"]) match {
+          case Some(index) => {
+            do append(PrepositionsLeaf(sentence.take(1), sentence.slice(1, 2), sentence.slice(2, index + 1)))
+            splitPrepositionsHelper(sentence.drop(index + 1))
+            return ()
+          }
+          case None() => {
+            do append(PrepositionsLeaf(sentence.take(1), sentence.slice(1, 2), sentence.drop(2)))
+          }
+        }
+      } 
+    }
+    splitPrepositionsHelper(sentence)
+    return output
+  } with append { n => 
+    output = output.append([n])
+    resume(())
+  }
+}
+
+/// Takes a list of objects split by "e" and turns them into Object Leafs
+def splitObjects(sentence: List[String]): List[SyntaxTree] = {
+    var output: List[SyntaxTree] = []
+  try {
+    def splitObjectsHelper(sentence: List[String]): Unit / append = {
+      if (sentence.size == 0) {
+        return ()
+      }
+      else {
+        sentence.drop(1).getIndexOf("e") match {
+          case Some(index) => {
+            do append(ObjectLeaf(sentence.take(1), sentence.slice(1, index + 1)))
+            //println("DEBUG: 2nd Object " ++ showWords(sentence.drop(index + 1)))
+            splitObjectsHelper(sentence.drop(index + 2))
+            return ()
+          }
+          case None() => {
+            do append(ObjectLeaf(sentence.take(1), sentence.drop(1)))
+          }
+        }
+      } 
+    }
+    splitObjectsHelper(sentence)
+    return output
+  } with append { n => 
+    output = output.append([n])
+    resume(())
+  }
+}
+
+
+
 
 
 def main(): Unit = {
-  println("a")
+//var t1 = splitSentence(["mi", "a", "b"])
+//var t2 = splitSentence(["sina", "li", "a", "b"])
+//var t3 = splitSentence(["a", "li", "b"])
+//var t4 = splitSentence(["a", "li", "d", "2", "e", "f", "li", "g", "lon", "i", "tawa", "i", "j"])
+//var t5 = splitSentence(["a", "li", "wile", "d", "2", "e", "g", "li", "h", "lon", "j", "li", "k"])
+//var t6 = splitSentence(["soweli", "li", "moku", "e", "moku"])
+var t7 = splitSentence(["soweli", "li", "wile", "moku", "pona", "e", "moku", "lili", "e", "kasi", "kepeken", "uta", "kepeken", "luka", "li", "moku", "e", "moku", "suli"])
+//var t8 = splitSentence(["a", "li", "d", "e", "f", "lon", "g", "li", "h"])
+printTree(t7)
 }
+

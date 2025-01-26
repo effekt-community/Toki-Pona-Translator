@@ -1,13 +1,43 @@
 module main // must be named same as the file!
 
 
+
 /// turns a list into a string with spaces between the elements
 def showWords(l: List[String]): String = {
   var output: String = ""
-  l.foreach { el => output = output ++ el ++ " " }
+  l.foreachIndex{ (index, el) =>
+    if (index == 0) output = el
+    else output = output ++ " " ++ el
+  }
   return output
 }
 
+def showWords2(l: List[String]): String = {
+  l.foldLeft("") { (b, a) => b ++ a ++ " "}
+}
+
+def getIndexesOf(l:List[String], v: String): List[Int] = {
+  try {
+    var done: Bool = false
+    var index: Int = -1
+    var indexes: List[Int] = []
+    while (done == false) {
+      index = index + 1
+      if (l.get[String](index) == v) {
+        indexes = indexes.insert(indexes.size, index)
+      }
+      if (index == l.size - 1) {
+        done = true
+      }
+    }
+    return indexes
+  } with Exception[OutOfBounds] {
+    def raise(exception: OutOfBounds, msg: String) = {
+      println(msg)
+      return []
+    }
+  }
+}
 
 /// Gets the Index of a value 'v' if it's in the list, 'None()' if it's empty
 def getIndexOf(l: List[String], v: String): Option[Int] = {
@@ -20,7 +50,23 @@ def getIndexOf(l: List[String], v: String): Option[Int] = {
         found = true
       }
     }
-  return Some(index)
+    return Some(index)
+  } with Exception[OutOfBounds] {
+    def raise(exception: OutOfBounds, msg: String) = return None()
+  }
+}
+
+def getIndexOf(l: List[String], vs: List[String]): Option[Int] = {
+  try {
+    var found: Bool = false 
+    var index: Int = -1
+    while (found == false) {
+      index = index + 1
+      if (vs.contains(l.get[String](index))) {
+        found = true
+      }
+    }
+    return Some(index)
   } with Exception[OutOfBounds] {
     def raise(exception: OutOfBounds, msg: String) = return None()
   }
@@ -78,6 +124,7 @@ def extraMap[A, B](l: List[A]) { f: A => B } : List[B] = {
 
 
 def main(): Unit = {
-  val l = ["a", "b", "c"]
-  println(show(l.remove("b")))
+  val l = ["a", "b", "c", "b"]
+  println(show(getIndexOf(l, ["c", "b"])))
+  println(showWords(l))
 }

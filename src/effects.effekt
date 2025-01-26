@@ -1,8 +1,37 @@
 module effects
 
+import src/trees
+
+record Plural()
+
+type Context2 {
+  Pronoun()
+  Unique()
+  NotUnique()
+  Plural()
+  NotPlural()
+  Nothing()
+}
+
 
 /// Currently not used for anything
 effect additionalContext(context: String): Unit
 
 /// Used when word isn't known
 effect unknownWord(word: String): String
+
+// Used to append something to a Syntax Tree
+effect append(l: SyntaxTree): Unit
+
+// Used to signal an error in the sentence
+effect sentenceError(msg: String): Unit
+
+effect wrongContext(msg: String): Unit
+
+effect addToSentence(msg: String): Unit
+
+effect ambiguity[T](first: String, second: String): String
+
+def main(): Unit = {
+  println("a")
+}

@@ -1,15 +1,33 @@
 module playground
 
-import src/trees
-import src/additionalLists
+
+record Plural()
+
+type Context2 {
+  Pronoun()
+  Unique()
+  NotUnique()
+  Plural()
+  NotPlural()
+  Nothing()
+}
 
 
+/// Currently not used for anything
+effect additionalContext(context: String): Unit
 
-/// For testing out Parts of Code
+/// Used when word isn't known
+effect unknownWord(word: String): String
+
+// Used to signal an error in the sentence
+effect sentenceError(msg: String): Unit
+
+effect wrongContext(msg: String): Unit
+
+effect addToSentence(msg: String): Unit
+
+effect ambiguity[T](first: String, second: String): String
+
 def main(): Unit = {
-  val tree1: SyntaxTree = Node2("Sentence", Node1("NP", Leaf("Noun", ["Soweli"])), Node2("VP", Leaf("Pred", ["moli"]), Node1("NP", Leaf("Noun", ["Soweli"]))));
-  val l1: List[String] = ["mi", "sona", "mute", "e", "toki", "pona"]
-  val l2: List[String] = ["mama", "ona", "li", "sona", "mute", "e", "toki", "pona"]
   println("a")
-  printTree(tree1)
 }

@@ -5,12 +5,9 @@ import src/additionalLists
 import src/translateSentences
 import src/translateWords
 import src/buildTree
-
-
+import io/console
+import src/effects
 
 def main(): Unit = {
-  val l1: List[String] = ["mi", "mok", "e", "moku"]
-  val l2: List[String] = ["mama", "ona", "li", "sona", "mute", "e", "toki", "pona"]
-  printTree(splitSentence(l1))
-  printTree(traverseTree(splitSentence(l1)))
+  println("a")
 }
