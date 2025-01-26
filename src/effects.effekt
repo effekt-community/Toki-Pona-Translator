@@ -1,6 +1,7 @@
 module effects
 
 import src/trees
+import io/console
 
 record Plural()
 
@@ -11,6 +12,11 @@ type Context2 {
   Plural()
   NotPlural()
   Nothing()
+}
+
+def askQuestion(question: String): String / { Console } = {
+  do writeLine(question)
+  do readLine()
 }
 
 
@@ -33,5 +39,6 @@ effect addToSentence(msg: String): Unit
 effect ambiguity[T](first: String, second: String): String
 
 def main(): Unit = {
-  println("a")
+  with console;
+  println(askQuestion("a"))
 }
