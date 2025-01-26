@@ -30,4 +30,8 @@ effect wrongContext(msg: String): Unit
 
 effect addToSentence(msg: String): Unit
 
-effect ambiguity[T](first: (String, Context2), second: (String, Context2)): (String, Context2)
+effect ambiguity[T](first: String, second: String): String
+
+def main(): Unit = {
+  println("a")
+}

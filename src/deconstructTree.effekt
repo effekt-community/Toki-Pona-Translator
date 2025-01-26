@@ -93,5 +93,4 @@ def main(): Unit = {
     resume(first)
     resume(second)
   }
-
 }

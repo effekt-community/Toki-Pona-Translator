@@ -19,156 +19,157 @@ type Context {
 
 /// Translates single Words from Toki Pona to English using context given by other functions
 /// TODO: All Words, ambigous translations, dealing with unknown Words
-def translate(word: String, context: Context): (String, Context2) / { ambiguity[Plural] } = {
+def translate(word: String, context: Context): String / { ambiguity[Plural] } = {
   try {
     word match {
       /// Pronouns
       case "mi" => {
         context match {
-          case Subject() => ("I", Pronoun())
-          case Object() => ("me", Nothing())
-          case Modifier() => ("my", Nothing())
-          case _ => do wrongContext("mi"); return ("", Nothing())
+          case Subject() => "I"
+          case Object() => "me"
+          case Modifier() => "my"
+          case _ => do wrongContext("mi"); ""
         }
       }
       case "ona" => {
         context match {
-          case Subject() => ("they", Nothing())
-          case Object() => ("they", Nothing())
-          case Modifier() => ("their", Nothing())
-          case _ => do wrongContext("ona"); return ("", Nothing())
+          case Subject() => "they"
+          case Object() => "they"
+          case Modifier() => "their"
+          case _ => do wrongContext("ona"); ""
         }
       }
       /// Prepositions
       case "kepeken" => {
         context match {
-          case Preposition() => ("using", Nothing())
-          case _ => do wrongContext("kepeken"); return ("", Nothing())
+          case Preposition() => "using"
+          case _ => do wrongContext("kepeken"); ""
         }
       }
       case "ala" => {
         context match {
-          case Preposition() => ("not", Nothing())
-          case Subject() => ("nothing", Nothing())
-          case Object() => ("nothing", Nothing())
-          case Modifier() => ("not", Nothing())
-          case _ => do wrongContext("ala"); return ("", Nothing())
+          case Preposition() => "not"
+          case Subject() => "nothing"
+          case Object() => "nothing"
+          case Modifier() => "not"
+          case _ => do wrongContext("ala"); ""
         }
       }
       /// Preverbs
       case "wile" => {
         context match {
-          case Verb() => ("want", Nothing())
-          case Preverb() => ("want to", Nothing())
-          case _ => do wrongContext("wile"); return ("", Nothing())
+          case Verb() => "want"
+          case Preverb() => "want to"
+          case _ => do wrongContext("wile"); ""
         }
       }
       /// Random Words
       case "ale" => {
         context match {
-          case Subject() => ("everything", Nothing())
-          case Object() => ("everything", Nothing())
-          case Modifier() => ("all", Nothing())
-          case _ => do wrongContext("ale"); return ("", Nothing())
+          case Subject() => "everything"
+          case Object() => "everything"
+          case Modifier() => "all"
+          case _ => do wrongContext("ale"); ""
         }
       }
       case "moku" => {
         context match {
-          case Subject() => ("food", Nothing())
-          case Object() => ("food", Nothing())
-          case Verb() => ("eat", Nothing())
-          case Modifier() => ("food related", Nothing())
-          case _ => do wrongContext("moku"); return ("", Nothing())
+          case Subject() => "food"
+          case Object() => "food"
+          case Verb() => "eat"
+          case Modifier() => "food related"
+          case _ => do wrongContext("moku"); ""
         }
       }
 
       case "jan" => {
         context match {
-          case Subject() => do ambiguity[Plural](("person", Nothing()), ("people", Nothing()))
-          case Object() => do ambiguity[Plural](("person", Nothing()), ("people", Nothing()))
-          case Verb() => ("anthropomorphize", Nothing())
-          case Modifier() => ("human", Nothing())
-          case _ => do wrongContext("jan"); return ("", Nothing())
+          case Subject() => do ambiguity[Plural]("person", "people")
+          case Object() => do ambiguity[Plural]("person", "people")
+          case Verb() => "anthropomorphize"
+          case Modifier() => "human"
+          case _ => do wrongContext("jan"); ""
         }
       }
       case "kalama" => {
         context match {
-          case Subject() => ("sound", Nothing())
-          case Object() => ("sound", Nothing())
-          case Verb() => ("make sound", Nothing())
-          case Modifier() => ("sound related", Nothing())
-          case _ => do wrongContext("kalama"); return ("", Nothing())
+          case Subject() => "sound"
+          case Object() => "sound"
+          case Verb() => "make sound"
+          case Modifier() => "sound related"
+          case _ => do wrongContext("kalama"); ""
         }
       }
       case "kili" => {
         context match {
-          case Subject() => do ambiguity[Plural](("plant", Nothing()), ("plants", Nothing()))
-          case Object() => do ambiguity[Plural](("plant", Nothing()), ("plants", Nothing()))
-          case Verb() => ("plant", Nothing())
-          case Modifier() => ("plant related", Nothing())
-          case _ => do wrongContext("kili"); return ("", Nothing())
+          case Subject() => do ambiguity[Plural]("plant", "plants")
+          case Object() => do ambiguity[Plural]("plant", "plants")
+          case Verb() => "plant"
+          case Modifier() => "plant related"
+          case _ => do wrongContext("kili"); ""
         }
       }
       case "uta" => {
         context match {
-          case Subject() => ("mouth", Nothing())
-          case Object() => ("mouth", Nothing())
-          case Verb() => ("mouth", Nothing())
-          case Modifier() => ("mouth related", Nothing())
-          case _ => do wrongContext("uta"); return ("", Nothing())
+          case Subject() => "mouth"
+          case Object() => "mouth"
+          case Verb() => "mouth"
+          case Modifier() => "mouth related"
+          case _ => do wrongContext("uta"); ""
         }
       }
       case "soweli" => {
         context match {
-          case Subject() => do ambiguity[Plural](("animal", Nothing()), ("animals", Nothing()))
-          case Object() => do ambiguity[Plural](("animal", Nothing()), ("animals", Nothing()))
-          case Modifier() => ("animal related", Nothing())
-          case _ => do wrongContext("soweli"); return ("", Nothing())
+          case Subject() => do ambiguity[Plural]("animal", "animals")
+          case Object() => do ambiguity[Plural]("animal", "animals")
+          case Modifier() => "animal related"
+          case _ => do wrongContext("soweli"); ""
         }
       }
       case "pimeja" => {
         context match {
-          case Subject() => ("darkness", Nothing())
-          case Object() => ("darkness", Nothing())
-          case Verb() => ("darken", Nothing())
-          case Modifier() => ("dark", Nothing())
-          case _ => do wrongContext("pimeja"); return ("", Nothing())
+          case Subject() => "darkness"
+          case Object() => "darkness"
+          case Verb() => "darken"
+          case Modifier() => "dark"
+          case _ => do wrongContext("pimeja"); ""
         }
       }
       case "suli" => {
         context match {
-          case Verb() => ("enlarge", Nothing())
-          case Modifier() => ("big", Nothing())
-          case _ => do wrongContext("suli"); return ("", Nothing())
+          case Verb() => "enlarge"
+          case Modifier() => "big"
+          case _ => do wrongContext("suli"); ""
         }
       }
       case "pona" => {
         context match {
-          case Subject() => ("Goodness", Nothing())
-          case Object() => ("Goodness", Nothing())
-          case Verb() => ("improve", Nothing())
-          case Modifier() => ("good", Nothing())
-          case Adverb() => ("well", Nothing())
-          case _ => do wrongContext("pona"); return ("", Nothing())
+          case Subject() => "Goodness"
+          case Object() => "Goodness"
+          case Verb() => "improve"
+          case Modifier() => "good"
+          case Adverb() => "well"
+          case _ => do wrongContext("pona"); ""
         }
       }
-      case unknownWord => do unknownWord(unknownWord); return ("", Nothing())
+      case unknownWord => do unknownWord(unknownWord); ""
     }
   } with unknownWord { word =>
     println("UNKNOWN WORD: " ++ word)
-    return ("", Nothing())
+    ""
   } with wrongContext { msg =>
     println("WRONG CONTEXT: " ++ msg)
-    return ("", Nothing())
+    ""
   }
 }
+
 
 
 
 def main(): Unit = {
   try {
     translate("jan", Subject()) match {
-      case (word, context) => println(word)
+      case word => println(word)
     }
   } with ambiguity[Plural] { (first, second) =>
     println("resume first:")
