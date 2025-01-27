@@ -51,5 +51,7 @@ def main(): Unit = {
     resume(second)
   } with notThirdPersonSingular {
     resume(())
+  } with ambiguityVerbOnlyLi {
+    resume(true)
   }
 }

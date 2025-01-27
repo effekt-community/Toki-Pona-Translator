@@ -16,11 +16,14 @@ def translateSentence(s: String): List[String] = {
     } with ambiguity[Plural] { (first, second) =>
       resume(first)
       resume(second)
+    } with ambiguityVerbOnlyLi {
+      resume(true)
+      resume(false)
     }
   } with escapeContext { msg =>
     output = output.insert(0, msg)
     resume(())
-  }
+  } 
   return output
 }
 
@@ -38,5 +41,5 @@ def wrapper(): Unit = {
 
 
 def main(): Unit = {
-  (translateSentence("soweli moku e kili e kili")).foreach { x => println(x) }
+  (translateSentence("kalama li moku pona pona kepeken moku li moku pona pona")).foreach { x => println(x) }
 }

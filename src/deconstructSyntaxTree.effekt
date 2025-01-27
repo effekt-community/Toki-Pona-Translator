@@ -29,14 +29,18 @@ def deconstructSyntaxTree(tokiPonaTree: SyntaxTree): String / ambiguity[Plural] 
           }
         }
         case Predicate(verb, objects, prepositions) => {
+          if (index != 0) {
+            do addToSentence("and")
+          }
+          verb match {
+            case Empty() => do addToSentence("is")
+            case _ => ()
+          }
           deconstructSyntaxTreeHelper(index, verb)
           objects.foreachIndex{ (index, x) => deconstructSyntaxTreeHelper(index, x)}
           prepositions.foreachIndex{ (index, x) => deconstructSyntaxTreeHelper(index, x)}
         }
         case VerbLeaf(preverb, head, modifiers) => {
-          if (index != 0) {
-            do addToSentence("and")
-          }
           preverb.foreachIndex{ (newIndex, x) => 
             do addToSentence(x)
           }
@@ -105,5 +109,7 @@ def main(): Unit = {
   } with ambiguity[Plural] { (first, second) =>
     resume(first)
     resume(second)
+  } with ambiguityVerbOnlyLi {
+    resume(true)
   }
 }

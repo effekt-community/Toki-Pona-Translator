@@ -56,5 +56,7 @@ def main() = {
     resume(first)
   } with notThirdPersonSingular {
     resume(())
+  } with ambiguityVerbOnlyLi {
+    resume(true)
   }
 }

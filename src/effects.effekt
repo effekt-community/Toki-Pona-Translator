@@ -6,6 +6,8 @@ import io/console
 
 record Plural()
 
+record VerbOnlyLi()
+
 def askQuestion(question: String): String / { Console } = {
   do writeLine(question)
   do readLine()
@@ -28,6 +30,8 @@ effect addToSentence(msg: String): Unit
 
 /// Used when Sentence has multiple translations
 effect ambiguity[T](first: String, second: String): String
+
+effect ambiguityVerbOnlyLi(): Bool
 
 /// Used to escape context of multiple resumptions
 effect escapeContext(msg: String): Unit

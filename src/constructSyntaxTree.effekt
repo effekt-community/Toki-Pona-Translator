@@ -6,7 +6,7 @@ import src/effects
 
 
 /// Takes a Toki Pona sentence and turns it into a syntax tree
-def constructSyntaxTree(sentence: List[String]): SyntaxTree = {
+def constructSyntaxTree(sentence: List[String]): SyntaxTree / {ambiguityVerbOnlyLi} = {
   var tree: SyntaxTree = Sentence([], [])
   try {
     sentence.findAndRemoveSubjects().findAndRemovePredicates()
@@ -17,8 +17,9 @@ def constructSyntaxTree(sentence: List[String]): SyntaxTree = {
   } with sentenceError { msg => 
     println("SENTENCE ERROR: " ++ msg)
     return Empty()
-  }
+  } 
 }
+
 
 /// Adds a node at the right place in a syntax tree
 def appendToSentence(tree: SyntaxTree, node: SyntaxTree): SyntaxTree = {
@@ -83,16 +84,16 @@ def subjectOnlyMiOrSina(sentence: List[String]): Bool / sentenceError = {
 
 
 // Takes a Toki Pona Sentence without the subject and finds, removes and adds the predicates to the Syntax Tree
-// TODO: Predicate only li
-def findAndRemovePredicates(sentence: List[String]): List[String] / {append, sentenceError} = {
-  val endOfVerb = {
+// TODO: Verb only li
+def findAndRemovePredicates(sentence: List[String]): List[String] / {append, sentenceError, ambiguityVerbOnlyLi} = {
+  val endOfVerb: Int = {
     sentence.getIndexOf(["lon", "kepeken", "tawa", "tan", "sama", "li", "e"]) match {
       case Some(index) => index
       case None() => sentence.size()
     }
   }
   // TODO: Clear Ambiguity
-  val endOfPreverbs = {
+  val endOfPreverbs: Int = {
     sentence.getIndexOf(["wile", "sona", "awen", "kama", "ken", "lukin"]) match {
       case Some(index) => if (endOfVerb > 1) 1 else 0
       case None() => 0
@@ -110,10 +111,22 @@ def findAndRemovePredicates(sentence: List[String]): List[String] / {append, sen
       case None() => endOfPredicate
     }
   }
-  val verb = VerbLeaf(sentence.take(endOfPreverbs), sentence.slice(endOfPreverbs, endOfPreverbs + 1), sentence.slice(endOfPreverbs + 1, endOfVerb))
-  val objects = splitObjects(sentence.slice(endOfVerb + 1, endOfObjects))
-  val prepositions = splitPrepositions(sentence.slice(endOfObjects, endOfPredicate))
-  do append(Predicate(verb, objects, prepositions))
+  val objects: List[SyntaxTree] = splitObjects(sentence.slice(endOfVerb + 1, endOfObjects))
+  val verb: SyntaxTree = VerbLeaf(sentence.take(endOfPreverbs), sentence.slice(endOfPreverbs, endOfPreverbs + 1), sentence.slice(endOfPreverbs + 1, endOfVerb))
+  val prepositions: List[SyntaxTree]  = splitPrepositions(sentence.slice(endOfObjects, endOfPredicate))
+  val predicate = {
+    if (objects.size() == 0 && endOfPreverbs == 0) {
+      if (do ambiguityVerbOnlyLi()) {
+        Predicate(verb, objects, prepositions)
+      } else {
+        Predicate(Empty(), [ObjectLeaf(sentence.take(1), sentence.slice(1, endOfObjects))], prepositions)
+      }
+    }
+    else {
+      Predicate(verb, objects, prepositions)
+    }
+  }
+  do append(predicate)
   if(endOfPredicate == sentence.size()) return []
   else return findAndRemovePredicates(sentence.drop(endOfPredicate + 1))
 }
@@ -180,14 +193,18 @@ def splitObjects(sentence: List[String]): List[SyntaxTree] = {
 
 
 def main(): Unit = {
-//var t1 = constructSyntaxTree(["mi", "a", "b"])
-//var t2 = constructSyntaxTree(["sina", "li", "a", "b"])
-//var t3 = constructSyntaxTree(["a", "li", "b"])
-//var t4 = constructSyntaxTree(["a", "li", "d", "2", "e", "f", "li", "g", "lon", "i", "tawa", "i", "j"])
-//var t5 = constructSyntaxTree(["a", "li", "wile", "d", "2", "e", "g", "li", "h", "lon", "j", "li", "k"])
-//var t6 = constructSyntaxTree(["soweli", "li", "moku", "e", "moku"])
-var t7 = constructSyntaxTree(["soweli", "li", "wile", "moku", "pona", "e", "moku", "lili", "e", "kasi", "kepeken", "uta", "kepeken", "luka", "li", "moku", "e", "moku", "suli"])
-//var t8 = constructSyntaxTree(["a", "li", "d", "e", "f", "lon", "g", "li", "h"])
-printSyntaxTree(t7)
+  try {
+    //var t1 = constructSyntaxTree(["mi", "a", "b"])
+    //var t2 = constructSyntaxTree(["sina", "li", "a", "b"])
+    //var t3 = constructSyntaxTree(["a", "li", "b"])
+    //var t4 = constructSyntaxTree(["a", "li", "d", "2", "e", "f", "li", "g", "lon", "i", "tawa", "i", "j"])
+    //var t5 = constructSyntaxTree(["a", "li", "wile", "d", "2", "e", "g", "li", "h", "lon", "j", "li", "k"])
+    //var t6 = constructSyntaxTree(["soweli", "li", "moku", "e", "moku"])
+    var t7 = constructSyntaxTree(["soweli", "li", "wile", "moku", "pona", "e", "moku", "lili", "e", "kasi", "kepeken", "uta", "kepeken", "luka", "li", "moku", "e", "moku", "suli"])
+    //var t8 = constructSyntaxTree(["a", "li", "d", "e", "f", "lon", "g", "li", "h"])
+    printSyntaxTree(t7)
+  } with ambiguityVerbOnlyLi {
+    resume(true)
+  }
 }
 
