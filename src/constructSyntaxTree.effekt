@@ -92,10 +92,18 @@ def findAndRemovePredicates(sentence: List[String]): List[String] / {append, sen
       case None() => sentence.size()
     }
   }
-  // TODO: Clear Ambiguity
+  // TODO: Clear Ambiguity, for example alasa
   val endOfPreverbs: Int = {
     sentence.getIndexOf(["wile", "sona", "awen", "kama", "ken", "lukin"]) match {
-      case Some(index) => if (endOfVerb > 1) 1 else 0
+      case Some(index) => {
+        sentence match {
+          case Cons(_, Cons("ala", _)) => 2
+          case _ => {
+            if (endOfVerb > 1) 1 
+            else 0
+          }
+        }
+      }
       case None() => 0
     }
   }

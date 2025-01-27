@@ -1,6 +1,5 @@
 module main
 
-import src/convertSyntaxTree
 import src/constructSyntaxTree
 import src/deconstructSyntaxTree
 import src/effects
@@ -13,9 +12,17 @@ def translateSentence(s: String): List[String] = {
   try {
     try {
       do escapeContext(deconstructSyntaxTree(constructSyntaxTree(split(s, " "))))
-    } with ambiguity[Plural] { (first, second) =>
+    } with ambiguity{ (first, second, third, fourth) =>
       resume(first)
-      resume(second)
+      if (second != "") {
+        resume(second)
+      }
+      if (third != "") {
+        resume(third)
+      }
+      if (fourth != "") {
+        resume(fourth)
+      }
     } with ambiguityVerbOnlyLi {
       resume(true)
       resume(false)
@@ -23,7 +30,7 @@ def translateSentence(s: String): List[String] = {
   } with escapeContext { msg =>
     output = output.insert(0, msg)
     resume(())
-  } 
+  }
   return output
 }
 
@@ -41,5 +48,5 @@ def wrapper(): Unit = {
 
 
 def main(): Unit = {
-  (translateSentence("kalama li moku pona pona kepeken moku li moku pona pona")).foreach { x => println(x) }
+  (translateSentence("moku li moku e kili suli kepeken moku li moku pona e kili kepeken pona")).foreach { x => println(x) }
 }

@@ -5,24 +5,10 @@ import src/additionalListFunctions
 import src/effects
 import src/findNearestWord
 
-type Context {
-  Subject()
-  Object()
-  Verb()
-  Preposition()
-  Modifier()
-  Preverb()
-  Adverb()
-}
-
-/// Translate all words in a sentence from toki pona to english using the same context for each one
-def translateList(sentence: List[String], context: Context): List[String] / { ambiguity[Plural], notThirdPersonSingular } = {
-  sentence.map { x => translateWord(x, context) }
-}
 
 /// Translates single Words from Toki Pona to English using context given by other functions
 /// TODO: All Words, ambigous translations, dealing with unknown Words
-def translateWord(word: String, context: Context): String / { ambiguity[Plural], notThirdPersonSingular } = {
+def translateWord(word: String, context: Context, thirdPerson: Bool): String / { ambiguity, notThirdPersonSingular } = {
   try {
     word match {
       /// Pronouns
@@ -31,7 +17,7 @@ def translateWord(word: String, context: Context): String / { ambiguity[Plural],
           case Subject() => do notThirdPersonSingular(); "I"
           case Object() => "me"
           case Modifier() => "my"
-          case _ => do wrongContext("mi"); ""
+          case _ => do wrongContext("mi", context); ""
         }
       }
       case "ona" => {
@@ -39,120 +25,279 @@ def translateWord(word: String, context: Context): String / { ambiguity[Plural],
           case Subject() => "they"
           case Object() => "they"
           case Modifier() => "their"
-          case _ => do wrongContext("ona"); ""
+          case _ => do wrongContext("ona", context); ""
         }
       }
       /// Prepositions
       case "kepeken" => {
         context match {
           case Preposition() => "using"
-          case _ => do wrongContext("kepeken"); ""
+          case _ => do wrongContext("kepeken", context); ""
         }
       }
       case "ala" => {
         context match {
           case Preposition() => "not"
-          case Subject() => "nothing"
+          case Subject() => do notThirdPersonSingular(); "nothing"
           case Object() => "nothing"
+          case Preverb() => "dont"
           case Modifier() => "not"
-          case _ => do wrongContext("ala"); ""
+          case Adverb() => "not"
+          case _ => do wrongContext("ala", context); ""
         }
       }
       /// Preverbs
       case "wile" => {
         context match {
-          case Verb() => "want"
+          case Verb() => if (thirdPerson) "wants" else "want"
           case Preverb() => "want to"
-          case _ => do wrongContext("wile"); ""
+          case _ => do wrongContext("wile", context); ""
         }
       }
-      /// Random Words
+      case "awen" => {
+        context match {
+          case Verb() => if (thirdPerson) "continues" else "continue"
+          case Preverb() => if (thirdPerson) "continues to" else "continue"
+          case _ => do wrongContext("awen", context); ""
+        }
+      }
+      /// Other Words
+      case "akesi" => {
+        context match {
+          case Subject() => {
+            val output = do ambiguity("reptile", "reptiles", "", "")
+            if (output != "reptile") do notThirdPersonSingular()
+            output
+          }
+          case Object() => do ambiguity("reptile", "reptiles", "", "")
+          case Modifier() => "reptile related"
+          case Adverb() => "reptile like"
+          case _ => do wrongContext("akesi", context); ""
+        }
+      }
+      case "alasa" => {
+        context match {
+          case Subject() => do ambiguity("hunt", "hunts", "", "")
+          case Object() => do ambiguity("hunt", "hunts", "", "")
+          case Verb() => if (thirdPerson) "hunt" else "hunts"
+          case Modifier() => "hunt related"
+          case _ => do wrongContext("alasa", context); ""
+          // Add Adverb
+        }
+      }
       case "ale" => {
         context match {
           case Subject() => "everything"
           case Object() => "everything"
           case Modifier() => "all"
-          case _ => do wrongContext("ale"); ""
+          case _ => do wrongContext("ale", context); ""
+        }
+      }
+      case "anpa" => {
+        context match {
+          case Subject() => {
+            val output = do ambiguity("bottom", "bottoms", "", "")
+            if (output != "bottom") do notThirdPersonSingular()
+            output
+            }
+          case Object() => do ambiguity("bottom", "bottoms", "", "")
+          case Verb() => if (thirdPerson) "lowers" else "lower"
+          case Modifier() => "low"
+          case _ => do wrongContext("anpa", context); ""
+        }
+      }
+      case "ante" => {
+        context match {
+          case Subject() => {
+            val output = do ambiguity("difference", "differences", "", "")
+            if (output != "difference") do notThirdPersonSingular()
+            output
+            }
+          case Object() => do ambiguity("difference", "differences", "", "")
+          case Verb() => if (thirdPerson) "changes" else "change"
+          case Modifier() => "different"
+          case Adverb() => "differently"
+          case _ => do wrongContext("ante", context); ""
+        }
+      }
+      case "epiku" => {
+        context match {
+          case Subject() => {
+            val output = do ambiguity("epic", "epics", "", "")
+            if (output != "epic") do notThirdPersonSingular()
+            output
+            }
+          case Object() => do ambiguity("epic", "epics", "", "")
+          case Verb() => if (thirdPerson) "epicizes" else "epicize"
+          case Adverb() => "epicly"
+          case Modifier() => "epic"
+          case _ => do wrongContext("epiku", context); ""
+        }
+      }
+      case "esun" => {
+        context match {
+          case Subject() => {
+            val output = do ambiguity("market", "markets", "", "")
+            if (output != "epic") do notThirdPersonSingular()
+            output
+            }
+          case Object() => do ambiguity("market", "markets", "", "")
+          case Verb() => if (thirdPerson) "trades" else "trade"
+          case Modifier() => "market related"
+          case _ => do wrongContext("esun", context); ""
+        }
+      }
+      case "ijo" => {
+        context match {
+          case Subject() => {
+            val output = do ambiguity("thing", "things", "", "")
+            if (output != "thing") do notThirdPersonSingular()
+            output
+            }
+          case Object() => do ambiguity("thing", "things", "", "")
+          case Verb() => if (thirdPerson) "objectifies" else "objectify"
+          case Modifier() => "tangible"
+          case _ => do wrongContext("ijo", context); ""
+        }
+      }
+      case "ike" => {
+        context match {
+          case Subject() => "badness"
+          case Object() => "badness"
+          case Verb() => if (thirdPerson) "worsens" else "worsen"
+          case Modifier() => "bad"
+          case Adverb() => "badly"
+          case _ => do wrongContext("ike", context); ""
+        }
+      }
+      case "ilo" => {
+        context match {
+          case Subject() => "tool"
+          case Object() => "tool"
+          case Verb() => if (thirdPerson) "makes into a tool" else "make into a tool"
+          case _ => do wrongContext("ilo", context); ""
+        }
+      }
+      case "insa" => {
+        context match {
+          case Subject() => {
+            var output = do ambiguity("inside", "insides", "stomach", "stomachs")
+            if (output != "inside") do notThirdPersonSingular()
+            output
+          }
+          case Object() => do ambiguity("inside", "insides", "stomach", "stomachs")
+          case Verb() => if (thirdPerson) "inserts" else "insert"
+          case Modifier() => "inner"
+          case _ => do wrongContext("insa", context); ""
         }
       }
       case "moku" => {
         context match {
-          case Subject() => "food"
-          case Object() => "food"
-          case Verb() => "eat"
+          case Subject() => {
+            var output = do ambiguity("food", "foods", "", "")
+            if (output != "food") {
+
+              do notThirdPersonSingular()
+            }
+            output
+          }
+          case Object() => do ambiguity("food", "foods", "", "")
+          case Verb() => {
+            if (thirdPerson) "eats"
+            else "eat"
+          }
           case Modifier() => "food related"
-          case _ => do wrongContext("moku"); ""
+          case _ => do wrongContext("moku", context); ""
         }
       }
 
       case "jan" => {
         context match {
-          case Subject() => do ambiguity[Plural]("person", "people")
-          case Object() => do ambiguity[Plural]("person", "people")
-          case Verb() => "anthropomorphize"
+          case Subject() => {
+            var output = do ambiguity("person", "peopls", "", "")
+            if (output != "person") do notThirdPersonSingular()
+            output
+          }
+          case Object() => do ambiguity("person", "people", "", "")
+          case Verb() => if (thirdPerson) "anthropomorzises" else "anthropomorize"
           case Modifier() => "human"
-          case _ => do wrongContext("jan"); ""
+          case _ => do wrongContext("jan", context); ""
         }
       }
       case "kalama" => {
         context match {
-          case Subject() => "sound"
-          case Object() => "sound"
-          case Verb() => "make sound"
+          case Subject() => {
+            var output = do ambiguity("sound", "sounds", "", "")
+            if (output != "sound") do notThirdPersonSingular()
+            output
+          }
+          case Object() => do ambiguity("sound", "sounds", "", "")
+          case Verb() => if (thirdPerson) "makes sound" else "make sound"
           case Modifier() => "sound related"
-          case _ => do wrongContext("kalama"); ""
+          case _ => do wrongContext("kalama", context); ""
         }
       }
       case "kili" => {
         context match {
-          case Subject() => do ambiguity[Plural]("plant", "plants")
-          case Object() => do ambiguity[Plural]("plant", "plants")
-          case Verb() => "plant"
+          case Subject() => {
+            var output = do ambiguity("plant", "plants", "", "")
+            if (output != "plant") do notThirdPersonSingular()
+            output
+          }
+          case Object() => do ambiguity("plant", "plants", "", "")
+          case Verb() => if (thirdPerson) "plants" else "plant"
           case Modifier() => "plant related"
-          case _ => do wrongContext("kili"); ""
+          case _ => do wrongContext("kili", context); ""
         }
       }
       case "uta" => {
         context match {
-          case Subject() => "mouth"
-          case Object() => "mouth"
-          case Verb() => "mouth"
+          case Subject() => {
+            var output = do ambiguity("mouth", "mouths", "", "")
+            if (output != "mouth") do notThirdPersonSingular()
+            output
+          }
+          case Object() => do ambiguity("mouth", "mouths", "", "")
           case Modifier() => "mouth related"
-          case _ => do wrongContext("uta"); ""
+          case _ => do wrongContext("uta", context); ""
         }
       }
       case "soweli" => {
         context match {
-          case Subject() => do ambiguity[Plural]("animal", "animals")
-          case Object() => do ambiguity[Plural]("animal", "animals")
+          case Subject() => {
+            var output = do ambiguity("animal", "animals", "", "")
+            if (output != "animal") do notThirdPersonSingular()
+            output
+          }
+          case Object() => do ambiguity("animal", "animals", "", "")
           case Modifier() => "animal related"
-          case _ => do wrongContext("soweli"); ""
+          case _ => do wrongContext("soweli", context); ""
         }
       }
       case "pimeja" => {
         context match {
           case Subject() => "darkness"
           case Object() => "darkness"
-          case Verb() => "darken"
+          case Verb() => if (thirdPerson) "darkens" else "darkne"
           case Modifier() => "dark"
-          case _ => do wrongContext("pimeja"); ""
+          case _ => do wrongContext("pimeja", context); ""
         }
       }
       case "suli" => {
         context match {
-          case Verb() => "enlarge"
+          case Verb() => if (thirdPerson) "enlarges" else "enlarge"
           case Modifier() => "big"
-          case _ => do wrongContext("suli"); ""
+          case _ => do wrongContext("suli", context); ""
         }
       }
       case "pona" => {
         context match {
           case Subject() => "Goodness"
           case Object() => "Goodness"
-          case Verb() => "improve"
+          case Verb() => if (thirdPerson) "imrpoves" else "improve"
           case Modifier() => "good"
           case Adverb() => "well"
-          case _ => do wrongContext("pona"); ""
+          case _ => do wrongContext("pona", context); ""
         }
       }
       case unknownWord => do unknownWord(unknownWord); ""
@@ -160,26 +305,20 @@ def translateWord(word: String, context: Context): String / { ambiguity[Plural],
   } with unknownWord { word =>
     println("UNKNOWN WORD: " ++ word)
     ""
-  } with wrongContext { msg =>
-    println("WRONG CONTEXT: " ++ msg)
+  } with wrongContext { (msg, context) =>
+  val contextString = context match {
+      case Subject() => "Subject"
+      case Object() => "Object"
+      case Verb() => "Verb"
+      case Preposition() => "Preposition"
+      case Modifier() => "Modifier"
+      case Preverb() => "Preverb"
+      case Adverb() => "Adverb"
+    }
+    println("WRONG CONTEXT: " ++ msg ++ " " ++ contextString)
     ""
   }
 }
 
 
 
-
-def main(): Unit = {
-  try {
-    translateWord("soweli", Subject()) match {
-      case word => println(word)
-    }
-  } with ambiguity[Plural] { (first, second) =>
-    println("resume first:")
-    resume(first)
-    println("resume second:")
-    resume(second)
-  } with notThirdPersonSingular {
-    resume(())
-  }
-}

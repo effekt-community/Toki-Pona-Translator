@@ -3,7 +3,6 @@ module src/test
 import test
 import src/constructSyntaxTree
 import src/syntaxTree
-import src/convertSyntaxTree
 import src/effects
 import src/deconstructSyntaxTree
 
@@ -26,21 +25,6 @@ def main() = {
         val t: SyntaxTree = Sentence([SubjectLeaf(["soweli"], [])], [Predicate(VerbLeaf(["wile"], ["moku"], ["pona"]), [ObjectLeaf(["moku"], ["lili"]), ObjectLeaf(["kasi"], [])], [PrepositionsLeaf(["kepeken"], ["uta"], ["lili"]), PrepositionsLeaf(["kepeken"], ["luka"], [])]), Predicate(VerbLeaf([], ["moku"], []), [ObjectLeaf(["moku"], ["suli"])], [])])
         assertEqual(constructSyntaxTree(l), t)
       }
-      test("Convert Syntax Tree: simple sentence") {
-        val t1: SyntaxTree = Sentence([SubjectLeaf(["soweli"], [])], [Predicate(VerbLeaf([], ["moku"], []), [ObjectLeaf(["moku"], [])], [])])
-        val t2: SyntaxTree = Sentence([SubjectLeaf(["animal"], [])], [Predicate(VerbLeaf([], ["eat"], []), [ObjectLeaf(["food"], [])], [])])
-        assertEqual(convertSyntaxTree(t1), t2)
-      }
-      test("Convert Syntax Tree: sentence with complicated subject") {
-        val t1: SyntaxTree = Sentence([SubjectLeaf(["soweli"], ["pimeja", "suli"]), SubjectLeaf(["soweli"], ["suli", "pimeja"])], [Predicate(VerbLeaf([], ["moku"], []), [ObjectLeaf(["moku"], [])], [])])
-        val t2: SyntaxTree = Sentence([SubjectLeaf(["animal"], ["dark", "big"]), SubjectLeaf(["animal"], ["big", "dark"])], [Predicate(VerbLeaf([], ["eat"], []), [ObjectLeaf(["food"], [])], [])])
-        assertEqual(convertSyntaxTree(t1), t2)
-      }
-      test("Convert Syntax Tree: sentence with complicated predicate") {
-        val t1: SyntaxTree = Sentence([SubjectLeaf(["soweli"], [])], [Predicate(VerbLeaf(["wile"], ["moku"], ["pona"]), [ObjectLeaf(["moku"], ["pona"])], [PrepositionsLeaf(["kepeken"], ["kili"], ["moku"])])])
-        val t2: SyntaxTree = Sentence([SubjectLeaf(["animal"], [])], [Predicate(VerbLeaf(["want to"], ["eat"], ["well"]), [ObjectLeaf(["food"], ["good"])], [PrepositionsLeaf(["using"], ["plant"], ["food related"])])])
-        assertEqual(convertSyntaxTree(t1), t2)
-      }
       test("Deconstruct Tree: simple sentence") {
         val s1: String = deconstructSyntaxTree(constructSyntaxTree(["soweli", "li", "moku", "e", "moku"]))
         val s2: String = "animal eats food "
@@ -54,8 +38,6 @@ def main() = {
     }
   } with ambiguity[Plural] { (first, second) =>
     resume(first)
-  } with notThirdPersonSingular {
-    resume(())
   } with ambiguityVerbOnlyLi {
     resume(true)
   }

@@ -6,7 +6,17 @@ import io/console
 
 record Plural()
 
-record VerbOnlyLi()
+record MultipleMeanings()
+
+type Context {
+  Subject()
+  Object()
+  Verb()
+  Preposition()
+  Modifier()
+  Preverb()
+  Adverb()
+}
 
 def askQuestion(question: String): String / { Console } = {
   do writeLine(question)
@@ -23,13 +33,13 @@ effect append(l: SyntaxTree): Unit
 effect sentenceError(msg: String): Unit
 
 /// Used when toki pona word is used in wrong context
-effect wrongContext(msg: String): Unit
+effect wrongContext(msg: String, context: Context): Unit
 
 /// Used to add a word to a sentence
 effect addToSentence(msg: String): Unit
 
 /// Used when Sentence has multiple translations
-effect ambiguity[T](first: String, second: String): String
+effect ambiguity(first: String, second: String, third: String, fourht: String): String
 
 effect ambiguityVerbOnlyLi(): Bool
 
@@ -39,6 +49,12 @@ effect escapeContext(msg: String): Unit
 /// Used to signal that a word is not third person singular
 effect notThirdPersonSingular(): Unit
 
+/// Used to signal, that the next word should be negated
+effect negateNext(): Unit
+
+effect hold(storedValue: String, code: String): Unit
+
+effect release(code: String): String
 
 def main(): Unit = {
   with console;
