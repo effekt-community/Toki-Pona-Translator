@@ -1,9 +1,9 @@
 module src/deconstructTree
 
-import src/trees
-import src/additionalLists
-import src/translateSentences
-import src/buildTree
+import src/syntaxTree
+import src/additionalListFunctions
+import src/convertSyntaxTree
+import src/constructSyntaxTree
 import src/effects
 
 

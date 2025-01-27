@@ -1,7 +1,7 @@
 module buildTree
 
-import src/trees
-import src/additionalLists
+import src/syntaxTree
+import src/additionalListFunctions
 import src/effects
 
 

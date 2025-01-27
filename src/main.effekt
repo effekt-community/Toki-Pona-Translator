@@ -1,13 +1,13 @@
 module main
 
-import src/trees
-import src/additionalLists
-import src/translateSentences
+import src/syntaxTree
+import src/additionalListFunctions
+import src/convertSyntaxTree
 import src/translateWords
-import src/buildTree
+import src/constructSyntaxTree
 import io/console
 import src/effects
-import src/deconstructTree
+import src/deconstructSyntaxTree
 
 
 

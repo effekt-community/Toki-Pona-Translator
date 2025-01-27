@@ -1,6 +1,6 @@
 module effects
 
-import src/trees
+import src/syntaxTree
 import io/console
 
 record Plural()

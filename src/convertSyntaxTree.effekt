@@ -1,8 +1,8 @@
 module translateSentences
 
-import src/trees
-import src/additionalLists
-import src/buildTree
+import src/syntaxTree
+import src/additionalListFunctions
+import src/constructSyntaxTree
 import src/effects
 import src/translateWords
 

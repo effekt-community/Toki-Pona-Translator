@@ -1,6 +1,6 @@
 module trees // must be named same as the file!
 
-import src/additionalLists
+import src/additionalListFunctions
 
 type SyntaxTree {
   Empty()
