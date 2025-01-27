@@ -18,6 +18,9 @@ def deconstructSyntaxTree(tokiPonaTree: SyntaxTree): String / ambiguity[Plural] 
           predicates.foreachIndex{ (index, x) => deconstructSyntaxTreeHelper(index, x)}
         }
         case SubjectLeaf(head, modifiers) => {
+          if (index != 0) {
+            do addToSentence("and")
+          }
           modifiers.foreachIndex{ (index, x) => 
             do addToSentence(x)
           }
