@@ -15,11 +15,14 @@ type Context {
   Adverb()
 }
 
-
+/// Translate all words in a sentence from toki pona to english using the same context for each one
+def translateList(sentence: List[String], context: Context): List[String] / { ambiguity[Plural] } = {
+  sentence.map { x => translateWord(x, context) }
+}
 
 /// Translates single Words from Toki Pona to English using context given by other functions
 /// TODO: All Words, ambigous translations, dealing with unknown Words
-def translate(word: String, context: Context): String / { ambiguity[Plural] } = {
+def translateWord(word: String, context: Context): String / { ambiguity[Plural] } = {
   try {
     word match {
       /// Pronouns
@@ -168,7 +171,7 @@ def translate(word: String, context: Context): String / { ambiguity[Plural] } = 
 
 def main(): Unit = {
   try {
-    translate("soweli", Subject()) match {
+    translateWord("soweli", Subject()) match {
       case word => println(word)
     }
   } with ambiguity[Plural] { (first, second) =>

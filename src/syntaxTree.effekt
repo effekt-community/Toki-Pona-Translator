@@ -12,27 +12,8 @@ type SyntaxTree {
   PrepositionsLeaf(prep:List[String], head: List[String], modifiers: List[String])
 }
 
-
-def appendToSentence(tree: SyntaxTree, node: SyntaxTree): SyntaxTree = {
-  tree match {
-    case Sentence(subjects, predicates) => {
-      node match {
-        case SubjectLeaf(head, modifiers) => {
-          return Sentence(subjects.append([node]), predicates)
-        }
-        case Predicate(verb, objects, prepositions) => {
-          return Sentence(subjects, predicates.append([node]))
-        }
-        case _ => return Empty()
-      }
-    }
-    case _ => return Empty()
-  }
-}
-
-
-
-def printTree(node: SyntaxTree): Unit = {
+/// Prints out a syntax
+def printSyntaxTree(node: SyntaxTree): Unit = {
   def printNode(node: SyntaxTree, indent: String): Unit = {
     node match {
       case Sentence(subjects, predicates) => {
@@ -43,16 +24,16 @@ def printTree(node: SyntaxTree): Unit = {
         predicates.foreach{ n => printNode(n, indent ++ "    ")}
      }
       case SubjectLeaf(head, modifiers) => {
-      println(indent ++ "SUBJECTLEAF: Head: " ++ showWords(head) ++ "  Modifiers: " ++ showWords(modifiers))
+      println(indent ++ "SUBJECTLEAF: Head: " ++ showSentence(head) ++ "  Modifiers: " ++ showSentence(modifiers))
       }
       case ObjectLeaf(head, modifiers) => {
-        println(indent ++ "OBJECTLEAF: Head: " ++ showWords(head) ++ "  Modifiers: " ++ showWords(modifiers))
+        println(indent ++ "OBJECTLEAF: Head: " ++ showSentence(head) ++ "  Modifiers: " ++ showSentence(modifiers))
       }
       case VerbLeaf(preverb, head, modifiers) => {
-        println(indent ++ "VERBLEAF: Preverbs: " ++ showWords(preverb) ++ "  Head: " ++ showWords(head) ++ "  Modifiers: " ++ showWords(modifiers))
+        println(indent ++ "VERBLEAF: Preverbs: " ++ showSentence(preverb) ++ "  Head: " ++ showSentence(head) ++ "  Modifiers: " ++ showSentence(modifiers))
       }
       case PrepositionsLeaf(prep, head, modifiers) => {
-        println(indent ++ "PREPOSITIONSLEAF: Preposition: " ++ showWords(prep) ++ "  Head: " ++ showWords(head) ++ "  Modifiers: " ++ showWords(modifiers))
+        println(indent ++ "PREPOSITIONSLEAF: Preposition: " ++ showSentence(prep) ++ "  Head: " ++ showSentence(head) ++ "  Modifiers: " ++ showSentence(modifiers))
       }
       case Predicate(verb, objects, prepositions) => {
         println(indent ++ "PREDICATE:")
@@ -78,9 +59,9 @@ def main(): Unit = {
   //val tree1: SyntaxTree = Sentence([SubjectLeaf(["Soweli"], ["pimeja"]), SubjectLeaf(["Soweli"], ["pimeja"])], [Predicate(VerbLeaf([], ["lili"], ["suli", "pimeja"]), [Empty()], [PrepositionsLeaf(["lon"], [], [])])])
   //var tree2: SyntaxTree = Sentence([], [])
   //tree2 = appendToSentence(tree2, SubjectLeaf(["Soweli"], ["pimeja"]))
-  //printTree(tree2.appendToSentence(SubjectLeaf(["Soweli"], ["pimeja"])))
-  //printTree(tree2.appendToSentence(SubjectLeaf(["Soweli"], ["pimeja"])).appendToSentence(SubjectLeaf(["Soweli"], ["pimeja"])))
-  //printTree(tree2.appendToSentence(Predicate(Empty(), [Empty()], [Empty()])))
-  //printTree(tree1)
+  //printSyntaxTree(tree2.appendToSentence(SubjectLeaf(["Soweli"], ["pimeja"])))
+  //printSyntaxTree(tree2.appendToSentence(SubjectLeaf(["Soweli"], ["pimeja"])).appendToSentence(SubjectLeaf(["Soweli"], ["pimeja"])))
+  //printSyntaxTree(tree2.appendToSentence(Predicate(Empty(), [Empty()], [Empty()])))
+  //printSyntaxTree(tree1)
   println("a")
 }

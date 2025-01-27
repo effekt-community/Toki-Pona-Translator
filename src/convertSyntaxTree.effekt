@@ -8,20 +8,15 @@ import src/translateWords
 
 
 /// Goes through Syntax Tree and translates the leafs into english
-def traverseTree(tree: SyntaxTree): SyntaxTree / ambiguity[Plural] = {
-  try {
-    do additionalContext("a")
-    tree match {
-      case Sentence(subjects, predicates) => {
-        return Sentence(subjects.extraMap{ x => translateLeaf(x)}, predicates.extraMap{ x => traverseTree(x)})
-      }
-      case Predicate(verb, objects, prepositions) => {
-        return Predicate(translateLeaf(verb), objects.extraMap{ x => translateLeaf(x)}, prepositions.extraMap{ x => translateLeaf(x)})
-      }
-      case _ => return Empty()
+def convertSyntaxTree(tree: SyntaxTree): SyntaxTree / ambiguity[Plural] = {
+  tree match {
+    case Sentence(subjects, predicates) => {
+      return Sentence(subjects.map{ x => translateLeaf(x)}, predicates.map{ x => convertSyntaxTree(x)})
     }
-  } with additionalContext { context => 
-    resume(())
+    case Predicate(verb, objects, prepositions) => {
+      return Predicate(translateLeaf(verb), objects.map{ x => translateLeaf(x)}, prepositions.map{ x => translateLeaf(x)})
+    }
+    case _ => return Empty()
   }
 }
 
@@ -29,16 +24,16 @@ def traverseTree(tree: SyntaxTree): SyntaxTree / ambiguity[Plural] = {
 def translateLeaf(tree: SyntaxTree): SyntaxTree / ambiguity[Plural] = {
   tree match {
     case SubjectLeaf(head, modifiers) => {
-      return SubjectLeaf(head.extraMap{x => translate(x, Subject())}, modifiers.extraMap{x => translate(x, Modifier())})
+      return SubjectLeaf(head.translateList(Subject()), modifiers.translateList(Modifier()))
     }
     case VerbLeaf(preverbs, head, modifiers) => {
-      return VerbLeaf(preverbs.extraMap{x => translate(x, Preverb())}, head.extraMap{x => translate(x, Verb())}, modifiers.extraMap{x => translate(x, Adverb())})
+      return VerbLeaf(preverbs.translateList(Preverb()), head.translateList(Verb()), modifiers.translateList(Adverb()))
     }
     case ObjectLeaf(head, modifiers) => {
-      return ObjectLeaf(head.extraMap{x => translate(x, Object())}, modifiers.extraMap{x => translate(x, Modifier())})
+      return ObjectLeaf(head.translateList(Object()), modifiers.translateList(Modifier()))
     }
     case PrepositionsLeaf(prepositions, head, modifiers) => {
-      return PrepositionsLeaf(prepositions.extraMap{x => translate(x, Preposition())}, head.extraMap{x => translate(x, Object())}, modifiers.extraMap{x => translate(x, Modifier())})
+      return PrepositionsLeaf(prepositions.translateList(Preposition()), head.translateList(Object()), modifiers.translateList(Modifier()))
     }
     case _ => return Empty()
   }
@@ -46,9 +41,9 @@ def translateLeaf(tree: SyntaxTree): SyntaxTree / ambiguity[Plural] = {
 
 def main(): Unit = {
   try {
-    val tree = splitSentence(["", "moku", "e", "kili"])
-    val translatedTree = traverseTree(tree)
-  printTree(translatedTree)
+    val tree = constructSyntaxTree(["", "moku", "e", "kili"])
+    val translatedTree = convertSyntaxTree(tree)
+  printSyntaxTree(translatedTree)
   } with ambiguity[Plural] { (first, second) =>
     println("resume first:")
     resume(first)

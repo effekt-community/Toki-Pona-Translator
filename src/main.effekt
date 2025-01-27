@@ -1,23 +1,18 @@
 module main
 
-import src/syntaxTree
-import src/additionalListFunctions
 import src/convertSyntaxTree
-import src/translateWords
 import src/constructSyntaxTree
-import io/console
-import src/effects
 import src/deconstructSyntaxTree
+import src/effects
+import io/console
 
 
-
-def translate(s: String): List[String] = {
+/// Translate a toki pona sentence to english, giving out all possible translations
+def translateSentence(s: String): List[String] = {
   var output = []
   try {
     try {
-      // println("debug" ++ deconstructTree(traverseTree(splitSentence(split(s, " ")))))
-      do escapeContext(deconstructTree(traverseTree(splitSentence(split(s, " ")))))
-      //println("Debug" ++showWords(output))
+      do escapeContext(deconstructSyntaxTree(convertSyntaxTree(constructSyntaxTree(split(s, " ")))))
     } with ambiguity[Plural] { (first, second) =>
       resume(first)
       resume(second)
@@ -29,16 +24,19 @@ def translate(s: String): List[String] = {
   return output
 }
 
+
+/// Gives the ability to translate sentences from the command line
 def wrapper(): Unit = {
   with console;
   var continue = true
   while (continue) {
     var input = askQuestion("Enter a sentence")
-    translate(input).foreach { x => println(x) }
+    translateSentence(input).foreach { x => println(x) }
     continue = askQuestion("Do you want to continue? (y/n)") == "y"
   }
 }
 
+
 def main(): Unit = {
-  wrapper()
+  (translateSentence("mi moku e kili e kili")).foreach { x => println(x) }
 }

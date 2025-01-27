@@ -1,7 +1,7 @@
 module main
 
-// Prints out all elements of a list, with spaces between them
-def showWords(l: List[String]): String = {
+/// Prints out all elements of a list, with spaces between them
+def showSentence(l: List[String]): String = {
   var output: String = ""
   l.foreachIndex{ (index, el) =>
     if (index == 0) output = el
@@ -11,7 +11,7 @@ def showWords(l: List[String]): String = {
 }
 
 
-// Gets all indexes of ocurrences of a string in a list
+/// Gets all indexes of ocurrences of a string in a list
 def getIndexesOf(l:List[String], v: String): List[Int] = {
   try {
     var done: Bool = false
@@ -108,16 +108,8 @@ def contains(l:List[String], v: String): Bool = {
 } 
 
 
-/// Copy of the map function from the standard library, because it had trouple finding the right function
-def extraMap[A, B](l: List[A]) { f: A => B } : List[B] = {
-  var acc = Nil[B]()
-  l.foreach { el => acc = Cons(f(el), acc) }
-  acc.reverse
-}
-
-
 def main(): Unit = {
   val l = ["a", "b", "c", "b"]
   println(show(getIndexOf(l, ["c", "b"])))
-  println(showWords(l))
+  println(showSentence(l))
 }
