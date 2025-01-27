@@ -7,7 +7,38 @@ import src/translateWords
 import src/buildTree
 import io/console
 import src/effects
+import src/deconstructTree
+
+
+
+def translate(s: String): List[String] = {
+  var output = []
+  try {
+    try {
+      // println("debug" ++ deconstructTree(traverseTree(splitSentence(split(s, " ")))))
+      do escapeContext(deconstructTree(traverseTree(splitSentence(split(s, " ")))))
+      //println("Debug" ++showWords(output))
+    } with ambiguity[Plural] { (first, second) =>
+      resume(first)
+      resume(second)
+    }
+  } with escapeContext { msg =>
+    output = output.insert(0, msg)
+    resume(())
+  }
+  return output
+}
+
+def wrapper(): Unit = {
+  with console;
+  var continue = true
+  while (continue) {
+    var input = askQuestion("Enter a sentence")
+    translate(input).foreach { x => println(x) }
+    continue = askQuestion("Do you want to continue? (y/n)") == "y"
+  }
+}
 
 def main(): Unit = {
-  println("a")
+  wrapper()
 }

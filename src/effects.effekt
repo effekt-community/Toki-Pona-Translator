@@ -38,6 +38,8 @@ effect addToSentence(msg: String): Unit
 
 effect ambiguity[T](first: String, second: String): String
 
+effect escapeContext(msg: String): Unit
+
 def main(): Unit = {
   with console;
   println(askQuestion("a"))

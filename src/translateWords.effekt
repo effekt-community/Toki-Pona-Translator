@@ -168,7 +168,7 @@ def translate(word: String, context: Context): String / { ambiguity[Plural] } = 
 
 def main(): Unit = {
   try {
-    translate("jan", Subject()) match {
+    translate("soweli", Subject()) match {
       case word => println(word)
     }
   } with ambiguity[Plural] { (first, second) =>
