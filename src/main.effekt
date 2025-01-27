@@ -12,7 +12,7 @@ def translateSentence(s: String): List[String] = {
   var output = []
   try {
     try {
-      do escapeContext(deconstructSyntaxTree(convertSyntaxTree(constructSyntaxTree(split(s, " ")))))
+      do escapeContext(deconstructSyntaxTree(constructSyntaxTree(split(s, " "))))
     } with ambiguity[Plural] { (first, second) =>
       resume(first)
       resume(second)
@@ -38,5 +38,5 @@ def wrapper(): Unit = {
 
 
 def main(): Unit = {
-  (translateSentence("mi moku e kili e kili")).foreach { x => println(x) }
+  (translateSentence("soweli moku e kili e kili")).foreach { x => println(x) }
 }

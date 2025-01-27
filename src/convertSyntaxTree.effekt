@@ -8,7 +8,7 @@ import src/translateWords
 
 
 /// Goes through Syntax Tree and translates the leafs into english
-def convertSyntaxTree(tree: SyntaxTree): SyntaxTree / ambiguity[Plural] = {
+def convertSyntaxTree(tree: SyntaxTree): SyntaxTree / { ambiguity[Plural], notThirdPersonSingular } = {
   tree match {
     case Sentence(subjects, predicates) => {
       return Sentence(subjects.map{ x => translateLeaf(x)}, predicates.map{ x => convertSyntaxTree(x)})
@@ -21,7 +21,7 @@ def convertSyntaxTree(tree: SyntaxTree): SyntaxTree / ambiguity[Plural] = {
 }
 
 /// Translates the leafs of a Syntax Tree into english
-def translateLeaf(tree: SyntaxTree): SyntaxTree / ambiguity[Plural] = {
+def translateLeaf(tree: SyntaxTree): SyntaxTree / { ambiguity[Plural], notThirdPersonSingular } = {
   tree match {
     case SubjectLeaf(head, modifiers) => {
       return SubjectLeaf(head.translateList(Subject()), modifiers.translateList(Modifier()))
@@ -49,5 +49,7 @@ def main(): Unit = {
     resume(first)
     println("resume second:")
     resume(second)
+  } with notThirdPersonSingular {
+    resume(())
   }
 }

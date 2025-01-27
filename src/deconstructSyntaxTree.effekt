@@ -7,11 +7,12 @@ import src/constructSyntaxTree
 import src/effects
 
 
-def deconstructSyntaxTree(tree: SyntaxTree): String / ambiguity[Plural] = {
+def deconstructSyntaxTree(tokiPonaTree: SyntaxTree): String / ambiguity[Plural] = {
   var output = ""
+  var thirdPerson: Bool = true
   try {
-    def deconstructSyntaxTreeHelper(index: Int, tree: SyntaxTree): Unit / ambiguity[Plural] = {
-      tree match {
+    def deconstructSyntaxTreeHelper(index: Int, englishTree: SyntaxTree): Unit / ambiguity[Plural] = {
+      englishTree match {
         case Sentence(subjects, predicates) => {
           subjects.foreachIndex{ (index, x) => deconstructSyntaxTreeHelper(index, x)}
           predicates.foreachIndex{ (index, x) => deconstructSyntaxTreeHelper(index, x)}
@@ -37,7 +38,12 @@ def deconstructSyntaxTree(tree: SyntaxTree): String / ambiguity[Plural] = {
             do addToSentence(x)
           }
           head.foreachIndex{ (newIndex, x) => 
-            do addToSentence(x ++ "s")
+            if (thirdPerson) {
+              do addToSentence(x ++ "s")
+            } else {
+              do addToSentence(x)
+            }
+            
           }
           modifiers.foreachIndex{ (newIndex, x) => 
             do addToSentence(x)
@@ -74,10 +80,14 @@ def deconstructSyntaxTree(tree: SyntaxTree): String / ambiguity[Plural] = {
         case _ => return ()
       }
     }
-    deconstructSyntaxTreeHelper(0, tree)
+    val englishTree = convertSyntaxTree(tokiPonaTree)
+    deconstructSyntaxTreeHelper(0, englishTree)
     return output
   } with addToSentence { x => 
     output = output ++ x ++ " "
+    resume(())
+  } with notThirdPersonSingular {
+    thirdPerson = false
     resume(())
   }
 }
@@ -86,9 +96,9 @@ def deconstructSyntaxTree(tree: SyntaxTree): String / ambiguity[Plural] = {
 
 def main(): Unit = {
   try {
-    val tree = convertSyntaxTree(constructSyntaxTree(["soweli", "pimeja", "suli", "li", "moku", "pona", "e", "jan", "ale", "e", "kili", "kepeken", "uta", "suli"]))
-    //printSyntaxTree(tree)
-    println(deconstructSyntaxTree(tree))
+    val sentence = deconstructSyntaxTree(constructSyntaxTree(["soweli", "pimeja", "suli", "li", "moku", "pona", "e", "jan", "ale", "e", "kili", "kepeken", "uta", "suli"]))
+    //printSyntaxTree(englishTree)
+    println(sentence)
   } with ambiguity[Plural] { (first, second) =>
     resume(first)
     resume(second)

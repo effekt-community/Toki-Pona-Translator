@@ -42,17 +42,19 @@ def main() = {
         assertEqual(convertSyntaxTree(t1), t2)
       }
       test("Deconstruct Tree: simple sentence") {
-        val s1: String = deconstructSyntaxTree(convertSyntaxTree(constructSyntaxTree(["soweli", "li", "moku", "e", "moku"])))
+        val s1: String = deconstructSyntaxTree(constructSyntaxTree(["soweli", "li", "moku", "e", "moku"]))
         val s2: String = "animal eats food "
         assertEqual(s1, s2)
       }
       test("Deconstruct Tree: simple sentence") {
-        val s1: String = deconstructSyntaxTree(convertSyntaxTree(constructSyntaxTree(["soweli", "pimeja", "suli", "li", "moku", "pona", "e", "jan", "ale", "e", "kili", "kepeken", "uta", "suli"])))
+        val s1: String = deconstructSyntaxTree(constructSyntaxTree(["soweli", "pimeja", "suli", "li", "moku", "pona", "e", "jan", "ale", "e", "kili", "kepeken", "uta", "suli"]))
         val s2: String = "dark big animal eats well all person and plant using big mouth "
         assertEqual(s1, s2)
       }
     }
   } with ambiguity[Plural] { (first, second) =>
     resume(first)
+  } with notThirdPersonSingular {
+    resume(())
   }
 }

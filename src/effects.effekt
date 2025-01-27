@@ -32,6 +32,9 @@ effect ambiguity[T](first: String, second: String): String
 /// Used to escape context of multiple resumptions
 effect escapeContext(msg: String): Unit
 
+/// Used to signal that a word is not third person singular
+effect notThirdPersonSingular(): Unit
+
 
 def main(): Unit = {
   with console;
