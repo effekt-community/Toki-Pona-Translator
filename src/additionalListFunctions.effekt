@@ -1,4 +1,4 @@
-module main
+module additionalListFunctions
 
 /// Prints out all elements of a list, with spaces between them
 def showSentence(l: List[String]): String = {
@@ -106,10 +106,3 @@ def contains(l:List[String], v: String): Bool = {
   def raise(exception: OutOfBounds, msg: String) = return false
   }
 } 
-
-
-def main(): Unit = {
-  val l = ["a", "b", "c", "b"]
-  println(show(getIndexOf(l, ["c", "b"])))
-  println(showSentence(l))
-}
