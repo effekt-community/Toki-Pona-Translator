@@ -6,6 +6,45 @@ import src/effects
 import src/findNearestWord
 
 
+def regularNoun(word: String): String / { ambiguity, notThirdPersonSingular} = {
+  val pluralWord = {
+    if (word.endsWith("s")) word ++ "es"
+    else word ++ "s"
+  }
+  val output = do ambiguity(word, pluralWord, "", "")
+  if (output != word) do notThirdPersonSingular()
+  output
+}
+
+def nounWithMultipleMeanings(word1: String, word2: String): String / { ambiguity, notThirdPersonSingular} = {
+  val output = do ambiguity(word1, word1 ++ "s", word2, word2 ++ "s")
+  if (output != word1 and output != word2) do notThirdPersonSingular()
+  output
+}
+
+def regularVerb(word: String, thirdPerson: Bool): String / { ambiguity, notThirdPersonSingular} = {
+  if (word.endsWith("y") and thirdPerson) word.substring(0, word.length() - 1) ++ "ies"
+  else if (word.endsWith("sh") and thirdPerson) word ++ "es"
+  else if (thirdPerson) word ++ "s"
+  else word
+}
+
+def verbWithMultipleMeanings(word1: String, word2: String, thirdPerson: Bool): String / { ambiguity, notThirdPersonSingular} = {
+  val output = do ambiguity(word1, word2, "", "")
+  if (output.endsWith("y") and thirdPerson) output.substring(0, output.length() - 1) ++ "ies"
+  else if (thirdPerson) output ++ "s"
+  else output
+}
+
+def regularObject(word: String): String / { ambiguity, notThirdPersonSingular} = {
+  do ambiguity(word, word ++ "s", "", "")
+}
+
+def objectWithMultipleMeanings(word1: String, word2: String): String / { ambiguity, notThirdPersonSingular} = {
+  do ambiguity(word1, word1 ++ "s", word2, word2 ++ "s")
+}
+
+
 /// Translates single Words from Toki Pona to English using context given by other functions
 /// TODO: All Words, ambigous translations, dealing with unknown Words
 def translateWord(word: String, context: Context, thirdPerson: Bool): String / { ambiguity, notThirdPersonSingular } = {
@@ -28,13 +67,15 @@ def translateWord(word: String, context: Context, thirdPerson: Bool): String / {
           case _ => do wrongContext("ona", context); ""
         }
       }
-      /// Prepositions
-      case "kepeken" => {
+      case "sina" => {
         context match {
-          case Preposition() => "using"
-          case _ => do wrongContext("kepeken", context); ""
+          case Subject() => do notThirdPersonSingular(); "you"
+          case Object() => "you"
+          case Modifier() => "your"
+          case _ => do wrongContext("sina", context); ""
         }
       }
+      /// Prepositions
       case "ala" => {
         context match {
           case Preposition() => "not"
@@ -46,30 +87,72 @@ def translateWord(word: String, context: Context, thirdPerson: Bool): String / {
           case _ => do wrongContext("ala", context); ""
         }
       }
+      case "kepeken" => {
+        context match {
+          case Preposition() => "using"
+          case _ => do wrongContext("kepeken", context); ""
+        }
+      }
+      case "lon" => {
+        context match {
+          case Subject() => "truth"
+          case Object() => "truth"
+          case Modifier() => "existing"
+          case Preposition() => "at"
+          case _ => do wrongContext("lon", context); ""
+        }
+      }
+      case "sama" => {
+        context match {
+          case Preposition() => "similar to"
+          case _ => do wrongContext("sama", context); ""
+        }
+      }
+      case "tan" => {
+        context match {
+          case Preposition() => "because of"
+          case _ => do wrongContext("tan", context); ""
+        }
+      }
       /// Preverbs
+      case "awen" => {
+        context match {
+          case Verb() => regularVerb("continue", thirdPerson)
+          case Preverb() => if (thirdPerson) "continues to" else "continue"
+          case _ => do wrongContext("awen", context); ""
+        }
+      }
+      case "kama" => {
+        context match {
+          case Preverb() => if (thirdPerson) "starts to" else "start to"
+          case _ => do wrongContext("kama", context); ""
+        }
+      }
+      case "ken" => {
+        context match {
+          case Preverb() => "can"
+          case Subject() => regularNoun("possibility")
+          case _ => do wrongContext("ken", context); ""
+        }
+      }
       case "wile" => {
         context match {
-          case Verb() => if (thirdPerson) "wants" else "want"
-          case Preverb() => "want to"
+          case Verb() => regularVerb("want", thirdPerson)
+          case Preverb() => if (thirdPerson) "wants to" else "want to"
           case _ => do wrongContext("wile", context); ""
         }
       }
-      case "awen" => {
+      case "tawa" => {
         context match {
-          case Verb() => if (thirdPerson) "continues" else "continue"
-          case Preverb() => if (thirdPerson) "continues to" else "continue"
-          case _ => do wrongContext("awen", context); ""
+          case Preposition() => "from the perspective of"
+          case _ => do wrongContext("tawa", context); ""
         }
       }
       /// Other Words
       case "akesi" => {
         context match {
-          case Subject() => {
-            val output = do ambiguity("reptile", "reptiles", "", "")
-            if (output != "reptile") do notThirdPersonSingular()
-            output
-          }
-          case Object() => do ambiguity("reptile", "reptiles", "", "")
+          case Subject() => regularNoun("reptile")          
+          case Object() => regularObject("reptile")
           case Modifier() => "reptile related"
           case Adverb() => "reptile like"
           case _ => do wrongContext("akesi", context); ""
@@ -77,9 +160,9 @@ def translateWord(word: String, context: Context, thirdPerson: Bool): String / {
       }
       case "alasa" => {
         context match {
-          case Subject() => do ambiguity("hunt", "hunts", "", "")
-          case Object() => do ambiguity("hunt", "hunts", "", "")
-          case Verb() => if (thirdPerson) "hunt" else "hunts"
+          case Subject() => regularNoun("Noun")
+          case Object() => regularObject("hunt")
+          case Verb() => regularVerb("hunt", thirdPerson)
           case Modifier() => "hunt related"
           case _ => do wrongContext("alasa", context); ""
           // Add Adverb
@@ -95,26 +178,18 @@ def translateWord(word: String, context: Context, thirdPerson: Bool): String / {
       }
       case "anpa" => {
         context match {
-          case Subject() => {
-            val output = do ambiguity("bottom", "bottoms", "", "")
-            if (output != "bottom") do notThirdPersonSingular()
-            output
-            }
-          case Object() => do ambiguity("bottom", "bottoms", "", "")
-          case Verb() => if (thirdPerson) "lowers" else "lower"
+          case Subject() => regularNoun("anpa")
+          case Object() => regularObject("bottom")
+          case Verb() => regularVerb("lower", thirdPerson)
           case Modifier() => "low"
           case _ => do wrongContext("anpa", context); ""
         }
       }
       case "ante" => {
         context match {
-          case Subject() => {
-            val output = do ambiguity("difference", "differences", "", "")
-            if (output != "difference") do notThirdPersonSingular()
-            output
-            }
-          case Object() => do ambiguity("difference", "differences", "", "")
-          case Verb() => if (thirdPerson) "changes" else "change"
+          case Subject() => regularNoun("ante")
+          case Object() => regularObject("difference")
+          case Verb() => regularVerb("change", thirdPerson)
           case Modifier() => "different"
           case Adverb() => "differently"
           case _ => do wrongContext("ante", context); ""
@@ -122,13 +197,9 @@ def translateWord(word: String, context: Context, thirdPerson: Bool): String / {
       }
       case "epiku" => {
         context match {
-          case Subject() => {
-            val output = do ambiguity("epic", "epics", "", "")
-            if (output != "epic") do notThirdPersonSingular()
-            output
-            }
-          case Object() => do ambiguity("epic", "epics", "", "")
-          case Verb() => if (thirdPerson) "epicizes" else "epicize"
+          case Subject() => regularNoun("epic")
+          case Object() => regularObject("epic")
+          case Verb() => regularVerb("epicize", thirdPerson)
           case Adverb() => "epicly"
           case Modifier() => "epic"
           case _ => do wrongContext("epiku", context); ""
@@ -136,26 +207,18 @@ def translateWord(word: String, context: Context, thirdPerson: Bool): String / {
       }
       case "esun" => {
         context match {
-          case Subject() => {
-            val output = do ambiguity("market", "markets", "", "")
-            if (output != "epic") do notThirdPersonSingular()
-            output
-            }
-          case Object() => do ambiguity("market", "markets", "", "")
-          case Verb() => if (thirdPerson) "trades" else "trade"
+          case Subject() => regularNoun("market")
+          case Object() => regularObject("market")
+          case Verb() => regularVerb("trade", thirdPerson)
           case Modifier() => "market related"
           case _ => do wrongContext("esun", context); ""
         }
       }
       case "ijo" => {
         context match {
-          case Subject() => {
-            val output = do ambiguity("thing", "things", "", "")
-            if (output != "thing") do notThirdPersonSingular()
-            output
-            }
-          case Object() => do ambiguity("thing", "things", "", "")
-          case Verb() => if (thirdPerson) "objectifies" else "objectify"
+          case Subject() => regularNoun("tool")
+          case Object() => regularObject("thing")
+          case Verb() => regularVerb("objectify", thirdPerson)
           case Modifier() => "tangible"
           case _ => do wrongContext("ijo", context); ""
         }
@@ -164,7 +227,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool): String / {
         context match {
           case Subject() => "badness"
           case Object() => "badness"
-          case Verb() => if (thirdPerson) "worsens" else "worsen"
+          case Verb() => regularVerb("worsen", thirdPerson)
           case Modifier() => "bad"
           case Adverb() => "badly"
           case _ => do wrongContext("ike", context); ""
@@ -174,130 +237,869 @@ def translateWord(word: String, context: Context, thirdPerson: Bool): String / {
         context match {
           case Subject() => "tool"
           case Object() => "tool"
-          case Verb() => if (thirdPerson) "makes into a tool" else "make into a tool"
+          case Verb() => regularVerb("tool", thirdPerson)
           case _ => do wrongContext("ilo", context); ""
         }
       }
       case "insa" => {
         context match {
-          case Subject() => {
-            var output = do ambiguity("inside", "insides", "stomach", "stomachs")
-            if (output != "inside") do notThirdPersonSingular()
-            output
-          }
-          case Object() => do ambiguity("inside", "insides", "stomach", "stomachs")
-          case Verb() => if (thirdPerson) "inserts" else "insert"
+          case Subject() => nounWithMultipleMeanings("inside", "stomach")
+          case Object() => objectWithMultipleMeanings("inside", "stomach")
+          case Verb() => regularVerb("insert", thirdPerson)
           case Modifier() => "inner"
           case _ => do wrongContext("insa", context); ""
         }
       }
-      case "moku" => {
+      case "jaki" => {
         context match {
-          case Subject() => {
-            var output = do ambiguity("food", "foods", "", "")
-            if (output != "food") {
-
-              do notThirdPersonSingular()
-            }
-            output
-          }
-          case Object() => do ambiguity("food", "foods", "", "")
-          case Verb() => {
-            if (thirdPerson) "eats"
-            else "eat"
-          }
-          case Modifier() => "food related"
-          case _ => do wrongContext("moku", context); ""
+          case Subject() => do notThirdPersonSingular(); "dirt"
+          case Object() => "dirt"
+          case Verb() => regularVerb("ruin", thirdPerson)
+          case Modifier() => "dirty"
+          case _ => do wrongContext("dirt", context); ""
         }
       }
-
       case "jan" => {
         context match {
-          case Subject() => {
-            var output = do ambiguity("person", "peopls", "", "")
-            if (output != "person") do notThirdPersonSingular()
-            output
-          }
+          case Subject() => regularNoun("person")
           case Object() => do ambiguity("person", "people", "", "")
-          case Verb() => if (thirdPerson) "anthropomorzises" else "anthropomorize"
+          case Verb() => regularVerb("anthropomorzise", thirdPerson)
           case Modifier() => "human"
           case _ => do wrongContext("jan", context); ""
         }
       }
+      case "jelo" => {
+        context match {
+          case Subject() => do notThirdPersonSingular(); "yellow"
+          case Object() => "yellow"
+          case Verb() => regularVerb("yellow", thirdPerson)
+          case Modifier() => "yellow"
+          case _ => do wrongContext("jelo", context); ""
+        }
+      }
+      case "jo" => {
+        context match {
+          case Subject() => regularNoun("possession")
+          case Object() => regularObject("possesion")
+          case Verb() => regularVerb("hold", thirdPerson) 
+          case Modifier() => "held"
+          case _ => do wrongContext("jo", context); ""
+        }
+      }
+      case "kala" => {
+        context match {
+          case Subject() => regularNoun("sea creature")
+          case Object() => regularObject("sea creature")
+          case Verb() => regularVerb("insert", thirdPerson)
+          case Modifier() => "inner"
+          case _ => do wrongContext("insa", context); ""
+        }
+      }
       case "kalama" => {
         context match {
-          case Subject() => {
-            var output = do ambiguity("sound", "sounds", "", "")
-            if (output != "sound") do notThirdPersonSingular()
-            output
-          }
-          case Object() => do ambiguity("sound", "sounds", "", "")
-          case Verb() => if (thirdPerson) "makes sound" else "make sound"
+          case Subject() => regularNoun("sound")
+          case Object() => regularObject("sound")
+          case Verb() => regularVerb("sound", thirdPerson)
           case Modifier() => "sound related"
           case _ => do wrongContext("kalama", context); ""
         }
       }
+      case "kasi" => {
+        context match {
+          case Subject() => regularNoun("plant")
+          case Object() => regularObject("plant")
+          case Verb() => regularVerb("plant", thirdPerson)
+          case Modifier() => "plant related"
+          case _ => do wrongContext("kasi", context); ""
+        }
+      }
+      case "kijetesantakalu" => {
+        context match {
+          case Subject() => regularNoun("raccoon")
+          case Object() => regularObject("raccoon")
+          case Verb() => regularVerb("raccoonize", thirdPerson)
+          case Modifier() => "raccoon related"
+          case _ => do wrongContext("kijetesantakalu", context); ""
+        }
+      }
       case "kili" => {
         context match {
-          case Subject() => {
-            var output = do ambiguity("plant", "plants", "", "")
-            if (output != "plant") do notThirdPersonSingular()
-            output
-          }
-          case Object() => do ambiguity("plant", "plants", "", "")
-          case Verb() => if (thirdPerson) "plants" else "plant"
+          case Subject() => regularNoun("plant")
+          case Object() => regularObject("plant")
+          case Verb() => regularVerb("plant", thirdPerson)
           case Modifier() => "plant related"
           case _ => do wrongContext("kili", context); ""
         }
       }
-      case "uta" => {
+      case "kin" => {
         context match {
-          case Subject() => {
-            var output = do ambiguity("mouth", "mouths", "", "")
-            if (output != "mouth") do notThirdPersonSingular()
-            output
-          }
-          case Object() => do ambiguity("mouth", "mouths", "", "")
-          case Modifier() => "mouth related"
-          case _ => do wrongContext("uta", context); ""
+          case Adverb() => "as well"
+          case Modifier() => "also"
+          case _ => do wrongContext("kin", context); ""
         }
       }
-      case "soweli" => {
+      case "kipisi" => {
         context match {
-          case Subject() => {
-            var output = do ambiguity("animal", "animals", "", "")
-            if (output != "animal") do notThirdPersonSingular()
-            output
-          }
-          case Object() => do ambiguity("animal", "animals", "", "")
-          case Modifier() => "animal related"
-          case _ => do wrongContext("soweli", context); ""
+          case Subject() => regularNoun("cut")
+          case Object() => regularObject("cut")
+          case Verb() => regularVerb("cut", thirdPerson)
+          case Modifier() => "cut related"
+          case _ => do wrongContext("kipisi", context); ""
+        }
+      }
+      case "kiwen" => {
+        context match {
+          case Subject() => regularNoun("rock")
+          case Object() => regularObject("rock")
+          case Verb() => regularVerb("rock", thirdPerson)
+          case Modifier() => "rock related"
+          case _ => do wrongContext("kiwen", context); ""
+        }
+      }
+      case "ko" => {
+        context match {
+          case Subject() => regularNoun("paste")
+          case Object() => regularObject("paste")
+          case Verb() => regularVerb("paste", thirdPerson)
+          case Modifier() => "paste related"
+          case _ => do wrongContext("ko", context); ""
+        }
+      }
+      case "kon" => {
+        context match {
+          case Subject() => regularNoun("spirit")
+          case Object() => regularNoun("spirit")
+          case Verb() => regularVerb("airify", thirdPerson)
+          case Modifier() => "airyly"
+          case _ => do wrongContext("kon", context); ""
+        }
+      }
+      case "kule" => {
+        context match {
+          case Subject() => regularNoun("color")
+          case Object() => regularObject("color")
+          case Verb() => regularVerb("color", thirdPerson)
+          case Modifier() => "colorfull"
+          case _ => do wrongContext("kule", context); ""
+        }
+      }
+      case "kulupu" => {
+        context match {
+          case Subject() => regularNoun("group")
+          case Object() => regularObject("group")
+          case Verb() => regularVerb("group", thirdPerson)
+          case Modifier() => "group related"
+          case _ => do wrongContext("kulupu", context); ""
+        }
+      }
+      case "kute" => {
+        context match {
+          case Subject() => regularNoun("ear")
+          case Object() => regularObject("ear")
+          case Verb() => verbWithMultipleMeanings("hear", "follow", thirdPerson)
+          case Modifier() => "auditory"
+          case _ => do wrongContext("kute", context); ""
+        }
+      }
+      case "lanpan" => {
+        context match {
+          case Subject() => "Stealing" 
+          case Object() => "Stealing"
+          case Verb() => regularVerb("steal", thirdPerson)
+          case Modifier() => "stealing"
+          case Adverb() => "stealingly"
+          case _ => do wrongContext("lanpan", context); ""
+        }
+      }
+      case "lape" => {
+        context match {
+          case Subject() => "sleep"
+          case Object() => "sleep"
+          case Verb() => regularVerb("sleep", thirdPerson)
+          case Modifier() => "sleepy"
+          case Adverb() => "sleepily"
+          case _ => do wrongContext("lape", context); ""
+        }
+      }
+      case "laso" => {
+        context match {
+          case Subject() => "blue"
+          case Object() => "blue"
+          case Verb() => regularVerb("blue", thirdPerson)
+          case Modifier() => "blue"
+          case _ => do wrongContext("laso", context); ""
+        }
+      }
+      case "lawa" => {
+        context match {
+          case Subject() => nounWithMultipleMeanings("head", "leader")
+          case Object() => objectWithMultipleMeanings("head", "leader")
+          case Verb() => verbWithMultipleMeanings("lead", "head", thirdPerson)
+          case Modifier() => "head related"
+          case _ => do wrongContext("lawa", context); ""
+        }
+      } 
+      case "leko" => {
+        context match {
+          case Subject() => regularNoun("block")
+          case Object() => regularObject("block")
+          case Modifier() => "square"
+          case _ => do wrongContext("leko", context); ""
+        }
+      }
+      case "len" => {
+        context match {
+          case Subject() => regularNoun("cloth")
+          case Object() => regularObject("cloth")
+          case Verb() => regularVerb("cover", thirdPerson)
+          case Modifier() => "clothed"
+          case _ => do wrongContext("len", context); ""
+        }
+      }
+      case "lete" => {
+        context match {
+          case Subject() => "coldness"
+          case Object() => "coldness"
+          case Verb() => regularVerb("cool", thirdPerson)
+          case Modifier() => "cold"
+          case Adverb() => "coldly"
+          case _ => do wrongContext("lete", context); ""
+        }
+      }
+      case "lili" => {
+        context match {
+          case Verb() => regularVerb("reduce", thirdPerson)
+          case Modifier() => "small"
+          case _ => do wrongContext("lili", context); ""
+        }
+      }
+      case "linja" => {
+        context match {
+          case Subject() => regularNoun("rope")
+          case Object() => regularObject("rope")
+          case Modifier() => "rope like"
+          case _ => do wrongContext("linja", context); ""
+        }
+      }
+      case "lipu" => {
+        context match {
+          case Subject() => regularNoun("paper")
+          case Object() => regularObject("paper")
+          case Verb() => regularVerb("flatten", thirdPerson)
+          case Modifier() => "flatt"
+          case _ => do wrongContext("lipu", context); ""
+        }
+      }
+      case "loje" => {
+        context match {
+          case Subject() => "red"
+          case Object() => "red"
+          case Verb() => regularVerb("red", thirdPerson)
+          case Modifier() => "red"
+          case _ => do wrongContext("loje", context); ""
+        }
+      }
+      case "luka" => {
+        context match {
+          case Subject() => nounWithMultipleMeanings("hand", "five")
+          case Object() => objectWithMultipleMeanings("hand", "five")
+          case Verb() => regularVerb("touch", thirdPerson)
+          case Modifier() => "five"
+          case _ => do wrongContext("luka", context); ""
+        }
+      }
+      case "lukin" => {
+        context match {
+          case Subject() => regularNoun("eye")
+          case Object() => regularObject("eye")
+          case Verb() => regularVerb("see", thirdPerson)
+          case Modifier() => "visual"
+          case _ => do wrongContext("lukin", context); ""
+        }
+      }
+      case "lupa" => {
+        context match {
+          case Subject() => regularNoun("hole")
+          case Object() => regularObject("hole")
+          case Verb() => regularVerb("dig", thirdPerson)
+          case Modifier() => "holed"
+          case _ => do wrongContext("lupa", context); ""
+        }
+      }
+      case "ma" => {
+        context match {
+          case Subject() => regularNoun("land")
+          case Object() => regularObject("land")
+          case Modifier() => "land"
+          case _ => do wrongContext("ma", context); ""
+        }
+      }
+      case "mama" => {
+        context match {
+          case Subject() => regularNoun("parent")
+          case Object() => regularObject("parent")
+          case Verb() => regularVerb("parent", thirdPerson)
+          case Modifier() => "parent"
+          case _ => do wrongContext("mama", context); ""
+        }
+      }
+      case "mani" => {
+        context match {
+          case Subject() => regularNoun("money")
+          case Object() => regularObject("money")
+          case Verb() => regularVerb("pay", thirdPerson)
+          case Modifier() => "money related"
+          case _ => do wrongContext("mani", context); ""
+        }
+      }
+      case "meli" => {
+        context match {
+          case Subject() => regularNoun("woman")
+          case Object() => regularObject("woman")
+          case Modifier() => "womanly"
+          case Adverb() => "womanly"
+          case _ => do wrongContext("meli", context); ""
+        }
+      }
+      case "mije" => {
+        context match {
+          case Subject() => regularNoun("man")
+          case Object() => regularObject("man")
+          case Modifier() => "manly"
+          case Adverb() => "manly"
+          case _ => do wrongContext("mije", context); ""
+        }
+      }
+      case "moku" => {
+        context match {
+          case Subject() => regularNoun("food")
+          case Object() => regularObject("food")
+          case Verb() => regularVerb("eat", thirdPerson)
+          case Modifier() => "food"
+          case _ => do wrongContext("moku", context); ""
+        }
+      }
+      case "misikeke" => {
+        context match {
+          case Subject() => regularNoun("medicine")
+          case Object() => regularObject("medicine")
+          case Verb() => regularVerb("cures", thirdPerson)
+          case Modifier() => "medical"
+          case Adverb() => "medicaly"
+          case _ => do wrongContext("misikeke", context); ""
+        }
+      }
+      case "moli" => {
+        context match {
+          case Subject() => regularNoun("death")
+          case Object() => regularObject("death")
+          case Verb() => regularVerb("kill", thirdPerson)
+          case Modifier() => "dead"
+          case _ => do wrongContext("moli", context); ""
+        }
+      }
+      case "monsi" => {
+        context match {
+          case Subject() => regularNoun("back")
+          case Object() => regularObject("back")
+          case Modifier() => "back"
+          case _ => do wrongContext("monsi", context); ""
+        }
+      }
+      case "monsuta" => {
+        context match {
+          case Subject() => regularNoun("monster")
+          case Object() => regularObject("monster")
+          case Verb() => regularVerb("scare", thirdPerson)
+          case Modifier() => "scary"
+          case Adverb() => "scaryly"
+          case _ => do wrongContext("monsuta", context); ""
+        }
+      }
+      case "mun" => {
+        context match {
+          case Subject() => regularNoun("moon")
+          case Object() => regularObject("moon")
+          case Modifier() => "moon"
+          case _ => do wrongContext("mun", context); ""
+        }
+      }
+      case "musi" => {
+        context match {
+          case Subject() => regularNoun("game")
+          case Object() => regularObject("game")
+          case Verb() => regularVerb("play", thirdPerson)
+          case Modifier() => "game related"
+          case _ => do wrongContext("musi", context); ""
+        }
+      }
+      case "mute" => {
+        context match {
+          case Verb() => regularVerb("multiply", thirdPerson)
+          case Modifier() => "many"
+          case Adverb() => "much"
+          case _ => do wrongContext("mute", context); ""
+        }
+      }
+      case "namako" => {
+        context match {
+          case Subject() => regularNoun("extra")
+          case Object() => regularObject("extra")
+          case Verb() => regularVerb("embellish", thirdPerson)
+          case Modifier() => "extra"
+          case _ => do wrongContext("namako", context); ""
+        }
+      }
+      case "nanpa" => {
+        context match {
+          case Subject() => regularNoun("number")
+          case Object() => regularObject("number")
+          case Verb() => regularVerb("count", thirdPerson)
+          case Modifier() => "numerical"
+          case _ => do wrongContext("nanpa", context); ""
+        }
+      }
+      case "nasa" => {
+        context match {
+          case Subject() => "weirdness"
+          case Object() => "weirdness"
+          case Verb() => regularVerb("confuse", thirdPerson)
+          case Modifier() => "weird"
+          case Adverb() => "weirdly"
+          case _ => do wrongContext("nasa", context); ""
+        }
+      }
+      case "nasin" => {
+        context match {
+          case Subject() => regularNoun("way")
+          case Object() => regularObject("way")
+          case Verb() => regularVerb("follow", thirdPerson)
+          case Modifier() => "way"
+          case _ => do wrongContext("nasin", context); ""
+        }
+      }
+      case "nena" => {
+        context match {
+          case Subject() => regularNoun("hill")
+          case Object() => regularObject("hill")
+          case Modifier() => "bumpy"
+          case _ => do wrongContext("nena", context); ""
+        }
+      }
+      case "ni" => {
+        context match {
+          case Subject() => "this"
+          case Object() => "this"
+          case Modifier() => "this"
+          case Adverb() => "this"
+          case _ => do wrongContext("ni", context); ""
+        }
+      }
+      case "nimi" => {
+        context match {
+          case Subject() => regularNoun("name")
+          case Object() => regularObject("name")
+          case Verb() => regularVerb("name", thirdPerson)
+          case Modifier() => "named"
+          case _ => do wrongContext("nimi", context); ""
+        }
+      }
+      case "noka" => {
+        context match {
+          case Subject() => regularNoun("foot")
+          case Object() => regularObject("foot")
+          case Modifier() => "foot"
+          case _ => do wrongContext("noka", context); ""
+        }
+      }
+      case "oko" => {
+        context match {
+          case Subject() => regularNoun("eye")
+          case Object() => regularObject("eye")
+          case Verb() => regularVerb("see", thirdPerson)
+          case Modifier() => "visible"
+          case _ => do wrongContext("oko", context); ""
+        }
+      }
+      case "olin" => {
+        context match {
+          case Subject() => regularNoun("love")
+          case Object() => regularObject("love")
+          case Verb() => regularVerb("love", thirdPerson)
+          case Modifier() => "loving"
+          case Adverb() => "lovingly"
+          case _ => do wrongContext("olin", context); ""
+        }
+      }
+      case "open" => {
+        context match {
+          case Subject() => regularNoun("opening")
+          case Object() => regularObject("opening")
+          case Verb() => regularVerb("open", thirdPerson)
+          case Modifier() => "open"
+          case _ => do wrongContext("open", context); ""
+        }
+      }
+      case "pakala" => {
+        context match {
+          case Subject() => "mistake"
+          case Object() => "mistake"
+          case Verb() => regularVerb("break", thirdPerson)
+          case Modifier() => "broken"
+          case _ => do wrongContext("pakala", context); ""
+        }
+      }
+      case "pali" => {
+        context match {
+          case Subject() => regularNoun("work")
+          case Object() => regularObject("work")
+          case Verb() => regularVerb("work", thirdPerson)
+          case Modifier() => "work"
+          case _ => do wrongContext("pali", context); ""
+        }
+      }
+      case "palisa" => {
+        context match {
+          case Subject() => regularNoun("stick")
+          case Object() => regularObject("stick")
+          case Modifier() => "stick shaped"
+          case _ => do wrongContext("palisa", context); ""
+        }
+      }
+      case "pan" => {
+        context match {
+          case Subject() => regularNoun("bread")
+          case Object() => regularObject("bread")
+          case Modifier() => "bread"
+          case _ => do wrongContext("pan", context); ""
+        }
+      }
+      case "pana" => {
+        context match {
+          case Subject() => regularNoun("giver")
+          case Object() => regularObject("giver")
+          case Verb() => regularVerb("give", thirdPerson)
+          case Modifier() => "giving"
+          case _ => do wrongContext("pana", context); ""
+        }
+      }
+      case "pilin" => {
+        context match {
+          case Subject() => regularNoun("feeling")
+          case Object() => regularObject("feeling")
+          case Verb() => regularVerb("feel", thirdPerson)
+          case Modifier() => "feeling"
+          case Adverb() => "with feeling"
+          case _ => do wrongContext("pilin", context); ""
         }
       }
       case "pimeja" => {
         context match {
           case Subject() => "darkness"
           case Object() => "darkness"
-          case Verb() => if (thirdPerson) "darkens" else "darkne"
+          case Verb() => regularVerb("darken", thirdPerson)
           case Modifier() => "dark"
           case _ => do wrongContext("pimeja", context); ""
         }
       }
-      case "suli" => {
+      case "pini" => {
         context match {
-          case Verb() => if (thirdPerson) "enlarges" else "enlarge"
-          case Modifier() => "big"
-          case _ => do wrongContext("suli", context); ""
+          case Subject() => regularNoun("end")
+          case Object() => regularObject("end")
+          case Verb() => regularVerb("end", thirdPerson)
+          case Modifier() => "end"
+          case _ => do wrongContext("pini", context); ""
+          /// Add Preverb
+        }
+      }
+      case "pipi" => {
+        context match {
+          case Subject() => regularNoun("bug")
+          case Object() => regularObject("bug")
+          case Modifier() => "bug"
+          case _ => do wrongContext("pipi", context); ""
         }
       }
       case "pona" => {
         context match {
           case Subject() => "Goodness"
           case Object() => "Goodness"
-          case Verb() => if (thirdPerson) "imrpoves" else "improve"
+          case Verb() => regularVerb("improve", thirdPerson)
           case Modifier() => "good"
           case Adverb() => "well"
           case _ => do wrongContext("pona", context); ""
+        }
+      }
+      case "poka" => {
+        context match {
+          case Subject() => regularNoun("side")
+          case Object() => regularObject("side")
+          case Modifier() => "side"
+          case _ => do wrongContext("poka", context); ""
+        }
+      }
+      case "poki" => {
+        context match {
+          case Subject() => regularNoun("container")
+          case Object() => regularObject("container")
+          case Verb() => regularVerb("contain", thirdPerson)
+          case Modifier() => "container"
+          case _ => do wrongContext("poki", context); ""
+        }
+      }
+      case "seli" => {
+        context match {
+          case Subject() => regularNoun("heat")
+          case Object() => regularObject("heat")
+          case Verb() => regularVerb("heat", thirdPerson)
+          case Modifier() => "hot"
+          case _ => do wrongContext("seli", context); ""
+        }
+      }
+      case "selo" => {
+        context match {
+          case Subject() => nounWithMultipleMeanings("skin", "outside")
+          case Object() => objectWithMultipleMeanings("skin", "outside")
+          case Modifier() => "outside"
+          case _ => do wrongContext("selo", context); ""
+        }
+      }
+      case "sewi" => {
+        context match {
+          case Subject() => do ambiguity("sky", "holiness", "", "")
+          case Object() => do ambiguity("sky", "holiness", "", "")
+          case Verb() => verbWithMultipleMeanings("lift", "sanctify", thirdPerson)
+          case Modifier() => do ambiguity("up", "holy", "", "")
+          case _ => do wrongContext("sewi", context); ""
+        }
+      }
+      case "sijelo" => {
+        context match {
+          case Subject() => regularNoun("body")
+          case Object() => regularObject("body")
+          case Verb() => regularVerb("embody", thirdPerson)
+          case Modifier() => "body related"
+          case _ => do wrongContext("sijelo", context); ""
+        }
+      }
+      case "sike" => {
+        context match {
+          case Subject() => regularNoun("circle")
+          case Object() => regularObject("circle")
+          case Modifier() => "round"
+          case _ => do wrongContext("sike", context); ""
+        }
+      }
+      case "sin" => {
+        context match {
+          case Subject() => regularNoun("newness")
+          case Object() => regularObject("newness")
+          case Verb() => regularVerb("renew", thirdPerson)
+          case Modifier() => "new"
+          case _ => do wrongContext("sin", context); ""
+        }
+      }
+      case "sinpin" => {
+        context match {
+          case Subject() => regularNoun("front")
+          case Object() => regularObject("front")
+          case Modifier() => "front"
+          case _ => do wrongContext("sinpin", context); ""
+        }
+      }
+      case "sitelen" => {
+        context match {
+          case Subject() => regularNoun("picture")
+          case Object() => regularObject("picture")
+          case Verb() => regularVerb("draw", thirdPerson)
+          case Modifier() => "pictorial"
+          case _ => do wrongContext("sitelen", context); ""
+        }
+      }
+      case "soko" => {
+        context match {
+          case Subject() => regularNoun("mushroom")
+          case Object() => regularObject("mushroom")
+          case Modifier() => "mushroom related"
+          case _ => do wrongContext("soka", context); ""
+        }
+      }
+      case "sona" => {
+        context match {
+          case Subject() => regularNoun("knowledge")
+          case Object() => regularObject("knowledge")
+          case Verb() => verbWithMultipleMeanings("know", "learn", thirdPerson)
+          case Modifier() => "wise"
+          case Adverb() => "wisely"
+          case _ => do wrongContext("sona", context); ""
+        }
+      }
+      case "soweli" => {
+        context match {
+          case Subject() => regularNoun("animal")
+          case Object() => regularObject("animal")
+          case Modifier() => "animal related"
+          case _ => do wrongContext("soweli", context); ""
+        }
+      }
+      case "suli" => {
+        context match {
+          case Verb() => regularVerb("enlarge", thirdPerson)
+          case Modifier() => "big"
+          case _ => do wrongContext("suli", context); ""
+        }
+      }
+      case "suno" => {
+        context match {
+          case Subject() => regularNoun("sun")
+          case Object() => regularObject("sun")
+          case Verb() => regularVerb("shine", thirdPerson)
+          case Modifier() => "sunny"
+          case _ => do wrongContext("suno", context); ""
+        }
+      }
+      case "supa" => {
+        context match {
+          case Subject() => nounWithMultipleMeanings("surface", "furniture")
+          case Object() => objectWithMultipleMeanings("surface", "furniture")
+          case Modifier() => "horizontal"
+          case _ => do wrongContext("supa", context); ""
+        }
+      }
+      case "suwi" => {
+        context match {
+          case Subject() => "sweetness"
+          case Object() => "sweetness"
+          case Verb() => regularVerb("sweeten", thirdPerson)
+          case Modifier() => "sweet"
+          case Adverb() => "sweetly"
+          case _ => do wrongContext("suwi", context); ""
+        }
+      }
+      case "telo" => {
+        context match {
+          case Subject() => regularNoun("water")
+          case Object() => regularObject("water")
+          case Verb() => regularVerb("splash", thirdPerson)
+          case Modifier() => "wet"
+          case _ => do wrongContext("telo", context); ""
+        }
+      }
+      case "tenpo" => {
+        context match {
+          case Subject() => "time"
+          case Object() => "time"
+          case Modifier() => "time"
+          case _ => do wrongContext("tenpo", context); ""
+        }
+      }
+      case "toki" => {
+        context match {
+          case Subject() => regularNoun("language")
+          case Object() => regularObject("language")
+          case Verb() => regularVerb("talk", thirdPerson)
+          case Modifier() => "linguistic"
+          case _ => do wrongContext("toki", context); ""
+        }
+      }
+      case "tomo" => {
+        context match {
+          case Subject() => regularNoun("house")
+          case Object() => regularObject("house")
+          case Verb() => regularVerb("build", thirdPerson)
+          case Modifier() => "house"
+          case _ => do wrongContext("tomo", context); ""
+        }
+      }
+      case "tonsi" => {
+        context match {
+          case Subject() => "non-binary"
+          case Object() => "non-binary"
+          case Modifier() => "non-binary"
+          case _ => do wrongContext("tonsi", context); ""
+        }
+      }
+      case "tu" => {
+        context match {
+          case Subject() => "two"
+          case Object() => "two"
+          case Verb() => regularVerb("halve", thirdPerson)
+          case Modifier() => "two"
+          case _ => do wrongContext("tu", context); ""
+        }
+      }
+      case "unpa" => {
+        context match {
+          case Subject() => "sex"
+          case Object() => "sex"
+          case Verb() => if (thirdPerson) "has sex" else "have sex"
+          case Modifier() => "sexual"
+          case Adverb() => "sexually"
+          case _ => do wrongContext("unpa", context); ""
+        }
+      }
+      case "uta" => {
+        context match {
+          case Subject() => regularNoun("mouth")
+          case Object() => regularObject("mouth")
+          case Modifier() => "mouth related"
+          case _ => do wrongContext("uta", context); ""
+        }
+      }
+      case "utala" => {
+        context match {
+          case Subject() => "fight"
+          case Object() => "fight"
+          case Verb() => regularVerb("fight", thirdPerson)
+          case Modifier() => "fighting"
+          case _ => do wrongContext("utala", context); ""
+        }
+      }
+      case "walo" => {
+        context match {
+          case Subject() => "white"
+          case Object() => "white"
+          case Verb() => regularVerb("whiten", thirdPerson)
+          case Modifier() => "white"
+          case _ => do wrongContext("walo", context); ""
+        }
+      }
+      case "wan" => {
+        context match {
+          case Subject() => "one"
+          case Object() => "one"
+          case Verb() => regularVerb("unify", thirdPerson)
+          case Modifier() => "unique"
+          case _ => do wrongContext("wan", context); ""
+        }
+      }
+      case "waso" => {
+        context match {
+          case Subject() => regularNoun("bird")
+          case Object() => regularObject("bird")
+          case Modifier() => "bird related"
+          case Adverb() => "like a bird"
+          case _ => do wrongContext("waso", context); ""
+        }
+      }
+      case "wawa" => {
+        context match {
+          case Subject() => regularNoun("power")
+          case Object() => regularObject("power")
+          case Verb() => regularVerb("power", thirdPerson)
+          case Modifier() => "powerful"
+          case Adverb() => "powerfully"
+          case _ => do wrongContext("wawa", context); ""
+        }
+      }
+      case "weka" => {
+        context match {
+          case Subject() => "absence"
+          case Object() => "absence"
+          case Verb() => regularVerb("remove", thirdPerson)
+          case Modifier() => "absent"
+          case Adverb() => "absently"
+          case _ => do wrongContext("weka", context); ""
         }
       }
       case unknownWord => do unknownWord(unknownWord); ""
@@ -305,11 +1107,11 @@ def translateWord(word: String, context: Context, thirdPerson: Bool): String / {
   } with unknownWord { word =>
     println("UNKNOWN WORD: " ++ word)
     ""
-  } with wrongContext { (msg, context) =>
-  val contextString = context match {
-      case Subject() => "Subject"
-      case Object() => "Object"
+  } with wrongContext { (msg, context) =>   
+    val contextString = context match {
       case Verb() => "Verb"
+      case Subject () => "Subject"
+      case Object() => "Object"
       case Preposition() => "Preposition"
       case Modifier() => "Modifier"
       case Preverb() => "Preverb"
@@ -319,6 +1121,5 @@ def translateWord(word: String, context: Context, thirdPerson: Bool): String / {
     ""
   }
 }
-
 
 

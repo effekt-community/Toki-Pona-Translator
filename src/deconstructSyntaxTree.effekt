@@ -42,8 +42,8 @@ def deconstructSyntaxTree(tokiPonaTree: SyntaxTree): String / { ambiguity } = {
           }
           deconstructSyntaxTreeHelper(index, verb)
           objects.foreachIndex{ (index, x) => deconstructSyntaxTreeHelper(index, x)}
-          prepositions.foreachIndex{ (index, x) => deconstructSyntaxTreeHelper(index, x)}
           if (storage.length() != 0) do addToSentence(do release("adverbs"))
+          prepositions.foreachIndex{ (index, x) => deconstructSyntaxTreeHelper(index, x)}
         }
         case VerbLeaf(preverb, head, modifiers) => {
           val newModifiers = modifiers.getIndexOf("not") match {
