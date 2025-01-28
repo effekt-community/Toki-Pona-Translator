@@ -38,15 +38,21 @@ def translateSentence(s: String): List[String] = {
 /// Gives the ability to translate sentences from the command line
 def wrapper(): Unit = {
   with console;
-  var continue = true
-  while (continue) {
-    var input = askQuestion("Enter a sentence")
-    translateSentence(input).foreach { x => println(x) }
-    continue = askQuestion("Do you want to continue? (y/n)") == "y"
+  try {
+    while (true) {
+      var input = askQuestion("Enter a Toki Pona sentence or type 'exit' to quit: ")
+      if (input == "exit") do escapeContext("")
+      translateSentence(input).foreach { x => println(x) }
+    }
+  } with escapeContext { _ =>
+    ()
   }
+
+
 }
 
 
 def main(): Unit = {
-  (translateSentence("moku li moku e kili suli kepeken moku li moku pona e kili kepeken pona")).foreach { x => println(x) }
+  wrapper()
+  //(translateSentence("tomo mute ala")).foreach { x => println(x) }
 }
