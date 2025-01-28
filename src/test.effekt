@@ -30,13 +30,18 @@ def main() = {
         val s2: String = "animal eats food "
         assertEqual(s1, s2)
       }
-      test("Deconstruct Tree: simple sentence") {
+      test("Deconstruct Tree: sentence with complicated predicate") {
         val s1: String = deconstructSyntaxTree(constructSyntaxTree(["soweli", "pimeja", "suli", "li", "moku", "pona", "e", "jan", "ale", "e", "kili", "kepeken", "uta", "suli"]))
-        val s2: String = "dark big animal eats well all person and plant using big mouth "
+        val s2: String = "big dark animal eats all person and plant well using big mouth "
+        assertEqual(s1, s2)
+      }
+      test("Deconstruct Tree: sentence with complicated subject") {
+        val s1: String = deconstructSyntaxTree(constructSyntaxTree(["soweli", "pimeja", "suli", "en", "jan", "lili", "li", "moku", "e", "moku"]))
+        val s2: String = "big dark animal and small person eat food "
         assertEqual(s1, s2)
       }
     }
-  } with ambiguity[Plural] { (first, second) =>
+  } with ambiguity { (first, second, third, fourth) =>
     resume(first)
   } with ambiguityVerbOnlyLi {
     resume(true)
