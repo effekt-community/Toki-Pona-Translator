@@ -1,13 +1,57 @@
 module main
 
-import src/trees
-import src/additionalLists
-import src/translateSentences
-import src/translateWords
-import src/buildTree
-import io/console
+import src/constructSyntaxTree
+import src/deconstructSyntaxTree
 import src/effects
+import io/console
+
+
+/// Translate a toki pona sentence to english, giving out all possible translations
+def translateSentence(s: String): List[String] = {
+  var output = []
+  try {
+    try {
+      do escapeContext(deconstructSyntaxTree(constructSyntaxTree(split(s, " "))))
+    } with ambiguity{ (first, second, third, fourth) =>
+      resume(first)
+      if (second != "") {
+        resume(second)
+      }
+      if (third != "") {
+        resume(third)
+      }
+      if (fourth != "") {
+        resume(fourth)
+      }
+    } with ambiguityVerbOnlyLi {
+      resume(true)
+      resume(false)
+    }
+  } with escapeContext { msg =>
+    output = output.insert(0, msg)
+    resume(())
+  }
+  return output
+}
+
+
+/// Gives the ability to translate sentences from the command line
+def wrapper(): Unit = {
+  with console;
+  try {
+    while (true) {
+      var input = askQuestion("Enter a Toki Pona sentence or type 'q' to quit: ")
+      if (input == "q") do escapeContext("")
+      translateSentence(input).foreach { x => println(x) }
+    }
+  } with escapeContext { _ =>
+    ()
+  }
+
+
+}
+
 
 def main(): Unit = {
-  println("a")
+  wrapper()
 }

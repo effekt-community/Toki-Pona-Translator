@@ -1,37 +1,71 @@
 module effects
 
-import src/trees
+import src/syntaxTree
+import io/console
 
-record Plural()
 
-type Context2 {
-  Pronoun()
-  Unique()
-  NotUnique()
-  Plural()
-  NotPlural()
-  Nothing()
+def askQuestion(question: String): String / { Console } = {
+  do writeLine(question)
+  do readLine()
 }
 
 
-/// Currently not used for anything
-effect additionalContext(context: String): Unit
+/// Used to append something to a Syntax Tree
+effect append(l: SyntaxTree): Unit
+
+
+type Context {
+  Subject()
+  Object()
+  Verb()
+  Preposition()
+  Modifier()
+  Preverb()
+  Adverb()
+}
+
+/// Used when toki pona word is used in wrong context
+effect wrongContext(msg: String, context: Context): Unit
 
 /// Used when word isn't known
 effect unknownWord(word: String): String
 
-// Used to append something to a Syntax Tree
-effect append(l: SyntaxTree): Unit
-
-// Used to signal an error in the sentence
+/// Used to signal an error in the sentence
 effect sentenceError(msg: String): Unit
 
-effect wrongContext(msg: String): Unit
 
+/// Used when Sentence has multiple translations
+effect ambiguity(first: String, second: String, third: String, fourht: String): String
+
+/// Used when part of the sentence could be the verb or an object
+effect ambiguityVerbOnlyLi(): Bool
+
+
+/// Used to escape context of multiple resumptions
+effect escapeContext(msg: String): Unit
+
+
+/// Used to add a word to a sentence
 effect addToSentence(msg: String): Unit
 
-effect ambiguity[T](first: String, second: String): String
+/// Used to signal, that the next word should be negated
+effect negateNext(negateNext: Bool): Unit
+
+// USed to temporarily store a string
+effect hold(storedValue: String): Unit
+
+// Used to retrieve the temporarily stored string
+effect release(): String
+
+/// Sets the subject person of a sentence
+effect setSubjectPerson(person: SubjectPerson): Unit
+
+type SubjectPerson {
+  First()
+  NotThird()
+}
 
 def main(): Unit = {
-  println("a")
+  with console;
+  println(askQuestion("a"))
 }

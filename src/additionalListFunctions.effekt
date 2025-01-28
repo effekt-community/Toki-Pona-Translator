@@ -1,9 +1,7 @@
-module main // must be named same as the file!
+module additionalListFunctions
 
-
-
-/// turns a list into a string with spaces between the elements
-def showWords(l: List[String]): String = {
+/// Prints out all elements of a list, with spaces between them
+def showSentence(l: List[String]): String = {
   var output: String = ""
   l.foreachIndex{ (index, el) =>
     if (index == 0) output = el
@@ -12,10 +10,8 @@ def showWords(l: List[String]): String = {
   return output
 }
 
-def showWords2(l: List[String]): String = {
-  l.foldLeft("") { (b, a) => b ++ a ++ " "}
-}
 
+/// Gets all indexes of ocurrences of a string in a list
 def getIndexesOf(l:List[String], v: String): List[Int] = {
   try {
     var done: Bool = false
@@ -39,7 +35,8 @@ def getIndexesOf(l:List[String], v: String): List[Int] = {
   }
 }
 
-/// Gets the Index of a value 'v' if it's in the list, 'None()' if it's empty
+
+/// Gets the first Index of a string in a list as an option,'None()' if it's not in the list
 def getIndexOf(l: List[String], v: String): Option[Int] = {
   try {
     var found: Bool = false 
@@ -56,6 +53,8 @@ def getIndexOf(l: List[String], v: String): Option[Int] = {
   }
 }
 
+
+/// Gets the first Index of the first occurence of any string in list as an option,'None()' if none of them are in the list
 def getIndexOf(l: List[String], vs: List[String]): Option[Int] = {
   try {
     var found: Bool = false 
@@ -107,24 +106,3 @@ def contains(l:List[String], v: String): Bool = {
   def raise(exception: OutOfBounds, msg: String) = return false
   }
 } 
-
-
-/// Turns a list into a string
-def toString(l: List[String]): String = {
-  l.foldLeft("") { (b, a) => b ++ a}
-} 
-
-
-/// Copy of the map function from the standard library, because it had trouple finding the right function
-def extraMap[A, B](l: List[A]) { f: A => B } : List[B] = {
-  var acc = Nil[B]()
-  l.foreach { el => acc = Cons(f(el), acc) }
-  acc.reverse
-}
-
-
-def main(): Unit = {
-  val l = ["a", "b", "c", "b"]
-  println(show(getIndexOf(l, ["c", "b"])))
-  println(showWords(l))
-}

@@ -1,0 +1,172 @@
+module src/deconstructSyntaxTree
+
+import src/additionalListFunctions
+import src/syntaxTree
+import src/additionalListFunctions
+import src/constructSyntaxTree
+import src/effects
+import src/translateWords
+
+
+/// Takes a toki pona syntax tree and turns it into a sentence
+def deconstructSyntaxTree(tokiPonaTree: SyntaxTree): String / { ambiguity } = {
+  var output: String = "" 
+  var storage: String = ""
+  var code: String = ""
+  var thirdPerson: Bool = true
+  var firstPerson: Bool = false
+  var negate: Bool = false
+  try {
+    def deconstructSyntaxTreeHelper(index: Int, tokiPonaTree: SyntaxTree): Unit / ambiguity = {
+      tokiPonaTree match {
+        case Sentence(subjects, predicates) => {
+          subjects.foreachIndex{ (index, x) => deconstructSyntaxTreeHelper(index, x)}
+          predicates.foreachIndex{ (index, x) => deconstructSyntaxTreeHelper(index, x)}
+        }
+        case Predicate(verb, objects, prepositions) => {
+          // If it's not the first predicate, add an "and"
+          if (index != 0) {
+            do addToSentence("and")
+          }
+          // If there isn't a verb, add the default "be"
+          verb match {
+            case Empty() => do addToSentence(if (thirdPerson) "is" else if (firstPerson) "am" else "are")
+            case _ => ()
+          }
+          deconstructSyntaxTreeHelper(index, verb)
+          objects.foreachIndex{ (index, x) => deconstructSyntaxTreeHelper(index, x)}
+          // Add the adverbs collected from the verb after the objects
+          if (storage.length() != 0) do addToSentence(do release())
+          prepositions.foreachIndex{ (index, x) => deconstructSyntaxTreeHelper(index, x)}
+        }
+        case SubjectLeaf(head, modifiers) => {
+          addSubjectLeafToSentence(head, modifiers, index, thirdPerson, negate)
+        }
+        case VerbLeaf(preverb, head, modifiers) => {
+          adVerbLeafToSentence(preverb, head, modifiers, thirdPerson, negate)
+        }
+        case ObjectLeaf(head, modifiers) => {
+          addObjectLeafToSentence(head, modifiers, index, thirdPerson, negate)
+        }
+        case PrepositionsLeaf(prep, head, modifiers) => {
+          addPrepositionsLeaf(prep, head, modifiers, index, thirdPerson, negate)
+        }
+        case _ => return ()
+      }
+    }
+    deconstructSyntaxTreeHelper(0, tokiPonaTree)
+    return output
+  } with addToSentence { x => 
+    output = output ++ x ++ " "
+    resume(())
+  } with setSubjectPerson { subjectPerson =>
+    subjectPerson match {
+      case First() => {
+        firstPerson = true
+        thirdPerson = false
+      }
+      case NotThird() => {
+        thirdPerson = false
+      }
+    }
+    resume(())
+  } with hold { storedValue =>
+    storage = storage ++ storedValue
+    resume(())
+  } with release {
+    val output = storage
+    storage = ""
+    resume(output)
+  } with negateNext { newNegate =>
+    negate = newNegate
+    resume(())
+  }
+}
+
+
+// Adds a subject leaf to the sentence using effects
+def addSubjectLeafToSentence(head: List[String], modifiers: List[String], index: Int, thirdPerson: Bool, negate: Bool): Unit / { addToSentence, setSubjectPerson, negateNext, ambiguity} = {
+  if (index != 0) {
+    do addToSentence("and")
+    do setSubjectPerson(NotThird())
+  }
+  modifiers.reverse.foreachIndex{ (index, x) => 
+    do addToSentence(translateWord(x, Modifier(), thirdPerson, negate))
+  }
+  head.foreachIndex{ (index, x) => 
+    do addToSentence(translateWord(x, Subject(), thirdPerson, negate))
+  }
+}
+
+
+// Adds an adverb leaf to the sentence using effects
+def adVerbLeafToSentence(preverb: List[String], head: List[String], modifiers: List[String], thirdPerson: Bool, negate: Bool): Unit / { addToSentence, hold, negateNext, ambiguity, setSubjectPerson} = {
+  // Checks if the verb is negated newNegate is used, to avoid attaching "s" to multiple verbs
+  var newNegate = negate
+  val newModifiers = modifiers.getIndexOf("ala") match {
+    case Some(0) => {
+      newNegate = true
+      if (thirdPerson) {
+        do addToSentence("doesn't")
+        modifiers.drop(1)
+      } else {
+        do addToSentence("don't")
+        modifiers.drop(1)
+      }
+    }
+    case _ => modifiers
+  }
+  preverb.reverse().foreachIndex{ (index, x) => 
+    do addToSentence(translateWord(x, Preverb(), thirdPerson, negate))
+  }
+  head.foreachIndex{ (index, x) => 
+    if (preverb.size != 0) {
+      do addToSentence(translateWord(x, Verb(), false, newNegate))
+    } else {
+      do addToSentence(translateWord(x, Verb(), thirdPerson, newNegate))
+    }
+  }
+  newModifiers.reverse().foreachIndex{ (index, x) => 
+    do hold(translateWord(x, Adverb(), thirdPerson, negate))
+  }
+}
+
+
+// Adds an object leaf to the sentence using effects
+def addObjectLeafToSentence(head: List[String], modifiers: List[String], index: Int, thirdPerson: Bool, negate: Bool): Unit / { addToSentence, hold, negateNext, ambiguity, setSubjectPerson} = {
+  if (index != 0) {
+    do addToSentence("and")
+  }
+  val newIndex = index + 1
+  modifiers.reverse.map{ x => 
+    do addToSentence(translateWord(x, Modifier(), thirdPerson, negate))
+  }
+  head.map{ x => 
+    do addToSentence(translateWord(x, Object(), thirdPerson, negate))
+  }
+  return ()
+}
+
+
+// Adds an preposition leaf to the sentence using effects
+def addPrepositionsLeaf(prep: List[String], head: List[String], modifiers: List[String], index: Int, thirdPerson: Bool, negate: Bool): Unit / { addToSentence, hold, negateNext, ambiguity, setSubjectPerson} = {
+  if (index != 0) {
+    do addToSentence("and")
+  }
+  prep.map{ x => 
+    do addToSentence(translateWord(x, Preposition(), thirdPerson, negate))
+  }
+  modifiers.reverse.map{ x => 
+    do addToSentence(translateWord(x, Modifier(), thirdPerson, negate))
+  }
+  head.map{ x => 
+    do addToSentence(translateWord(x, Object(), thirdPerson, negate))
+  }
+  return ()
+}
+
+
+
+def main(): Unit = {
+  println("a")
+}

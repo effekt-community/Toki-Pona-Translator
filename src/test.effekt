@@ -1,58 +1,49 @@
 module src/test
 
 import test
-import src/buildTree
-import src/trees
-import src/translateSentences
+import src/constructSyntaxTree
+import src/syntaxTree
 import src/effects
-import src/deconstructTree
+import src/deconstructSyntaxTree
 
 
 def main() = {
   try {
     mainSuite("Toki Pona Translator") {
-      test("Build Tree: simple sentence") {
+      test("Construc Tree: simple sentence") {
         val l: List[String] = ["soweli", "li", "moku", "e", "moku"]
         val t: SyntaxTree = Sentence([SubjectLeaf(["soweli"], [])], [Predicate(VerbLeaf([], ["moku"], []), [ObjectLeaf(["moku"], [])], [])])
-        assertEqual(splitSentence(l), t)
+        assertEqual(constructSyntaxTree(l), t)
       }
-      test("Build Tree: sentence with complicated subject") {
+      test("Construct Tree: sentence with complicated subject") {
         val l: List[String] = ["soweli", "pimeja", "suli", "en", "soweli", "li", "moku", "e", "moku"]
         val t: SyntaxTree =  Sentence([SubjectLeaf(["soweli"], ["pimeja", "suli"]), SubjectLeaf(["soweli"], [])], [Predicate(VerbLeaf([], ["moku"], []), [ObjectLeaf(["moku"], [])], [])])
-        assertEqual(splitSentence(l), t)
+        assertEqual(constructSyntaxTree(l), t)
       }
-      test("Build Tree: sentence with complicae predicate") {
+      test("Construct Tree: sentence with complicae predicate") {
         val l: List[String] = ["soweli", "li", "wile", "moku", "pona", "e", "moku", "lili", "e", "kasi", "kepeken", "uta", "lili", "kepeken", "luka", "li", "moku", "e", "moku", "suli"]
         val t: SyntaxTree = Sentence([SubjectLeaf(["soweli"], [])], [Predicate(VerbLeaf(["wile"], ["moku"], ["pona"]), [ObjectLeaf(["moku"], ["lili"]), ObjectLeaf(["kasi"], [])], [PrepositionsLeaf(["kepeken"], ["uta"], ["lili"]), PrepositionsLeaf(["kepeken"], ["luka"], [])]), Predicate(VerbLeaf([], ["moku"], []), [ObjectLeaf(["moku"], ["suli"])], [])])
-        assertEqual(splitSentence(l), t)
-      }
-      test("Translate Sentence: simple sentence") {
-        val t1: SyntaxTree = Sentence([SubjectLeaf(["soweli"], [])], [Predicate(VerbLeaf([], ["moku"], []), [ObjectLeaf(["moku"], [])], [])])
-        val t2: SyntaxTree = Sentence([SubjectLeaf(["animal"], [])], [Predicate(VerbLeaf([], ["eat"], []), [ObjectLeaf(["food"], [])], [])])
-        assertEqual(traverseTree(t1), t2)
-      }
-      test("Translate Sentence: sentence with complicated subject") {
-        val t1: SyntaxTree = Sentence([SubjectLeaf(["soweli"], ["pimeja", "suli"]), SubjectLeaf(["soweli"], ["suli", "pimeja"])], [Predicate(VerbLeaf([], ["moku"], []), [ObjectLeaf(["moku"], [])], [])])
-        val t2: SyntaxTree = Sentence([SubjectLeaf(["animal"], ["dark", "big"]), SubjectLeaf(["animal"], ["big", "dark"])], [Predicate(VerbLeaf([], ["eat"], []), [ObjectLeaf(["food"], [])], [])])
-        assertEqual(traverseTree(t1), t2)
-      }
-      test("Translate Sentence: sentence with complicated predicate") {
-        val t1: SyntaxTree = Sentence([SubjectLeaf(["soweli"], [])], [Predicate(VerbLeaf(["wile"], ["moku"], ["pona"]), [ObjectLeaf(["moku"], ["pona"])], [PrepositionsLeaf(["kepeken"], ["kili"], ["moku"])])])
-        val t2: SyntaxTree = Sentence([SubjectLeaf(["animal"], [])], [Predicate(VerbLeaf(["want to"], ["eat"], ["well"]), [ObjectLeaf(["food"], ["good"])], [PrepositionsLeaf(["using"], ["plant"], ["food related"])])])
-        assertEqual(traverseTree(t1), t2)
+        assertEqual(constructSyntaxTree(l), t)
       }
       test("Deconstruct Tree: simple sentence") {
-        val s1: String = deconstructTree(traverseTree(splitSentence(["soweli", "li", "moku", "e", "moku"])))
+        val s1: String = deconstructSyntaxTree(constructSyntaxTree(["soweli", "li", "moku", "e", "moku"]))
         val s2: String = "animal eats food "
         assertEqual(s1, s2)
       }
-      test("Deconstruct Tree: simple sentence") {
-        val s1: String = deconstructTree(traverseTree(splitSentence(["soweli", "pimeja", "suli", "li", "moku", "pona", "e", "jan", "ale", "e", "kili", "kepeken", "uta", "suli"])))
-        val s2: String = "dark big animal eats well all person and plant using big mouth "
+      test("Deconstruct Tree: sentence with complicated predicate") {
+        val s1: String = deconstructSyntaxTree(constructSyntaxTree(["soweli", "pimeja", "suli", "li", "moku", "pona", "e", "jan", "ale", "e", "kili", "kepeken", "uta", "suli"]))
+        val s2: String = "big dark animal eats all person and plant well using big mouth "
+        assertEqual(s1, s2)
+      }
+      test("Deconstruct Tree: sentence with complicated subject") {
+        val s1: String = deconstructSyntaxTree(constructSyntaxTree(["soweli", "pimeja", "suli", "en", "jan", "lili", "li", "moku", "e", "moku"]))
+        val s2: String = "big dark animal and small person eat food "
         assertEqual(s1, s2)
       }
     }
-  } with ambiguity[Plural] { (first, second) =>
+  } with ambiguity { (first, second, third, fourth) =>
     resume(first)
+  } with ambiguityVerbOnlyLi {
+    resume(true)
   }
 }
