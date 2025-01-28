@@ -40,8 +40,8 @@ def wrapper(): Unit = {
   with console;
   try {
     while (true) {
-      var input = askQuestion("Enter a Toki Pona sentence or type 'exit' to quit: ")
-      if (input == "exit") do escapeContext("")
+      var input = askQuestion("Enter a Toki Pona sentence or type 'q' to quit: ")
+      if (input == "q") do escapeContext("")
       translateSentence(input).foreach { x => println(x) }
     }
   } with escapeContext { _ =>
