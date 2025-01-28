@@ -12,7 +12,6 @@ import src/translateWords
 def deconstructSyntaxTree(tokiPonaTree: SyntaxTree): String / { ambiguity } = {
   var output: String = "" 
   var storage: String = ""
-  var code: String = ""
   var thirdPerson: Bool = true
   var firstPerson: Bool = false
   var negate: Bool = false
