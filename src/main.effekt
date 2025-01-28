@@ -54,5 +54,4 @@ def wrapper(): Unit = {
 
 def main(): Unit = {
   wrapper()
-  //(translateSentence("tomo mute ala")).foreach { x => println(x) }
 }

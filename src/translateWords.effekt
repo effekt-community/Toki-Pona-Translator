@@ -492,6 +492,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
         context match {
           case Verb() => regularVerb("reduce", newThirdPerson)
           case Modifier() => "small"
+          case Object() => "small"
           case _ => do wrongContext("lili", context); ""
         }
       }
@@ -766,7 +767,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
         context match {
           case Subject() => regularNoun("work")
           case Object() => regularObject("work")
-          case Verb() => regularVerb("work", newThirdPerson)
+          case Verb() => regularVerb("build", newThirdPerson)
           case Modifier() => "work"
           case _ => do wrongContext("pali", context); ""
         }
@@ -959,6 +960,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
         context match {
           case Verb() => regularVerb("enlarge", newThirdPerson)
           case Modifier() => "big"
+          case Object() => "big"
           case _ => do wrongContext("suli", context); ""
         }
       }
