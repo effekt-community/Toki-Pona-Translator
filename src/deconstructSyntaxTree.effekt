@@ -42,7 +42,7 @@ def deconstructSyntaxTree(tokiPonaTree: SyntaxTree): String / { ambiguity } = {
           addSubjectLeafToSentence(head, modifiers, index, thirdPerson, negate)
         }
         case VerbLeaf(preverb, head, modifiers) => {
-          adVerbLeafToSentence(preverb, head, modifiers, thirdPerson, negate)
+          addVerbLeafToSentence(preverb, head, modifiers, thirdPerson, negate)
         }
         case ObjectLeaf(head, modifiers) => {
           addObjectLeafToSentence(head, modifiers, index, thirdPerson, negate)
@@ -99,7 +99,7 @@ def addSubjectLeafToSentence(head: List[String], modifiers: List[String], index:
 
 
 // Adds an adverb leaf to the sentence using effects
-def adVerbLeafToSentence(preverb: List[String], head: List[String], modifiers: List[String], thirdPerson: Bool, negate: Bool): Unit / { addToSentence, hold, negateNext, ambiguity, setSubjectPerson} = {
+def addVerbLeafToSentence(preverb: List[String], head: List[String], modifiers: List[String], thirdPerson: Bool, negate: Bool): Unit / { addToSentence, hold, negateNext, ambiguity, setSubjectPerson} = {
   // Checks if the verb is negated newNegate is used, to avoid attaching "s" to multiple verbs
   var newNegate = negate
   val newModifiers = modifiers.getIndexOf("ala") match {
