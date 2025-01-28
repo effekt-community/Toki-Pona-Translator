@@ -6,54 +6,54 @@ import src/effects
 import src/findNearestWord
 
 
-def regularNoun(word: String): String / { ambiguity, notThirdPersonSingular} = {
+def regularNoun(word: String): String / { ambiguity, setSubjectPerson} = {
   val pluralWord = {
     if (word.endsWith("s")) word ++ "es"
     else word ++ "s"
   }
   val output = do ambiguity(word, pluralWord, "", "")
-  if (output != word) do notThirdPersonSingular()
+  if (output != word) do setSubjectPerson(NotThird())
   output
 }
 
-def nounWithMultipleMeanings(word1: String, word2: String): String / { ambiguity, notThirdPersonSingular} = {
+def nounWithMultipleMeanings(word1: String, word2: String): String / { ambiguity, setSubjectPerson} = {
   val output = do ambiguity(word1, word1 ++ "s", word2, word2 ++ "s")
-  if (output != word1 and output != word2) do notThirdPersonSingular()
+  if (output != word1 and output != word2) do setSubjectPerson(NotThird())
   output
 }
 
-def regularVerb(word: String, thirdPerson: Bool): String / { ambiguity, notThirdPersonSingular} = {
+def regularVerb(word: String, thirdPerson: Bool): String / { ambiguity, setSubjectPerson} = {
   if (word.endsWith("y") and thirdPerson) word.substring(0, word.length() - 1) ++ "ies"
   else if (word.endsWith("sh") and thirdPerson) word ++ "es"
   else if (thirdPerson) word ++ "s"
   else word
 }
 
-def verbWithMultipleMeanings(word1: String, word2: String, thirdPerson: Bool): String / { ambiguity, notThirdPersonSingular} = {
+def verbWithMultipleMeanings(word1: String, word2: String, thirdPerson: Bool): String / { ambiguity, setSubjectPerson} = {
   val output = do ambiguity(word1, word2, "", "")
   if (output.endsWith("y") and thirdPerson) output.substring(0, output.length() - 1) ++ "ies"
   else if (thirdPerson) output ++ "s"
   else output
 }
 
-def regularObject(word: String): String / { ambiguity, notThirdPersonSingular} = {
+def regularObject(word: String): String / { ambiguity, setSubjectPerson} = {
   do ambiguity(word, word ++ "s", "", "")
 }
 
-def objectWithMultipleMeanings(word1: String, word2: String): String / { ambiguity, notThirdPersonSingular} = {
+def objectWithMultipleMeanings(word1: String, word2: String): String / { ambiguity, setSubjectPerson} = {
   do ambiguity(word1, word1 ++ "s", word2, word2 ++ "s")
 }
 
 
 /// Translates single Words from Toki Pona to English using context given by other functions
 /// TODO: All Words, ambigous translations, dealing with unknown Words
-def translateWord(word: String, context: Context, thirdPerson: Bool): String / { ambiguity, notThirdPersonSingular } = {
+def translateWord(word: String, context: Context, thirdPerson: Bool): String / { ambiguity, setSubjectPerson} = {
   try {
     word match {
       /// Pronouns
       case "mi" => {
         context match {
-          case Subject() => do notThirdPersonSingular(); "I"
+          case Subject() => do setSubjectPerson(NotThird()); "I"
           case Object() => "me"
           case Modifier() => "my"
           case _ => do wrongContext("mi", context); ""
@@ -69,7 +69,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool): String / {
       }
       case "sina" => {
         context match {
-          case Subject() => do notThirdPersonSingular(); "you"
+          case Subject() => do setSubjectPerson(NotThird()); "you"
           case Object() => "you"
           case Modifier() => "your"
           case _ => do wrongContext("sina", context); ""
@@ -79,7 +79,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool): String / {
       case "ala" => {
         context match {
           case Preposition() => "not"
-          case Subject() => do notThirdPersonSingular(); "nothing"
+          case Subject() => do setSubjectPerson(NotThird()); "nothing"
           case Object() => "nothing"
           case Preverb() => "dont"
           case Modifier() => "not"
@@ -252,7 +252,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool): String / {
       }
       case "jaki" => {
         context match {
-          case Subject() => do notThirdPersonSingular(); "dirt"
+          case Subject() => do setSubjectPerson(NotThird()); "dirt"
           case Object() => "dirt"
           case Verb() => regularVerb("ruin", thirdPerson)
           case Modifier() => "dirty"
@@ -261,7 +261,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool): String / {
       }
       case "jan" => {
         context match {
-          case Subject() => regularNoun("person")
+          case Subject() => do ambiguity("person", "people", "", "")
           case Object() => do ambiguity("person", "people", "", "")
           case Verb() => regularVerb("anthropomorzise", thirdPerson)
           case Modifier() => "human"
@@ -270,7 +270,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool): String / {
       }
       case "jelo" => {
         context match {
-          case Subject() => do notThirdPersonSingular(); "yellow"
+          case Subject() => do setSubjectPerson(NotThird()); "yellow"
           case Object() => "yellow"
           case Verb() => regularVerb("yellow", thirdPerson)
           case Modifier() => "yellow"

@@ -18,6 +18,11 @@ type Context {
   Adverb()
 }
 
+type Person {
+  First()
+  NotThird()
+}
+
 def askQuestion(question: String): String / { Console } = {
   do writeLine(question)
   do readLine()
@@ -55,6 +60,9 @@ effect negateNext(): Unit
 effect hold(storedValue: String, code: String): Unit
 
 effect release(code: String): String
+
+effect setSubjectPerson(person: Person): Unit
+
 
 def main(): Unit = {
   with console;

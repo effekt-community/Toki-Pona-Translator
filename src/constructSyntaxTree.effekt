@@ -40,7 +40,7 @@ def appendToSentence(tree: SyntaxTree, node: SyntaxTree): SyntaxTree = {
 }
 
 
-/// Takes a Toki Pona sentence finds, removes and adds them to the syntax tree
+/// Takes a Toki Pona sentence, finds, removes and adds them to the syntax tree
 def findAndRemoveSubjects(sentence: List[String]): List[String] / { append, sentenceError } = {
   if (sentence.subjectOnlyMiOrSina()) {
     do append(SubjectLeaf(sentence.take(1), Nil()))
@@ -123,7 +123,7 @@ def findAndRemovePredicates(sentence: List[String]): List[String] / {append, sen
   val verb: SyntaxTree = VerbLeaf(sentence.take(endOfPreverbs), sentence.slice(endOfPreverbs, endOfPreverbs + 1), sentence.slice(endOfPreverbs + 1, endOfVerb))
   val prepositions: List[SyntaxTree]  = splitPrepositions(sentence.slice(endOfObjects, endOfPredicate))
   val predicate = {
-    if (objects.size() == 0 && endOfPreverbs == 0) {
+    if (objects.size() == 0 and endOfPreverbs == 0) {
       if (do ambiguityVerbOnlyLi()) {
         Predicate(verb, objects, prepositions)
       } else {
@@ -140,7 +140,7 @@ def findAndRemovePredicates(sentence: List[String]): List[String] / {append, sen
 }
 
 
-/// Takes a list of Objects split by prepositionsand turns them into Prepositions Leafs
+/// Takes a list of Objects split by prepositions and turns them into Prepositions Leafs
 def splitPrepositions(sentence: List[String]): List[SyntaxTree] = {
   var output: List[SyntaxTree] = []
   try {

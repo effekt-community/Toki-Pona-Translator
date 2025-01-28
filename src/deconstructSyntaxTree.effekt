@@ -13,9 +13,10 @@ def deconstructSyntaxTree(tokiPonaTree: SyntaxTree): String / { ambiguity } = {
   var storage: String = ""
   var code: String = ""
   var thirdPerson: Bool = true
+  var firstPerson: Bool = false
   try {
-    def deconstructSyntaxTreeHelper(index: Int, englishTree: SyntaxTree): Unit / ambiguity = {
-      englishTree match {
+    def deconstructSyntaxTreeHelper(index: Int, tokiPonaTree: SyntaxTree): Unit / ambiguity = {
+      tokiPonaTree match {
         case Sentence(subjects, predicates) => {
           subjects.foreachIndex{ (index, x) => deconstructSyntaxTreeHelper(index, x)}
           predicates.foreachIndex{ (index, x) => deconstructSyntaxTreeHelper(index, x)}
@@ -23,7 +24,7 @@ def deconstructSyntaxTree(tokiPonaTree: SyntaxTree): String / { ambiguity } = {
         case SubjectLeaf(head, modifiers) => {
           if (index != 0) {
             do addToSentence("and")
-            do notThirdPersonSingular()
+            do setSubjectPerson(NotThird())
           }
           modifiers.reverse.foreachIndex{ (index, x) => 
             do addToSentence(translateWord(x, Modifier(), thirdPerson))
@@ -37,7 +38,12 @@ def deconstructSyntaxTree(tokiPonaTree: SyntaxTree): String / { ambiguity } = {
             do addToSentence("and")
           }
           verb match {
-            case Empty() => do addToSentence("is")
+            case Empty() => {
+              objects match {
+                case Cons(Empty(), _) => ()
+                case _ => do addToSentence(if (thirdPerson) "is" else if (firstPerson) "am" else "are")
+              }
+            }
             case _ => ()
           }
           deconstructSyntaxTreeHelper(index, verb)
@@ -109,8 +115,15 @@ def deconstructSyntaxTree(tokiPonaTree: SyntaxTree): String / { ambiguity } = {
   } with addToSentence { x => 
     output = output ++ x ++ " "
     resume(())
-  } with notThirdPersonSingular {
-    thirdPerson = false
+  } with setSubjectPerson { x =>
+    x match {
+      case First() => {
+        firstPerson = true
+      }
+      case NotThird() => {
+        thirdPerson = false
+      }
+    }
     resume(())
   } with hold { (storedValue, newCode) =>
     code = newCode
