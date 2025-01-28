@@ -200,7 +200,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
       }
       case "anpa" => {
         context match {
-          case Subject() => regularNoun("anpa")
+          case Subject() => regularNoun("bottom")
           case Object() => regularObject("bottom")
           case Verb() => regularVerb("lower", newThirdPerson)
           case Modifier() => "low"
@@ -272,6 +272,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case _ => do wrongContext("insa", context); ""
         }
       }
+
       case "jaki" => {
         context match {
           case Subject() => do setSubjectPerson(NotThird()); "dirt"
@@ -281,6 +282,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case _ => do wrongContext("dirt", context); ""
         }
       }
+
       case "jan" => {
         context match {
           case Subject() => do ambiguity("person", "people", "", "")
