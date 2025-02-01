@@ -5,12 +5,14 @@ import src/constructSyntaxTree
 import src/syntaxTree
 import src/effects
 import src/deconstructSyntaxTree
+import src/main
 
 
 def main() = {
   try {
     mainSuite("Toki Pona Translator") {
-      test("Construc Tree: simple sentence") {
+      // Tests for constructTree.effekt
+      test("Construct Tree: simple sentence") {
         val l: List[String] = ["soweli", "li", "moku", "e", "moku"]
         val t: SyntaxTree = Sentence([SubjectLeaf(["soweli"], [])], [Predicate(VerbLeaf([], ["moku"], []), [ObjectLeaf(["moku"], [])], [])])
         assertEqual(constructSyntaxTree(l), t)
@@ -25,6 +27,7 @@ def main() = {
         val t: SyntaxTree = Sentence([SubjectLeaf(["soweli"], [])], [Predicate(VerbLeaf(["wile"], ["moku"], ["pona"]), [ObjectLeaf(["moku"], ["lili"]), ObjectLeaf(["kasi"], [])], [PrepositionsLeaf(["kepeken"], ["uta"], ["lili"]), PrepositionsLeaf(["kepeken"], ["luka"], [])]), Predicate(VerbLeaf([], ["moku"], []), [ObjectLeaf(["moku"], ["suli"])], [])])
         assertEqual(constructSyntaxTree(l), t)
       }
+      // Tests for deconstructTree.effekt
       test("Deconstruct Tree: simple sentence") {
         val s1: String = deconstructSyntaxTree(constructSyntaxTree(["soweli", "li", "moku", "e", "moku"]))
         val s2: String = "animal eats food "
@@ -32,7 +35,7 @@ def main() = {
       }
       test("Deconstruct Tree: sentence with complicated predicate") {
         val s1: String = deconstructSyntaxTree(constructSyntaxTree(["soweli", "pimeja", "suli", "li", "moku", "pona", "e", "jan", "ale", "e", "kili", "kepeken", "uta", "suli"]))
-        val s2: String = "big dark animal eats all person and plant well using big mouth "
+        val s2: String = "big dark animal eats all person and fruit well using big mouth "
         assertEqual(s1, s2)
       }
       test("Deconstruct Tree: sentence with complicated subject") {
@@ -40,10 +43,46 @@ def main() = {
         val s2: String = "big dark animal and small person eat food "
         assertEqual(s1, s2)
       }
+      // Tests for translating full sentences
+      // Sentence: soweli li moku e moku
+      val sentence1: String = "soweli li moku e moku"
+      val translationsSentence1: List[String] = translateSentence(sentence1)
+        test("Option 1: soweli li moku e moku ") {
+          assertEqual(translationsSentence1.get(0), "animals eat foods ")
+        }
+        test("Option 2: soweli li moku e moku ") {
+          assertEqual(translationsSentence1.get(1), "animals eat food ")
+        }
+        test("Option 3: soweli li moku e moku ") {
+          assertEqual(translationsSentence1.get(2), "animal eats foods ")
+        }
+        test("Option 4: soweli li moku e moku ") {
+          assertEqual(translationsSentence1.get(3), "animal eats food ")
+        }
+      // Sentence: mi kasi e kili kepeken uta mi
+      val sentence2: String = "mi kasi e kili kepeken luka mi"
+      val translationsSentence2: List[String] = translateSentence(sentence2)
+        test("Option 1: mi kasi e kili kepeken luka mi") {
+          assertEqual(translationsSentence2.get(3), "I plant fruits using my hand ")
+        }
+    // Sentence: mi en sina li awen toki e toki ni
+      val sentence3: String = "mi en sina awen toki e toki ni"
+      val translationsSentence3: List[String] = translateSentence(sentence3)
+        test("Option 1: mi en sina awen toki e toki ni ") {
+          assertEqual(translationsSentence3.get(1), "I and you continue to talk this language ")
+        }
+    // Sentence: jan li pali e sitelen e lipu kepeken ilo wawa
+    val sentence4: String = "jan li pali pilin e sitelen e lipu e kalama musi kepeken ilo wawa"
+      val translationsSentence4: List[String] = translateSentence(sentence4)
+        test("Option 1: jan li pali pilin e sitelen e lipu e kalama musi kepeken ilo wawa ") {
+          assertEqual(translationsSentence4.get(2), "people build pictures and text and fun sounds with feeling using electric tool ")
+        }
     }
   } with ambiguity { (first, second, third, fourth) =>
     resume(first)
   } with ambiguityVerbOnlyLi {
     resume(true)
+  } with Exception[OutOfBounds] {
+    def raise(exception: OutOfBounds, msg: String) = println("Exception OutOfBounds " ++ msg)
   }
 }

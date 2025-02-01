@@ -6,12 +6,17 @@ import src/effects
 import io/console
 
 
+def translateSentenceHelper(sentence: String): String / { ambiguity, ambiguityVerbOnlyLi }  = {
+  deconstructSyntaxTree(constructSyntaxTree(split(sentence, " ")))
+}
+
+
 /// Translate a toki pona sentence to english, giving out all possible translations
-def translateSentence(s: String): List[String] = {
+def translateSentence(sentence: String): List[String] = {
   var output = []
   try {
     try {
-      do escapeContext(deconstructSyntaxTree(constructSyntaxTree(split(s, " "))))
+      do escapeContext(translateSentenceHelper(sentence))
     } with ambiguity{ (first, second, third, fourth) =>
       resume(first)
       if (second != "") {
