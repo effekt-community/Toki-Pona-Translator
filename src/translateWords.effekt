@@ -63,7 +63,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           }
           case Object() => "me"
           case Modifier() => "my"
-          case _ => do wrongContext("mi", context); ""
+          case _ => do wrongContext("mi", context)
         }
       }
       case "ona" => {
@@ -75,7 +75,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           }
           case Object() => "they"
           case Modifier() => "their"
-          case _ => do wrongContext("ona", context); ""
+          case _ => do wrongContext("ona", context) 
         }
       }
       case "sina" => {
@@ -83,7 +83,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Subject() => do setSubjectPerson(NotThird()); "you"
           case Object() => "you"
           case Modifier() => "your"
-          case _ => do wrongContext("sina", context); ""
+          case _ => do wrongContext("sina", context) 
         }
       }
       /// Prepositions
@@ -96,13 +96,13 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Preverb() => "dont"
           case Modifier() => "not"
           case Adverb() => "not"
-          case _ => do wrongContext("ala", context); ""
+          case _ => do wrongContext("ala", context) 
         }
       }
       case "kepeken" => {
         context match {
           case Preposition() => "using"
-          case _ => do wrongContext("kepeken", context); ""
+          case _ => do wrongContext("kepeken", context) 
         }
       }
       case "lon" => {
@@ -111,19 +111,19 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => "truth"
           case Modifier() => "existing"
           case Preposition() => "at"
-          case _ => do wrongContext("lon", context); ""
+          case _ => do wrongContext("lon", context) 
         }
       }
       case "sama" => {
         context match {
           case Preposition() => "similar to"
-          case _ => do wrongContext("sama", context); ""
+          case _ => do wrongContext("sama", context) 
         }
       }
       case "tan" => {
         context match {
           case Preposition() => "because of"
-          case _ => do wrongContext("tan", context); ""
+          case _ => do wrongContext("tan", context) 
         }
       }
       /// Preverbs
@@ -131,33 +131,33 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
         context match {
           case Verb() => regularVerb("continue", newThirdPerson)
           case Preverb() => if (newThirdPerson) "continues to" else "continue"
-          case _ => do wrongContext("awen", context); ""
+          case _ => do wrongContext("awen", context) 
         }
       }
       case "kama" => {
         context match {
           case Preverb() => if (newThirdPerson) "starts to" else "start to"
-          case _ => do wrongContext("kama", context); ""
+          case _ => do wrongContext("kama", context) 
         }
       }
       case "ken" => {
         context match {
           case Preverb() => "can"
           case Subject() => regularNoun("possibility")
-          case _ => do wrongContext("ken", context); ""
+          case _ => do wrongContext("ken", context) 
         }
       }
       case "wile" => {
         context match {
           case Verb() => regularVerb("want", newThirdPerson)
           case Preverb() => if (newThirdPerson) "wants to" else "want to"
-          case _ => do wrongContext("wile", context); ""
+          case _ => do wrongContext("wile", context) 
         }
       }
       case "tawa" => {
         context match {
           case Preposition() => "from the perspective of"
-          case _ => do wrongContext("tawa", context); ""
+          case _ => do wrongContext("tawa", context) 
         }
       }
       /// Particles
@@ -167,7 +167,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => "this"
           case Modifier() => "this"
           case Adverb() => "this"
-          case _ => do wrongContext("ni", context); ""
+          case _ => do wrongContext("ni", context) 
         }
       }
       /// Other Words
@@ -177,7 +177,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("reptile")
           case Modifier() => "reptile related"
           case Adverb() => "reptile like"
-          case _ => do wrongContext("akesi", context); ""
+          case _ => do wrongContext("akesi", context) 
         }
       }
       case "alasa" => {
@@ -186,7 +186,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("hunt")
           case Verb() => regularVerb("hunt", newThirdPerson)
           case Modifier() => "hunt related"
-          case _ => do wrongContext("alasa", context); ""
+          case _ => do wrongContext("alasa", context) 
           // Add Adverb
         }
       }
@@ -195,7 +195,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Subject() => "everything"
           case Object() => "everything"
           case Modifier() => "all"
-          case _ => do wrongContext("ale", context); ""
+          case _ => do wrongContext("ale", context) 
         }
       }
       
@@ -205,7 +205,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("bottom")
           case Verb() => regularVerb("lower", newThirdPerson)
           case Modifier() => "low"
-          case _ => do wrongContext("anpa", context); ""
+          case _ => do wrongContext("anpa", context) 
         }
       }
 
@@ -216,7 +216,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Verb() => regularVerb("change", newThirdPerson)
           case Modifier() => "different"
           case Adverb() => "differently"
-          case _ => do wrongContext("ante", context); ""
+          case _ => do wrongContext("ante", context) 
         }
       }
       case "epiku" => {
@@ -226,7 +226,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Verb() => regularVerb("epicize", newThirdPerson)
           case Adverb() => "epicly"
           case Modifier() => "epic"
-          case _ => do wrongContext("epiku", context); ""
+          case _ => do wrongContext("epiku", context) 
         }
       }
       case "esun" => {
@@ -235,7 +235,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("market")
           case Verb() => regularVerb("trade", newThirdPerson)
           case Modifier() => "market related"
-          case _ => do wrongContext("esun", context); ""
+          case _ => do wrongContext("esun", context) 
         }
       }
       case "ijo" => {
@@ -244,7 +244,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("thing")
           case Verb() => regularVerb("objectify", newThirdPerson)
           case Modifier() => "tangible"
-          case _ => do wrongContext("ijo", context); ""
+          case _ => do wrongContext("ijo", context) 
         }
       }
       case "ike" => {
@@ -254,7 +254,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Verb() => regularVerb("worsen", newThirdPerson)
           case Modifier() => "bad"
           case Adverb() => "badly"
-          case _ => do wrongContext("ike", context); ""
+          case _ => do wrongContext("ike", context) 
         }
       }
       case "ilo" => {
@@ -262,7 +262,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Subject() => "tool"
           case Object() => "tool"
           case Verb() => regularVerb("tool", newThirdPerson)
-          case _ => do wrongContext("ilo", context); ""
+          case _ => do wrongContext("ilo", context) 
         }
       }
       case "insa" => {
@@ -271,7 +271,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => objectWithMultipleMeanings("inside", "stomach")
           case Verb() => regularVerb("insert", newThirdPerson)
           case Modifier() => "inner"
-          case _ => do wrongContext("insa", context); ""
+          case _ => do wrongContext("insa", context) 
         }
       }
 
@@ -281,7 +281,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => "dirt"
           case Verb() => regularVerb("ruin", newThirdPerson)
           case Modifier() => "dirty"
-          case _ => do wrongContext("dirt", context); ""
+          case _ => do wrongContext("dirt", context) 
         }
       }
 
@@ -291,7 +291,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => do ambiguity("person", "people", "", "")
           case Verb() => regularVerb("anthropomorzise", newThirdPerson)
           case Modifier() => "human"
-          case _ => do wrongContext("jan", context); ""
+          case _ => do wrongContext("jan", context) 
         }
       }
       case "jelo" => {
@@ -300,7 +300,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => "yellow"
           case Verb() => regularVerb("yellow", newThirdPerson)
           case Modifier() => "yellow"
-          case _ => do wrongContext("jelo", context); ""
+          case _ => do wrongContext("jelo", context) 
         }
       }
       case "jo" => {
@@ -309,7 +309,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("possesion")
           case Verb() => regularVerb("hold", newThirdPerson) 
           case Modifier() => "held"
-          case _ => do wrongContext("jo", context); ""
+          case _ => do wrongContext("jo", context) 
         }
       }
       case "kala" => {
@@ -318,7 +318,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("sea creature")
           case Verb() => regularVerb("insert", newThirdPerson)
           case Modifier() => "inner"
-          case _ => do wrongContext("insa", context); ""
+          case _ => do wrongContext("insa", context) 
         }
       }
       case "kalama" => {
@@ -327,7 +327,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("sound")
           case Verb() => regularVerb("sound", newThirdPerson)
           case Modifier() => "sound related"
-          case _ => do wrongContext("kalama", context); ""
+          case _ => do wrongContext("kalama", context) 
         }
       }
       case "kasi" => {
@@ -336,7 +336,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("plant")
           case Verb() => regularVerb("plant", newThirdPerson)
           case Modifier() => "plant related"
-          case _ => do wrongContext("kasi", context); ""
+          case _ => do wrongContext("kasi", context) 
         }
       }
       case "kijetesantakalu" => {
@@ -345,7 +345,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("raccoon")
           case Verb() => regularVerb("raccoonize", newThirdPerson)
           case Modifier() => "raccoon related"
-          case _ => do wrongContext("kijetesantakalu", context); ""
+          case _ => do wrongContext("kijetesantakalu", context) 
         }
       }
       case "kili" => {
@@ -354,14 +354,14 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("plant")
           case Verb() => regularVerb("plant", newThirdPerson)
           case Modifier() => "plant related"
-          case _ => do wrongContext("kili", context); ""
+          case _ => do wrongContext("kili", context) 
         }
       }
       case "kin" => {
         context match {
           case Adverb() => "as well"
           case Modifier() => "also"
-          case _ => do wrongContext("kin", context); ""
+          case _ => do wrongContext("kin", context) 
         }
       }
       case "kipisi" => {
@@ -370,7 +370,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("cut")
           case Verb() => regularVerb("cut", newThirdPerson)
           case Modifier() => "cut related"
-          case _ => do wrongContext("kipisi", context); ""
+          case _ => do wrongContext("kipisi", context) 
         }
       }
       case "kiwen" => {
@@ -379,7 +379,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("rock")
           case Verb() => regularVerb("rock", newThirdPerson)
           case Modifier() => "rock related"
-          case _ => do wrongContext("kiwen", context); ""
+          case _ => do wrongContext("kiwen", context) 
         }
       }
       case "ko" => {
@@ -388,7 +388,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("paste")
           case Verb() => regularVerb("paste", newThirdPerson)
           case Modifier() => "paste related"
-          case _ => do wrongContext("ko", context); ""
+          case _ => do wrongContext("ko", context) 
         }
       }
       case "kon" => {
@@ -397,7 +397,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularNoun("spirit")
           case Verb() => regularVerb("airify", newThirdPerson)
           case Modifier() => "airyly"
-          case _ => do wrongContext("kon", context); ""
+          case _ => do wrongContext("kon", context) 
         }
       }
       case "kule" => {
@@ -406,7 +406,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("color")
           case Verb() => regularVerb("color", newThirdPerson)
           case Modifier() => "colorfull"
-          case _ => do wrongContext("kule", context); ""
+          case _ => do wrongContext("kule", context) 
         }
       }
       case "kulupu" => {
@@ -415,7 +415,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("group")
           case Verb() => regularVerb("group", newThirdPerson)
           case Modifier() => "group related"
-          case _ => do wrongContext("kulupu", context); ""
+          case _ => do wrongContext("kulupu", context) 
         }
       }
       case "kute" => {
@@ -424,7 +424,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("ear")
           case Verb() => verbWithMultipleMeanings("hear", "follow", newThirdPerson)
           case Modifier() => "auditory"
-          case _ => do wrongContext("kute", context); ""
+          case _ => do wrongContext("kute", context) 
         }
       }
       case "lanpan" => {
@@ -434,7 +434,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Verb() => regularVerb("steal", newThirdPerson)
           case Modifier() => "stealing"
           case Adverb() => "stealingly"
-          case _ => do wrongContext("lanpan", context); ""
+          case _ => do wrongContext("lanpan", context) 
         }
       }
       case "lape" => {
@@ -444,7 +444,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Verb() => regularVerb("sleep", newThirdPerson)
           case Modifier() => "sleepy"
           case Adverb() => "sleepily"
-          case _ => do wrongContext("lape", context); ""
+          case _ => do wrongContext("lape", context) 
         }
       }
       case "laso" => {
@@ -453,7 +453,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => "blue"
           case Verb() => regularVerb("blue", newThirdPerson)
           case Modifier() => "blue"
-          case _ => do wrongContext("laso", context); ""
+          case _ => do wrongContext("laso", context) 
         }
       }
       case "lawa" => {
@@ -462,7 +462,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => objectWithMultipleMeanings("head", "leader")
           case Verb() => verbWithMultipleMeanings("lead", "head", newThirdPerson)
           case Modifier() => "head related"
-          case _ => do wrongContext("lawa", context); ""
+          case _ => do wrongContext("lawa", context) 
         }
       } 
       case "leko" => {
@@ -470,7 +470,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Subject() => regularNoun("block")
           case Object() => regularObject("block")
           case Modifier() => "square"
-          case _ => do wrongContext("leko", context); ""
+          case _ => do wrongContext("leko", context) 
         }
       }
       case "len" => {
@@ -479,7 +479,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("cloth")
           case Verb() => regularVerb("cover", newThirdPerson)
           case Modifier() => "clothed"
-          case _ => do wrongContext("len", context); ""
+          case _ => do wrongContext("len", context) 
         }
       }
       case "lete" => {
@@ -489,7 +489,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Verb() => regularVerb("cool", newThirdPerson)
           case Modifier() => "cold"
           case Adverb() => "coldly"
-          case _ => do wrongContext("lete", context); ""
+          case _ => do wrongContext("lete", context) 
         }
       }
       case "lili" => {
@@ -497,7 +497,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Verb() => regularVerb("reduce", newThirdPerson)
           case Modifier() => "small"
           case Object() => "small"
-          case _ => do wrongContext("lili", context); ""
+          case _ => do wrongContext("lili", context) 
         }
       }
       case "linja" => {
@@ -505,7 +505,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Subject() => regularNoun("rope")
           case Object() => regularObject("rope")
           case Modifier() => "rope like"
-          case _ => do wrongContext("linja", context); ""
+          case _ => do wrongContext("linja", context) 
         }
       }
       case "lipu" => {
@@ -514,7 +514,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("paper")
           case Verb() => regularVerb("flatten", newThirdPerson)
           case Modifier() => "flatt"
-          case _ => do wrongContext("lipu", context); ""
+          case _ => do wrongContext("lipu", context) 
         }
       }
       case "loje" => {
@@ -523,7 +523,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => "red"
           case Verb() => regularVerb("red", newThirdPerson)
           case Modifier() => "red"
-          case _ => do wrongContext("loje", context); ""
+          case _ => do wrongContext("loje", context) 
         }
       }
       case "luka" => {
@@ -532,7 +532,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => objectWithMultipleMeanings("hand", "five")
           case Verb() => regularVerb("touch", newThirdPerson)
           case Modifier() => "five"
-          case _ => do wrongContext("luka", context); ""
+          case _ => do wrongContext("luka", context) 
         }
       }
       case "lukin" => {
@@ -541,7 +541,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("eye")
           case Verb() => regularVerb("see", newThirdPerson)
           case Modifier() => "visual"
-          case _ => do wrongContext("lukin", context); ""
+          case _ => do wrongContext("lukin", context) 
         }
       }
       case "lupa" => {
@@ -550,7 +550,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("hole")
           case Verb() => regularVerb("dig", newThirdPerson)
           case Modifier() => "holed"
-          case _ => do wrongContext("lupa", context); ""
+          case _ => do wrongContext("lupa", context) 
         }
       }
       case "ma" => {
@@ -558,7 +558,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Subject() => regularNoun("land")
           case Object() => regularObject("land")
           case Modifier() => "land"
-          case _ => do wrongContext("ma", context); ""
+          case _ => do wrongContext("ma", context) 
         }
       }
       case "mama" => {
@@ -567,7 +567,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("parent")
           case Verb() => regularVerb("parent", newThirdPerson)
           case Modifier() => "parent"
-          case _ => do wrongContext("mama", context); ""
+          case _ => do wrongContext("mama", context) 
         }
       }
       case "mani" => {
@@ -576,7 +576,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("money")
           case Verb() => regularVerb("pay", newThirdPerson)
           case Modifier() => "money related"
-          case _ => do wrongContext("mani", context); ""
+          case _ => do wrongContext("mani", context) 
         }
       }
       case "meli" => {
@@ -585,7 +585,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("woman")
           case Modifier() => "womanly"
           case Adverb() => "womanly"
-          case _ => do wrongContext("meli", context); ""
+          case _ => do wrongContext("meli", context) 
         }
       }
       case "mije" => {
@@ -594,7 +594,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("man")
           case Modifier() => "manly"
           case Adverb() => "manly"
-          case _ => do wrongContext("mije", context); ""
+          case _ => do wrongContext("mije", context) 
         }
       }
       case "moku" => {
@@ -603,7 +603,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("food")
           case Verb() => regularVerb("eat", newThirdPerson)
           case Modifier() => "food"
-          case _ => do wrongContext("moku", context); ""
+          case _ => do wrongContext("moku", context) 
         }
       }
       case "misikeke" => {
@@ -613,7 +613,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Verb() => regularVerb("cures", newThirdPerson)
           case Modifier() => "medical"
           case Adverb() => "medicaly"
-          case _ => do wrongContext("misikeke", context); ""
+          case _ => do wrongContext("misikeke", context) 
         }
       }
       case "moli" => {
@@ -622,7 +622,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("death")
           case Verb() => regularVerb("kill", newThirdPerson)
           case Modifier() => "dead"
-          case _ => do wrongContext("moli", context); ""
+          case _ => do wrongContext("moli", context) 
         }
       }
       case "monsi" => {
@@ -630,7 +630,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Subject() => regularNoun("back")
           case Object() => regularObject("back")
           case Modifier() => "back"
-          case _ => do wrongContext("monsi", context); ""
+          case _ => do wrongContext("monsi", context) 
         }
       }
       case "monsuta" => {
@@ -640,7 +640,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Verb() => regularVerb("scare", newThirdPerson)
           case Modifier() => "scary"
           case Adverb() => "scaryly"
-          case _ => do wrongContext("monsuta", context); ""
+          case _ => do wrongContext("monsuta", context) 
         }
       }
       case "mun" => {
@@ -648,7 +648,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Subject() => regularNoun("moon")
           case Object() => regularObject("moon")
           case Modifier() => "moon"
-          case _ => do wrongContext("mun", context); ""
+          case _ => do wrongContext("mun", context) 
         }
       }
       case "musi" => {
@@ -657,7 +657,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("game")
           case Verb() => regularVerb("play", newThirdPerson)
           case Modifier() => "game related"
-          case _ => do wrongContext("musi", context); ""
+          case _ => do wrongContext("musi", context) 
         }
       }
       case "mute" => {
@@ -665,7 +665,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Verb() => regularVerb("multiply", newThirdPerson)
           case Modifier() => "many"
           case Adverb() => "much"
-          case _ => do wrongContext("mute", context); ""
+          case _ => do wrongContext("mute", context) 
         }
       }
       case "namako" => {
@@ -674,7 +674,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("extra")
           case Verb() => regularVerb("embellish", newThirdPerson)
           case Modifier() => "extra"
-          case _ => do wrongContext("namako", context); ""
+          case _ => do wrongContext("namako", context) 
         }
       }
       case "nanpa" => {
@@ -683,7 +683,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("number")
           case Verb() => regularVerb("count", newThirdPerson)
           case Modifier() => "numerical"
-          case _ => do wrongContext("nanpa", context); ""
+          case _ => do wrongContext("nanpa", context) 
         }
       }
       case "nasa" => {
@@ -693,7 +693,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Verb() => regularVerb("confuse", newThirdPerson)
           case Modifier() => "weird"
           case Adverb() => "weirdly"
-          case _ => do wrongContext("nasa", context); ""
+          case _ => do wrongContext("nasa", context) 
         }
       }
       case "nasin" => {
@@ -702,7 +702,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("way")
           case Verb() => regularVerb("follow", newThirdPerson)
           case Modifier() => "way"
-          case _ => do wrongContext("nasin", context); ""
+          case _ => do wrongContext("nasin", context) 
         }
       }
       case "nena" => {
@@ -710,7 +710,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Subject() => regularNoun("hill")
           case Object() => regularObject("hill")
           case Modifier() => "bumpy"
-          case _ => do wrongContext("nena", context); ""
+          case _ => do wrongContext("nena", context) 
         }
       }
       case "nimi" => {
@@ -719,7 +719,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("name")
           case Verb() => regularVerb("name", newThirdPerson)
           case Modifier() => "named"
-          case _ => do wrongContext("nimi", context); ""
+          case _ => do wrongContext("nimi", context) 
         }
       }
       case "noka" => {
@@ -727,7 +727,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Subject() => regularNoun("foot")
           case Object() => regularObject("foot")
           case Modifier() => "foot"
-          case _ => do wrongContext("noka", context); ""
+          case _ => do wrongContext("noka", context) 
         }
       }
       case "oko" => {
@@ -736,7 +736,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("eye")
           case Verb() => regularVerb("see", newThirdPerson)
           case Modifier() => "visible"
-          case _ => do wrongContext("oko", context); ""
+          case _ => do wrongContext("oko", context) 
         }
       }
       case "olin" => {
@@ -746,7 +746,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Verb() => regularVerb("love", newThirdPerson)
           case Modifier() => "loving"
           case Adverb() => "lovingly"
-          case _ => do wrongContext("olin", context); ""
+          case _ => do wrongContext("olin", context) 
         }
       }
       case "open" => {
@@ -755,7 +755,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("opening")
           case Verb() => regularVerb("open", newThirdPerson)
           case Modifier() => "open"
-          case _ => do wrongContext("open", context); ""
+          case _ => do wrongContext("open", context) 
         }
       }
       case "pakala" => {
@@ -764,7 +764,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => "mistake"
           case Verb() => regularVerb("break", newThirdPerson)
           case Modifier() => "broken"
-          case _ => do wrongContext("pakala", context); ""
+          case _ => do wrongContext("pakala", context) 
         }
       }
       case "pali" => {
@@ -773,7 +773,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("work")
           case Verb() => regularVerb("build", newThirdPerson)
           case Modifier() => "work"
-          case _ => do wrongContext("pali", context); ""
+          case _ => do wrongContext("pali", context) 
         }
       }
       case "palisa" => {
@@ -781,7 +781,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Subject() => regularNoun("stick")
           case Object() => regularObject("stick")
           case Modifier() => "stick shaped"
-          case _ => do wrongContext("palisa", context); ""
+          case _ => do wrongContext("palisa", context) 
         }
       }
       case "pan" => {
@@ -789,7 +789,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Subject() => regularNoun("bread")
           case Object() => regularObject("bread")
           case Modifier() => "bread"
-          case _ => do wrongContext("pan", context); ""
+          case _ => do wrongContext("pan", context) 
         }
       }
       case "pana" => {
@@ -798,7 +798,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("giver")
           case Verb() => regularVerb("give", newThirdPerson)
           case Modifier() => "giving"
-          case _ => do wrongContext("pana", context); ""
+          case _ => do wrongContext("pana", context) 
         }
       }
       case "pilin" => {
@@ -808,7 +808,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Verb() => regularVerb("feel", newThirdPerson)
           case Modifier() => "feeling"
           case Adverb() => "with feeling"
-          case _ => do wrongContext("pilin", context); ""
+          case _ => do wrongContext("pilin", context) 
         }
       }
       case "pimeja" => {
@@ -817,7 +817,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => "darkness"
           case Verb() => regularVerb("darken", newThirdPerson)
           case Modifier() => "dark"
-          case _ => do wrongContext("pimeja", context); ""
+          case _ => do wrongContext("pimeja", context) 
         }
       }
       case "pini" => {
@@ -826,7 +826,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("end")
           case Verb() => regularVerb("end", newThirdPerson)
           case Modifier() => "end"
-          case _ => do wrongContext("pini", context); ""
+          case _ => do wrongContext("pini", context) 
           /// Add Preverb
         }
       }
@@ -835,7 +835,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Subject() => regularNoun("bug")
           case Object() => regularObject("bug")
           case Modifier() => "bug"
-          case _ => do wrongContext("pipi", context); ""
+          case _ => do wrongContext("pipi", context) 
         }
       }
       case "pona" => {
@@ -845,7 +845,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Verb() => regularVerb("improve", newThirdPerson)
           case Modifier() => "good"
           case Adverb() => "well"
-          case _ => do wrongContext("pona", context); ""
+          case _ => do wrongContext("pona", context) 
         }
       }
       case "poka" => {
@@ -853,7 +853,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Subject() => regularNoun("side")
           case Object() => regularObject("side")
           case Modifier() => "side"
-          case _ => do wrongContext("poka", context); ""
+          case _ => do wrongContext("poka", context) 
         }
       }
       case "poki" => {
@@ -862,7 +862,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("container")
           case Verb() => regularVerb("contain", newThirdPerson)
           case Modifier() => "container"
-          case _ => do wrongContext("poki", context); ""
+          case _ => do wrongContext("poki", context) 
         }
       }
       case "seli" => {
@@ -871,7 +871,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("heat")
           case Verb() => regularVerb("heat", newThirdPerson)
           case Modifier() => "hot"
-          case _ => do wrongContext("seli", context); ""
+          case _ => do wrongContext("seli", context) 
         }
       }
       case "selo" => {
@@ -879,7 +879,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Subject() => nounWithMultipleMeanings("skin", "outside")
           case Object() => objectWithMultipleMeanings("skin", "outside")
           case Modifier() => "outside"
-          case _ => do wrongContext("selo", context); ""
+          case _ => do wrongContext("selo", context) 
         }
       }
       case "sewi" => {
@@ -888,7 +888,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => do ambiguity("sky", "holiness", "", "")
           case Verb() => verbWithMultipleMeanings("lift", "sanctify", newThirdPerson)
           case Modifier() => do ambiguity("up", "holy", "", "")
-          case _ => do wrongContext("sewi", context); ""
+          case _ => do wrongContext("sewi", context) 
         }
       }
       case "sijelo" => {
@@ -897,7 +897,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("body")
           case Verb() => regularVerb("embody", newThirdPerson)
           case Modifier() => "body related"
-          case _ => do wrongContext("sijelo", context); ""
+          case _ => do wrongContext("sijelo", context) 
         }
       }
       case "sike" => {
@@ -905,7 +905,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Subject() => regularNoun("circle")
           case Object() => regularObject("circle")
           case Modifier() => "round"
-          case _ => do wrongContext("sike", context); ""
+          case _ => do wrongContext("sike", context) 
         }
       }
       case "sin" => {
@@ -914,7 +914,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("newness")
           case Verb() => regularVerb("renew", newThirdPerson)
           case Modifier() => "new"
-          case _ => do wrongContext("sin", context); ""
+          case _ => do wrongContext("sin", context) 
         }
       }
       case "sinpin" => {
@@ -922,7 +922,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Subject() => regularNoun("front")
           case Object() => regularObject("front")
           case Modifier() => "front"
-          case _ => do wrongContext("sinpin", context); ""
+          case _ => do wrongContext("sinpin", context) 
         }
       }
       case "sitelen" => {
@@ -931,7 +931,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("picture")
           case Verb() => regularVerb("draw", newThirdPerson)
           case Modifier() => "pictorial"
-          case _ => do wrongContext("sitelen", context); ""
+          case _ => do wrongContext("sitelen", context) 
         }
       }
       case "soko" => {
@@ -939,7 +939,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Subject() => regularNoun("mushroom")
           case Object() => regularObject("mushroom")
           case Modifier() => "mushroom related"
-          case _ => do wrongContext("soka", context); ""
+          case _ => do wrongContext("soka", context) 
         }
       }
       case "sona" => {
@@ -949,7 +949,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Verb() => verbWithMultipleMeanings("know", "learn", newThirdPerson)
           case Modifier() => "wise"
           case Adverb() => "wisely"
-          case _ => do wrongContext("sona", context); ""
+          case _ => do wrongContext("sona", context) 
         }
       }
       case "soweli" => {
@@ -957,7 +957,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Subject() => regularNoun("animal")
           case Object() => regularObject("animal")
           case Modifier() => "animal related"
-          case _ => do wrongContext("soweli", context); ""
+          case _ => do wrongContext("soweli", context) 
         }
       }
       case "suli" => {
@@ -965,7 +965,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Verb() => regularVerb("enlarge", newThirdPerson)
           case Modifier() => "big"
           case Object() => "big"
-          case _ => do wrongContext("suli", context); ""
+          case _ => do wrongContext("suli", context) 
         }
       }
       case "suno" => {
@@ -974,7 +974,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("sun")
           case Verb() => regularVerb("shine", newThirdPerson)
           case Modifier() => "sunny"
-          case _ => do wrongContext("suno", context); ""
+          case _ => do wrongContext("suno", context) 
         }
       }
       case "supa" => {
@@ -982,7 +982,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Subject() => nounWithMultipleMeanings("surface", "furniture")
           case Object() => objectWithMultipleMeanings("surface", "furniture")
           case Modifier() => "horizontal"
-          case _ => do wrongContext("supa", context); ""
+          case _ => do wrongContext("supa", context) 
         }
       }
       case "suwi" => {
@@ -992,7 +992,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Verb() => regularVerb("sweeten", newThirdPerson)
           case Modifier() => "sweet"
           case Adverb() => "sweetly"
-          case _ => do wrongContext("suwi", context); ""
+          case _ => do wrongContext("suwi", context) 
         }
       }
       case "telo" => {
@@ -1001,7 +1001,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("water")
           case Verb() => regularVerb("splash", newThirdPerson)
           case Modifier() => "wet"
-          case _ => do wrongContext("telo", context); ""
+          case _ => do wrongContext("telo", context) 
         }
       }
       case "tenpo" => {
@@ -1009,7 +1009,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Subject() => "time"
           case Object() => "time"
           case Modifier() => "time"
-          case _ => do wrongContext("tenpo", context); ""
+          case _ => do wrongContext("tenpo", context) 
         }
       }
       case "toki" => {
@@ -1018,7 +1018,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("language")
           case Verb() => println(newThirdPerson); regularVerb("talk", newThirdPerson)
           case Modifier() => "linguistic"
-          case _ => do wrongContext("toki", context); ""
+          case _ => do wrongContext("toki", context) 
         }
       }
       case "tomo" => {
@@ -1027,7 +1027,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("house")
           case Verb() => regularVerb("build", newThirdPerson)
           case Modifier() => "house"
-          case _ => do wrongContext("tomo", context); ""
+          case _ => do wrongContext("tomo", context) 
         }
       }
       case "tonsi" => {
@@ -1035,7 +1035,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Subject() => "non-binary"
           case Object() => "non-binary"
           case Modifier() => "non-binary"
-          case _ => do wrongContext("tonsi", context); ""
+          case _ => do wrongContext("tonsi", context) 
         }
       }
       case "tu" => {
@@ -1044,7 +1044,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => "two"
           case Verb() => regularVerb("halve", newThirdPerson)
           case Modifier() => "two"
-          case _ => do wrongContext("tu", context); ""
+          case _ => do wrongContext("tu", context) 
         }
       }
       case "unpa" => {
@@ -1054,7 +1054,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Verb() => if (newThirdPerson) "has sex" else "have sex"
           case Modifier() => "sexual"
           case Adverb() => "sexually"
-          case _ => do wrongContext("unpa", context); ""
+          case _ => do wrongContext("unpa", context) 
         }
       }
       case "uta" => {
@@ -1062,7 +1062,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Subject() => regularNoun("mouth")
           case Object() => regularObject("mouth")
           case Modifier() => "mouth related"
-          case _ => do wrongContext("uta", context); ""
+          case _ => do wrongContext("uta", context) 
         }
       }
       case "utala" => {
@@ -1071,7 +1071,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => "fight"
           case Verb() => regularVerb("fight", newThirdPerson)
           case Modifier() => "fighting"
-          case _ => do wrongContext("utala", context); ""
+          case _ => do wrongContext("utala", context) 
         }
       }
       case "walo" => {
@@ -1080,7 +1080,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => "white"
           case Verb() => regularVerb("whiten", newThirdPerson)
           case Modifier() => "white"
-          case _ => do wrongContext("walo", context); ""
+          case _ => do wrongContext("walo", context) 
         }
       }
       case "wan" => {
@@ -1089,7 +1089,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => "one"
           case Verb() => regularVerb("unify", newThirdPerson)
           case Modifier() => "unique"
-          case _ => do wrongContext("wan", context); ""
+          case _ => do wrongContext("wan", context) 
         }
       }
       case "waso" => {
@@ -1098,7 +1098,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => regularObject("bird")
           case Modifier() => "bird related"
           case Adverb() => "like a bird"
-          case _ => do wrongContext("waso", context); ""
+          case _ => do wrongContext("waso", context) 
         }
       }
       case "wawa" => {
@@ -1108,7 +1108,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Verb() => regularVerb("power", newThirdPerson)
           case Modifier() => "powerful"
           case Adverb() => "powerfully"
-          case _ => do wrongContext("wawa", context); ""
+          case _ => do wrongContext("wawa", context) 
         }
       }
       case "weka" => {
@@ -1118,11 +1118,11 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Verb() => regularVerb("remove", newThirdPerson)
           case Modifier() => "absent"
           case Adverb() => "absently"
-          case _ => do wrongContext("weka", context); ""
+          case _ => do wrongContext("weka", context) 
         }
       }
-      case "" => do wrongContext("Input is empty", context); ""
-      case unknownWord => do unknownWord(unknownWord); ""
+      case "" => do wrongContext("Input is empty", context) 
+      case unknownWord => do unknownWord(unknownWord)
     }
   } with unknownWord { word =>
     println("UNKNOWN WORD: " ++ word)

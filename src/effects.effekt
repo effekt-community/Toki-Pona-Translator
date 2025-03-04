@@ -25,13 +25,13 @@ type Context {
 }
 
 /// Used when toki pona word is used in wrong context
-effect wrongContext(msg: String, context: Context): Unit
+effect wrongContext(msg: String, context: Context): Nothing
 
 /// Used when word isn't known
-effect unknownWord(word: String): String
+effect unknownWord(word: String): Nothing
 
 /// Used to signal an error in the sentence
-effect sentenceError(msg: String): Unit
+effect sentenceError(msg: String): Nothing
 
 
 /// Used when Sentence has multiple translations
@@ -51,11 +51,13 @@ effect addToSentence(msg: String): Unit
 /// Used to signal, that the next word should be negated
 effect negateNext(negateNext: Bool): Unit
 
-// USed to temporarily store a string
+
+// Used to temporarily store a string
 effect hold(storedValue: String): Unit
 
 // Used to retrieve the temporarily stored string
 effect release(): String
+
 
 /// Sets the subject person of a sentence
 effect setSubjectPerson(person: SubjectPerson): Unit
