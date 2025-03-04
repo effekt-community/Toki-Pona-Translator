@@ -59,7 +59,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
         context match {
           case Subject() => {
             if (negate) { do negateNext(false); "me" }
-            else { do setSubjectPerson(First()); println("test"); "I" }
+            else { do setSubjectPerson(First()); "I" }
           }
           case Object() => "me"
           case Modifier() => "my"
@@ -182,7 +182,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
       }
       case "alasa" => {
         context match {
-          case Subject() => regularNoun("Noun")
+          case Subject() => regularNoun("hunt")
           case Object() => regularObject("hunt")
           case Verb() => regularVerb("hunt", newThirdPerson)
           case Modifier() => "hunt related"
@@ -198,6 +198,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case _ => do wrongContext("ale", context); ""
         }
       }
+      
       case "anpa" => {
         context match {
           case Subject() => regularNoun("bottom")
@@ -207,6 +208,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case _ => do wrongContext("anpa", context); ""
         }
       }
+
       case "ante" => {
         context match {
           case Subject() => regularNoun("ante")
