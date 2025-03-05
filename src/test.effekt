@@ -78,8 +78,8 @@ def main() = {
           assertEqual(translationsSentence4.get(2), "people build pictures and text and fun sounds with feeling using electric tool ")
         }
     }
-  } with ambiguity { (first, second, third, fourth) =>
-    resume(first)
+  } with ambiguity{ ambiguities =>
+    ambiguities.foreach[(String, AmbiguityTypes)] { x => resume(x.first)}
   } with ambiguityVerbOnlyLi {
     resume(true)
   } with Exception[OutOfBounds] {

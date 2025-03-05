@@ -298,7 +298,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
             if (output != "person") do setSubjectPerson(NotThird())
             output
           }
-          case Object() => do ambiguity("person", "people", "", "")
+          case Object() => do ambiguity([("person", Singular()), ("people", Plural())])
           case Verb() => regularVerb("personify", newThirdPerson)
           case Modifier() => "human"
           case _ => do wrongContext("jan", context) 
