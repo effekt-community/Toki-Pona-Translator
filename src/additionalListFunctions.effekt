@@ -61,7 +61,7 @@ def getIndexOf(l: List[String], vs: List[String]): Option[Int] = {
     var index: Int = -1
     while (found == false) {
       index = index + 1
-      if (vs.contains(l.get[String](index))) {
+      if (vs.any[String] {x => x == l.get(index)}) {
         found = true
       }
     }
@@ -88,21 +88,3 @@ def remove(l: List[String], v: String): List[String] = {
   def raise(exception: OutOfBounds, msg: String) = []
   }
 }
-
-
-/// Checks if a value is in the list
-def contains(l:List[String], v: String): Bool = {
-  try {
-    var found: Bool = false
-    var index: Int = -1
-    while (found == false) {
-      index = index + 1
-      if (l.get[String](index) == v) {
-        found = true
-      }
-    }
-    return found
-  } with Exception[OutOfBounds] {
-  def raise(exception: OutOfBounds, msg: String) = return false
-  }
-} 
