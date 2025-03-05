@@ -1026,7 +1026,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
         context match {
           case Subject() => regularNoun("language")
           case Object() => regularObject("language")
-          case Verb() => println(newThirdPerson); regularVerb("talk", newThirdPerson)
+          case Verb() => regularVerb("talk", newThirdPerson)
           case Modifier() => "linguistic"
           case _ => do wrongContext("toki", context) 
         }
