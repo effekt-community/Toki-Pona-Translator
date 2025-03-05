@@ -33,6 +33,7 @@ The translating will be done by creating syntax trees for the toki pona sentence
     - Particle anu
     - Questions
     - Loan Words
+- Examples for sentences that can currently be translated are in test.effekt
 
 
 ## Plan
