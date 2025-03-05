@@ -6,20 +6,22 @@ import src/effects
 import src/findNearestWord
 
 
+def formPlural(word: String): String = {
+  if (word.endsWith("s") || word.endsWith("ch")) word ++ "es"
+  else word ++ "s"
+}
+
 def regularNoun(word: String): String / { ambiguity, setSubjectPerson} = {
-  val pluralWord = {
-    if (word.endsWith("s")) word ++ "es"
-    else word ++ "s"
-  }
-  val output = do ambiguity(word, pluralWord, "", "")
+  val pluralWord = formPlural(word)
+  val output = do ambiguity([(word, Plural()), (pluralWord, Singular())])
   if (output != word) do setSubjectPerson(NotThird())
   output
 }
 
-def nounWithMultipleMeanings(word1: String, word2: String): String / { ambiguity, setSubjectPerson} = {
-  val output = do ambiguity(word1, word1 ++ "s", word2, word2 ++ "s")
-  if (output != word1 and output != word2) do setSubjectPerson(NotThird())
-  output
+def nounTwoMeaningsPlural(word1: String, word2: String): String / { ambiguity, setSubjectPerson} = {
+  var output = do ambiguity([(word1, FirstMeaning()), (word2, SecondMeaning())])
+  output = regularNoun(output)
+  return output
 }
 
 def regularVerb(word: String, thirdPerson: Bool): String / { ambiguity, setSubjectPerson} = {
@@ -29,19 +31,23 @@ def regularVerb(word: String, thirdPerson: Bool): String / { ambiguity, setSubje
   else word
 }
 
-def verbWithMultipleMeanings(word1: String, word2: String, thirdPerson: Bool): String / { ambiguity, setSubjectPerson} = {
-  val output = do ambiguity(word1, word2, "", "")
+def verbTwoMeanings(word1: String, word2: String, thirdPerson: Bool): String / { ambiguity, setSubjectPerson} = {
+  val output = do ambiguity([(word1, FirstMeaning()), (word2, SecondMeaning())])
   if (output.endsWith("y") and thirdPerson) output.substring(0, output.length() - 1) ++ "ies"
   else if (thirdPerson) output ++ "s"
   else output
 }
 
 def regularObject(word: String): String / { ambiguity, setSubjectPerson} = {
-  do ambiguity(word, word ++ "s", "", "")
+  val pluralWord = formPlural(word)
+  val output = do ambiguity([(word, Plural()), (pluralWord, Singular())])
+  return output
 }
 
-def objectWithMultipleMeanings(word1: String, word2: String): String / { ambiguity, setSubjectPerson} = {
-  do ambiguity(word1, word1 ++ "s", word2, word2 ++ "s")
+def objectTwoMeaningsPlural(word1: String, word2: String): String / { ambiguity, setSubjectPerson} = {
+  var output = do ambiguity([(word1, FirstMeaning()), (word2, SecondMeaning())])
+  output = regularObject(output)
+  return output
 }
 
 
@@ -267,8 +273,8 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
       }
       case "insa" => {
         context match {
-          case Subject() => nounWithMultipleMeanings("inside", "stomach")
-          case Object() => objectWithMultipleMeanings("inside", "stomach")
+          case Subject() => nounTwoMeaningsPlural("inside", "stomach")
+          case Object() => objectTwoMeaningsPlural("inside", "stomach")
           case Verb() => regularVerb("insert", newThirdPerson)
           case Modifier() => "inner"
           case _ => do wrongContext("insa", context) 
@@ -287,9 +293,9 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
 
       case "jan" => {
         context match {
-          case Subject() => do ambiguity("person", "people", "", "")
-          case Object() => do ambiguity("person", "people", "", "")
-          case Verb() => regularVerb("anthropomorzise", newThirdPerson)
+          case Subject() => do ambiguity([("person", Singular()), ("people", Plural())])
+          case Object() => do ambiguity([("person", Singular()), ("people", Plural())])
+          case Verb() => regularVerb("personify", newThirdPerson)
           case Modifier() => "human"
           case _ => do wrongContext("jan", context) 
         }
@@ -422,7 +428,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
         context match {
           case Subject() => regularNoun("ear")
           case Object() => regularObject("ear")
-          case Verb() => verbWithMultipleMeanings("hear", "follow", newThirdPerson)
+          case Verb() => verbTwoMeanings("hear", "follow", newThirdPerson)
           case Modifier() => "auditory"
           case _ => do wrongContext("kute", context) 
         }
@@ -458,9 +464,9 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
       }
       case "lawa" => {
         context match {
-          case Subject() => nounWithMultipleMeanings("head", "leader")
-          case Object() => objectWithMultipleMeanings("head", "leader")
-          case Verb() => verbWithMultipleMeanings("lead", "head", newThirdPerson)
+          case Subject() => nounTwoMeaningsPlural("head", "leader")
+          case Object() => objectTwoMeaningsPlural("head", "leader")
+          case Verb() => verbTwoMeanings("lead", "head", newThirdPerson)
           case Modifier() => "head related"
           case _ => do wrongContext("lawa", context) 
         }
@@ -528,8 +534,8 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
       }
       case "luka" => {
         context match {
-          case Subject() => nounWithMultipleMeanings("hand", "five")
-          case Object() => objectWithMultipleMeanings("hand", "five")
+          case Subject() => nounTwoMeaningsPlural("hand", "five")
+          case Object() => objectTwoMeaningsPlural("hand", "five")
           case Verb() => regularVerb("touch", newThirdPerson)
           case Modifier() => "five"
           case _ => do wrongContext("luka", context) 
@@ -876,18 +882,18 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
       }
       case "selo" => {
         context match {
-          case Subject() => nounWithMultipleMeanings("skin", "outside")
-          case Object() => objectWithMultipleMeanings("skin", "outside")
+          case Subject() => nounTwoMeaningsPlural("skin", "outside")
+          case Object() => objectTwoMeaningsPlural("skin", "outside")
           case Modifier() => "outside"
           case _ => do wrongContext("selo", context) 
         }
       }
       case "sewi" => {
         context match {
-          case Subject() => do ambiguity("sky", "holiness", "", "")
-          case Object() => do ambiguity("sky", "holiness", "", "")
-          case Verb() => verbWithMultipleMeanings("lift", "sanctify", newThirdPerson)
-          case Modifier() => do ambiguity("up", "holy", "", "")
+          case Subject() => do ambiguity([("sky", Singular()), ("holiness", Plural())])
+          case Object() => do ambiguity([("sky", Singular()), ("holiness", Plural())])
+          case Verb() => verbTwoMeanings("lift", "sanctify", newThirdPerson)
+          case Modifier() => do ambiguity([("up", Singular()), ("holy", Plural())])
           case _ => do wrongContext("sewi", context) 
         }
       }
@@ -946,7 +952,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
         context match {
           case Subject() => regularNoun("knowledge")
           case Object() => regularObject("knowledge")
-          case Verb() => verbWithMultipleMeanings("know", "learn", newThirdPerson)
+          case Verb() => verbTwoMeanings("know", "learn", newThirdPerson)
           case Modifier() => "wise"
           case Adverb() => "wisely"
           case _ => do wrongContext("sona", context) 
@@ -979,8 +985,8 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
       }
       case "supa" => {
         context match {
-          case Subject() => nounWithMultipleMeanings("surface", "furniture")
-          case Object() => objectWithMultipleMeanings("surface", "furniture")
+          case Subject() => nounTwoMeaningsPlural("surface", "furniture")
+          case Object() => objectTwoMeaningsPlural("surface", "furniture")
           case Modifier() => "horizontal"
           case _ => do wrongContext("supa", context) 
         }

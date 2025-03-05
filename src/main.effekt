@@ -12,17 +12,8 @@ def translateSentence(s: String): List[String] = {
   try {
     try {
       do escapeContext(deconstructSyntaxTree(constructSyntaxTree(split(s, " "))))
-    } with ambiguity{ (first, second, third, fourth) =>
-      resume(first)
-      if (second != "") {
-        resume(second)
-      }
-      if (third != "") {
-        resume(third)
-      }
-      if (fourth != "") {
-        resume(fourth)
-      }
+    } with ambiguity{ ambiguities =>
+      ambiguities.foreach[(String, AmbiguityTypes)] { x => resume(x.first)}
     } with ambiguityVerbOnlyLi {
       resume(true)
       resume(false)
@@ -47,8 +38,6 @@ def wrapper(): Unit = {
   } with escapeContext { _ =>
     ()
   }
-
-
 }
 
 

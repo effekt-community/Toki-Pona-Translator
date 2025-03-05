@@ -24,6 +24,18 @@ type Context {
   Adverb()
 }
 
+type AmbiguityTypes {
+  Plural()
+  Singular()
+  FirstMeaning()
+  SecondMeaning()
+}
+
+type SubjectPerson {
+  First()
+  NotThird()
+}
+
 /// Used when toki pona word is used in wrong context
 effect wrongContext(msg: String, context: Context): Nothing
 
@@ -35,7 +47,7 @@ effect sentenceError(msg: String): Nothing
 
 
 /// Used when Sentence has multiple translations
-effect ambiguity(first: String, second: String, third: String, fourht: String): String
+effect ambiguity(ambiguities: List[(String, AmbiguityTypes)]): String
 
 /// Used when part of the sentence could be the verb or an object
 effect ambiguityVerbOnlyLi(): Bool
@@ -62,10 +74,8 @@ effect release(): String
 /// Sets the subject person of a sentence
 effect setSubjectPerson(person: SubjectPerson): Unit
 
-type SubjectPerson {
-  First()
-  NotThird()
-}
+effect newAmbiguity(first: String, second: String, third: String, fourht: String): String
+
 
 def main(): Unit = {
   with console;
