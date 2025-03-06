@@ -74,8 +74,6 @@ effect release(): String
 /// Sets the subject person of a sentence
 effect setSubjectPerson(person: SubjectPerson): Unit
 
-effect newAmbiguity(first: String, second: String, third: String, fourht: String): String
-
 
 def main(): Unit = {
   with console;
