@@ -22,6 +22,7 @@ type Context {
   Modifier()
   Preverb()
   Adverb()
+  Adjective()
 }
 
 type AmbiguityTypes {

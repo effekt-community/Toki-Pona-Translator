@@ -11,6 +11,12 @@ def showSentence(l: List[String]): String = {
 }
 
 
+def flatten(l: List[String]) {f: (String, String) => String}: String = {
+  var output: String = ""
+  l.foreachIndex { (index, x) => if (index != 0) output = f(output, x) else output = x}
+  output
+}
+
 /// Gets all indexes of ocurrences of a string in a list
 def getIndexesOf(l:List[String], v: String): List[Int] = {
   try {
@@ -87,4 +93,8 @@ def remove(l: List[String], v: String): List[String] = {
   } with Exception[OutOfBounds] {
   def raise(exception: OutOfBounds, msg: String) = []
   }
+}
+
+def main(): Unit = {
+  println(["a", "b", "c"].flatten { (a, b) => a ++ "-" ++ b })
 }

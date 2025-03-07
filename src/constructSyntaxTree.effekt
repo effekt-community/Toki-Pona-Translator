@@ -204,9 +204,9 @@ def createModifiers(words: List[String]): List[SyntaxTree] = {
   if (words.size() == 0) return []
   else {
     words.getIndexesOf("pi") match {
-      case Cons(0, Cons(index, _)) => return Cons(Modifier(words.drop(1).take(1), words.slice(2, index)), createModifiers(words.drop(index)))
-      case Cons(0, _) => return [Modifier(words.drop(1).take(1), words.drop(2))]
-      case _ => return Cons(Modifier(words.take(1), []), createModifiers(words.drop(1)))
+      case Cons(0, Cons(index, _)) => return Cons(ModifierLeaf(words.drop(1).take(1), words.slice(2, index)), createModifiers(words.drop(index)))
+      case Cons(0, _) => return [ModifierLeaf(words.drop(1).take(1), words.drop(2))]
+      case _ => return Cons(ModifierLeaf(words.take(1), []), createModifiers(words.drop(1)))
     }
   }
 }

@@ -6,11 +6,12 @@ type SyntaxTree {
   Empty()
   Sentence(subjects: List[SyntaxTree], predicates: List[SyntaxTree])
   Predicate(verb: SyntaxTree, objects: List[SyntaxTree], prepositions: List[SyntaxTree])
-  Modifier(head: List[String], modifiers: List[String])
+  ModifierLeaf(head: List[String], modifiers: List[String])
   VerbLeaf(preverb: List[String], head: List[String], modifiers: List[SyntaxTree])
   ObjectLeaf(head: List[String], modifiers: List[SyntaxTree])
   SubjectLeaf(head: List[String], modifiers: List[SyntaxTree])
   PrepositionsLeaf(prep:List[String], head: List[String], modifiers: List[SyntaxTree])
+  AdjectiveLeaf(head: List[String])
 }
 
 
@@ -25,10 +26,10 @@ def printSyntaxTree(node: SyntaxTree): Unit = {
         println(indent ++ "  " ++ "PREDICATES:")
         predicates.foreach{ n => printNode(n, indent ++ "    ")}
      }
-     case Modifier(head, modifiers) => {
+     case ModifierLeaf(head, modifiers) => {
       modifiers match {
-        case Nil() => println(indent ++ "Modifier: HEAD: " ++ showSentence(head))
-        case _ => println(indent ++ "Modifier: HEAD: " ++ showSentence(head) ++ "  Modifiers: " ++ showSentence(modifiers))
+        case Nil() => println(indent ++ "ModifierLeaf: HEAD: " ++ showSentence(head))
+        case _ => println(indent ++ "ModifierLeaf: HEAD: " ++ showSentence(head) ++ "  Modifiers: " ++ showSentence(modifiers))
       }
      }
       case SubjectLeaf(head, modifiers) => {
@@ -69,6 +70,9 @@ def printSyntaxTree(node: SyntaxTree): Unit = {
           case Cons(_, _) => prepositions.foreach{ n => printNode(n, indent ++ "  ")}
         }
       }
+      case AdjectiveLeaf(head) => {
+        println(indent ++ "ADJECTIVELEAF: " ++ showSentence(head))
+      }
       case Empty() => {
         println(indent ++ "Empty")
       }
@@ -78,7 +82,7 @@ def printSyntaxTree(node: SyntaxTree): Unit = {
 }
 
 def main(): Unit = {
-  val tree1: SyntaxTree = Sentence([SubjectLeaf(["Soweli"], [Modifier(["pimeja"], [])]), SubjectLeaf(["Soweli"], [Modifier(["pimeja"], [])])], [Predicate(VerbLeaf([], ["lili"], [Modifier(["pimeja"], [])]), [], [PrepositionsLeaf(["lon"], [], [])])])
+  val tree1: SyntaxTree = Sentence([SubjectLeaf(["Soweli"], [ModifierLeaf(["pimeja"], [])]), SubjectLeaf(["Soweli"], [ModifierLeaf(["pimeja"], [])])], [Predicate(VerbLeaf([], ["lili"], [ModifierLeaf(["pimeja"], [])]), [], [PrepositionsLeaf(["lon"], [], [])])])
   //var tree2: SyntaxTree = Sentence([], [])
   //tree2 = appendToSentence(tree2, SubjectLeaf(["Soweli"], ["pimeja"]))
   //printSyntaxTree(tree2.appendToSentence(SubjectLeaf(["Soweli"], ["pimeja"])))

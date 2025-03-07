@@ -1,0 +1,79 @@
+module src/deconstructSyntaxTree
+
+import src/additionalListFunctions
+import src/syntaxTree
+import src/additionalListFunctions
+import src/constructSyntaxTree
+import src/effects
+import src/translateWords
+import src/constructSyntaxTree
+
+
+def convertSyntaxTree(tokiPonaTree: SyntaxTree): SyntaxTree / {ambiguity} = {
+  var thirdPerson: Bool = true
+  var firstPerson: Bool = false
+  var negate: Bool = false
+  var storage: String = ""
+  var counter: Int = 0
+  def convertSyntaxTreeHelper(tokiPonaTree: SyntaxTree): SyntaxTree / {ambiguity, setSubjectPerson, hold, release, negateNext} = {
+    tokiPonaTree match {
+      case Sentence(subjects, predicates) =>  Sentence(subjects.map { x =>  convertSyntaxTreeHelper(x) }, predicates.map { x =>  convertSyntaxTreeHelper(x) })
+      case Predicate(verb, objects, prepositions) => {  
+        //val verb2 = verb match {
+        //  case Empty() => VerbLeaf([], if (thirdPerson) ["is"] else if (firstPerson) ["am"] else ["are"], [])
+        //  case verb => Empty(); //convertSyntaxTreeHelper(verb)
+        //  }
+        Predicate(convertSyntaxTreeHelper(verb), objects.map { x =>  convertSyntaxTreeHelper(x)}, prepositions.map { x =>  convertSyntaxTreeHelper(x)})
+      }
+      case ModifierLeaf(head, modifiers) => { 
+        if (modifiers.size() == 0) {
+          AdjectiveLeaf(head.map { word => translateWord(word, Adjective(), thirdPerson, negate) })
+        } 
+        else ModifierLeaf(head.map { word => translateWord(word, Object(), thirdPerson, negate) }, modifiers.map { word => translateWord(word, Adjective(), thirdPerson, negate) })
+      }
+      case VerbLeaf(preverb, head, modifiers) =>  VerbLeaf(preverb.map { word => translateWord(word, Preverb(), thirdPerson, negate) }, head.map { word => translateWord(word, Verb(), thirdPerson, negate) }, modifiers.map { x => convertSyntaxTreeHelper(x) })
+      case ObjectLeaf(head, modifiers) =>  ObjectLeaf(head.map { word => translateWord(word, Object(), thirdPerson, negate) }, modifiers.map { x => convertSyntaxTreeHelper(x) })
+      case SubjectLeaf(head, modifiers) =>  SubjectLeaf(head.map { word => translateWord(word, Subject(), thirdPerson, negate) }, modifiers.map { x => convertSyntaxTreeHelper(x) })
+      case PrepositionsLeaf(prep, head, modifiers) =>  PrepositionsLeaf(prep.map { word => translateWord(word, Preposition(), thirdPerson, negate) }, head.map { word => translateWord(word, Object(), thirdPerson, negate) }, modifiers.map { x => convertSyntaxTreeHelper(x) })
+      case _ =>  Empty()
+    }
+  }
+  try {
+    convertSyntaxTreeHelper(tokiPonaTree)
+  } with setSubjectPerson { subjectPerson =>
+    subjectPerson match {
+      case First() => {
+        firstPerson = true
+        thirdPerson = false
+      }
+      case NotThird() => {
+        thirdPerson = false
+      }
+    }
+    resume(())
+  } with hold { storedValue =>
+    resume(())
+  } with release {
+    val output = storage
+    storage = ""
+    resume(output)
+  } with negateNext { newNegate =>
+    negate = newNegate
+    resume(())
+  }
+}
+
+def main(): Unit = {
+  try {
+    printSyntaxTree(constructSyntaxTree(split("jan li pali pilin soweli e sitelen pi sitelen sitelen e lipu e kalama musi kepeken ilo wawa", " ")))
+    printSyntaxTree(convertSyntaxTree(constructSyntaxTree(split("jan li pali pilin soweli e sitelen pi sitelen sitelen e lipu e kalama musi kepeken ilo wawa", " "))))
+  } with ambiguityVerbOnlyLi {
+    resume(true)
+  } with ambiguity{ ambiguities =>
+      val string = ambiguities.take(1) match {
+        case Cons((x, _), _) => x
+        case _ => ""
+      }
+      resume(string)
+  }
+}

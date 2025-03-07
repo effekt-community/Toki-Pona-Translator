@@ -1,13 +1,15 @@
 module main
 
 import src/constructSyntaxTree
-import src/deconstructSyntaxTree
+import src/deconstructSyntaxTree2
 import src/effects
 import io/console
+import src/convertSyntaxTree
+import src/syntaxTree
 
 
 def translateSentenceHelper(sentence: String): String / { ambiguity, ambiguityVerbOnlyLi }  = {
-  deconstructSyntaxTree(constructSyntaxTree(split(sentence, " ")))
+  deconstructSyntaxTree(convertSyntaxTree(constructSyntaxTree(split(sentence, " "))))
 }
 
 

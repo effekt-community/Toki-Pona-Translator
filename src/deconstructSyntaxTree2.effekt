@@ -1,0 +1,76 @@
+module src/deconstructSyntaxTree2
+
+import src/additionalListFunctions
+import src/syntaxTree
+import src/additionalListFunctions
+import src/constructSyntaxTree
+import src/effects
+import src/translateWords
+
+def deconstructSyntaxTree(englishTree: SyntaxTree): String / { ambiguity } = {
+  var output: String = ""
+  var storage: String = ""
+  def deconstructSyntaxTreeHelper(index: Int, englishTree: SyntaxTree): Unit / { ambiguity, addToSentence } = {
+    englishTree match {
+      case Sentence(subjects, predicates) => {
+        subjects.foreachIndex { (index, x) => deconstructSyntaxTreeHelper(index, x) }
+        predicates.foreachIndex { (index, x) => deconstructSyntaxTreeHelper(index, x) }
+      }
+      case Predicate(verb, objects, prepositions) => {
+        if (index != 0) {
+            do addToSentence("and")
+          }
+        verb match {
+          case VerbLeaf(preverb, head, modifiers) => {
+            preverb.foreach { x => do addToSentence(x) }
+            head.foreach { x => do addToSentence(x) }
+            objects.foreachIndex { (index, x) => deconstructSyntaxTreeHelper(index, x) }
+            modifiers.foreachIndex { (index, x) => deconstructSyntaxTreeHelper(index, x) }
+            prepositions.foreachIndex { (index, x) => deconstructSyntaxTreeHelper(index, x) }
+          }
+          case _ => println("TODO: Handle Case without Object")
+        }
+      }
+      case ModifierLeaf(head, modifiers) => println(show(head)); do addToSentence(modifiers.flatten{ (a, b) => a ++ "-" ++ b} ++ "-" ++ showSentence(head) ++ " related")
+      case AdjectiveLeaf(head) => {
+        head.foreach { x => do addToSentence(x) }
+      }
+      case SubjectLeaf(head, modifiers) => {
+        if (index != 0) {
+          do addToSentence("and")
+        }
+        modifiers.foreachIndex { (index, x) => deconstructSyntaxTreeHelper(index, x) }
+        head.foreach { x => do addToSentence(x) }
+      }
+      case ObjectLeaf(head, modifiers) => {
+        if (index != 0) {
+          do addToSentence("and")
+        }
+        modifiers.reverse.foreachIndex { (index, x) => deconstructSyntaxTreeHelper(index, x) }
+        head.foreach { x => do addToSentence(x) }
+      }
+      case PrepositionsLeaf(prep, head, modifiers) => {
+        if (index != 0) {
+          do addToSentence("and")
+        }
+        prep.foreach { x => do addToSentence(x) }
+        modifiers.reverse.foreachIndex { (index, x) => deconstructSyntaxTreeHelper(index, x) }
+        head.foreach { x => do addToSentence(x) }
+      } 
+      case _ => ()
+    }
+  }
+  try {
+    deconstructSyntaxTreeHelper(0, englishTree)
+    return output
+  } with addToSentence { x => 
+    if (x != "") output = output ++ x ++ " "
+    resume(())
+  }
+}
+
+
+
+def main(): Unit = {
+  println(["a", "b"].flatten{ (a, b) => a ++ "-" ++ b ++ "-" ++ showSentence(["c"]) ++ " related"})
+}
