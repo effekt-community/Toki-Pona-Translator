@@ -7,7 +7,9 @@ type SyntaxTree {
   Sentence(subjects: List[SyntaxTree], predicates: List[SyntaxTree])
   Predicate(verb: SyntaxTree, objects: List[SyntaxTree], prepositions: List[SyntaxTree])
   ModifierLeaf(head: List[String], modifiers: List[String])
-  VerbLeaf(preverb: List[String], head: List[String], modifiers: List[SyntaxTree])
+  AdverbLeaf(head: List[String], modifiers: List[String])
+  TokiPonaVerbLeaf(preverb: List[String], head: List[String], modifiers: List[SyntaxTree])
+  EnglishVerbLeaf(preverb: List[String], head: List[String], modifiers: List[SyntaxTree], negation: String)
   ObjectLeaf(head: List[String], modifiers: List[SyntaxTree])
   SubjectLeaf(head: List[String], modifiers: List[SyntaxTree])
   PrepositionsLeaf(prep:List[String], head: List[String], modifiers: List[SyntaxTree])
@@ -32,6 +34,12 @@ def printSyntaxTree(node: SyntaxTree): Unit = {
         case _ => println(indent ++ "ModifierLeaf: HEAD: " ++ showSentence(head) ++ "  Modifiers: " ++ showSentence(modifiers))
       }
      }
+     case AdverbLeaf(head, modifiers) => {
+      modifiers match {
+        case Nil() => println(indent ++ "Adverb: HEAD: " ++ showSentence(head))
+        case _ => println(indent ++ "AdverbLeaf: HEAD: " ++ showSentence(head) ++ "  Modifiers: " ++ showSentence(modifiers))
+      }
+     }
       case SubjectLeaf(head, modifiers) => {
         println(indent ++ "SUBJECTLEAF:")
         println(indent ++ "  " ++ "Head: " ++ showSentence(head))
@@ -44,8 +52,8 @@ def printSyntaxTree(node: SyntaxTree): Unit = {
         println(indent ++ "  " ++ "MODIFIERS:")
         modifiers.foreach{ n => printNode(n, indent ++ "    ")}
       }
-      case VerbLeaf(preverb, head, modifiers) => {
-        println(indent ++ "VERBLEAF:")
+      case TokiPonaVerbLeaf(preverb, head, modifiers) => {
+        println(indent ++ "TOKIPONAVERBLEAF:")
         println(indent ++ "  " ++ "Preverbs: " ++ showSentence(preverb))
         println(indent ++ "  " ++ "Head: " ++ showSentence(head))
         println(indent ++ "  " ++ "MODIFIERS:")
@@ -73,6 +81,14 @@ def printSyntaxTree(node: SyntaxTree): Unit = {
       case AdjectiveLeaf(head) => {
         println(indent ++ "ADJECTIVELEAF: " ++ showSentence(head))
       }
+      case EnglishVerbLeaf(preverb, head, modifiers, negation) => {
+        println(indent ++ "ENGLISHVERBLEAF:")
+        println(indent ++ "  " ++ "Preverbs: " ++ showSentence(preverb))
+        println(indent ++ "  " ++ "Head: " ++ showSentence(head))
+        println(indent ++ "  " ++ "MODIFIERS:")
+        println(indent ++ "  " ++ "Negate: " ++ show(negation))
+        modifiers.foreach{ n => printNode(n, indent ++ "    ")}
+      }
       case Empty() => {
         println(indent ++ "Empty")
       }
@@ -82,7 +98,7 @@ def printSyntaxTree(node: SyntaxTree): Unit = {
 }
 
 def main(): Unit = {
-  val tree1: SyntaxTree = Sentence([SubjectLeaf(["Soweli"], [ModifierLeaf(["pimeja"], [])]), SubjectLeaf(["Soweli"], [ModifierLeaf(["pimeja"], [])])], [Predicate(VerbLeaf([], ["lili"], [ModifierLeaf(["pimeja"], [])]), [], [PrepositionsLeaf(["lon"], [], [])])])
+  val tree1: SyntaxTree = Sentence([SubjectLeaf(["Soweli"], [ModifierLeaf(["pimeja"], [])]), SubjectLeaf(["Soweli"], [ModifierLeaf(["pimeja"], [])])], [Predicate(TokiPonaVerbLeaf([], ["lili"], [ModifierLeaf(["pimeja"], [])]), [], [PrepositionsLeaf(["lon"], [], [])])])
   //var tree2: SyntaxTree = Sentence([], [])
   //tree2 = appendToSentence(tree2, SubjectLeaf(["Soweli"], ["pimeja"]))
   //printSyntaxTree(tree2.appendToSentence(SubjectLeaf(["Soweli"], ["pimeja"])))

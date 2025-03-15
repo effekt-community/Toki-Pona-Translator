@@ -20,20 +20,35 @@ This project is part of the *Effective Programming with Effects* course.
 
 
 ## Description
-
 A tool for translating between the constructed language toki pona and english. 
 Toki Pona is used by a rather large community on different discord servers and forums, but there doesn't yet exist a good translator, making the project potentially usefull for people trying to learn the language.
 The translating will be done by creating syntax trees for the toki pona sentence, which is fairly simple in toki pona since there aren't a lot of different sentence constructions, then translating every word individually, which is also fairly simply because of the limited vocabulary, and then constructing an english sentence using the syntax tree and translated words.
 
 
+## User Documentation
+- Clone this Repository locally and open it in VSCode
+- Install the Effekt VSCode extension offered in the pop-up in the bottom right
+
+
+## Developer Documentation
+- See 
+
+
 ## Current Progress
 - Can detect most toki pona sentences, with the exceptions of some more complicated constructions:
     - Particle la
-    - Particle pi
     - Particle anu
     - Questions
-    - Loan Words
+    - Using prepositions as verbs
 - Examples for sentences that can currently be translated are in test.effekt
+- Future Plans
+    - Maybe articles (the, add to Syntax Tree)
+    - Loan Words
+    - Fix all TODOs
+    - Fix Negation
+    - Try different Phrases
+    - Write Architecture
+    - Write Website
 
 
 ## Plan

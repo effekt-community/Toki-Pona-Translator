@@ -1,7 +1,7 @@
 module main
 
 import src/constructSyntaxTree
-import src/deconstructSyntaxTree2
+import src/deconstructSyntaxTree
 import src/effects
 import io/console
 import src/convertSyntaxTree

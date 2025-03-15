@@ -121,19 +121,20 @@ def findAndRemovePredicates(sentence: List[String]): List[String] / {append, sen
     }
   }
   val objects: List[SyntaxTree] = splitObjects(sentence.slice(endOfVerb + 1, endOfObjects))
-  val verb: SyntaxTree = VerbLeaf(sentence.take(endOfPreverbs), sentence.slice(endOfPreverbs, endOfPreverbs + 1), createModifiers(sentence.slice(endOfPreverbs + 1, endOfVerb)))
+  val verb: SyntaxTree = TokiPonaVerbLeaf(sentence.take(endOfPreverbs), sentence.slice(endOfPreverbs, endOfPreverbs + 1), createModifiers(sentence.slice(endOfPreverbs + 1, endOfVerb)))
   val prepositions: List[SyntaxTree]  = splitPrepositions(sentence.slice(endOfObjects, endOfPredicate))
   val predicate = {
-    if (objects.size() == 0 and endOfPreverbs == 0 and endOfVerb != 0) { // If there aren't any objects or preverbs, the verb can also be interpeted as the object
-      if (do ambiguityVerbOnlyLi()) {
-        Predicate(verb, objects, prepositions)
-      } else {
-        Predicate(Empty(), [ObjectLeaf(sentence.take(1), createModifiers(sentence.slice(1, endOfObjects)))], prepositions)
-      }
-    }
-    else {
-      Predicate(verb, objects, prepositions)
-    }
+    //if (objects.size() == 0 and endOfPreverbs == 0 and endOfVerb != 0) { // If there aren't any objects or preverbs, the verb can also be interpeted as the object
+    //  if (do ambiguityVerbOnlyLi()) {
+    //    Predicate(verb, objects, prepositions)
+    //  } else {
+    //    Predicate(Empty(), [ObjectLeaf(sentence.take(1), createModifiers(sentence.slice(1, endOfObjects)))], prepositions)
+    //  }
+    //}
+    //else {
+    //  Predicate(verb, objects, prepositions)
+    //}
+    Predicate(verb, objects, prepositions)
   }
   do append(predicate)
   if(endOfPredicate == sentence.size()) return []

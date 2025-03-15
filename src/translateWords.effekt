@@ -3,7 +3,6 @@ module translateWords
 import src/syntaxTree
 import src/additionalListFunctions
 import src/effects
-import src/findNearestWord
 
 
 def formPlural(word: String): String = {
@@ -101,7 +100,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Object() => "nothing"
           case Preverb() => "dont"
           case Adjective() => "not"
-          case Adverb() => "not"
+          case Adverb() => ""
           case _ => do wrongContext("ala", context) 
         }
       }
@@ -1132,11 +1131,8 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
         }
       }
       case "" => do wrongContext("Input is empty", context) 
-      case unknownWord => do unknownWord(unknownWord)
+      case unknownWord => unknownWord
     }
-  } with unknownWord { word =>
-    println("UNKNOWN WORD: " ++ word)
-    ""
   } with wrongContext { (msg, context) =>  
     val contextString = context match {
       case Verb() => "Verb"
@@ -1147,6 +1143,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
       case Preverb() => "Preverb"
       case Adverb() => "Adverb"
       case Adjective() => "Adjective"
+      case Nothing() => "Nothing"
     }
     println("WRONG CONTEXT: " ++ msg ++ " Context: " ++ contextString)
     ""

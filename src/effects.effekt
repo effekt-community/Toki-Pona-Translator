@@ -23,6 +23,7 @@ type Context {
   Preverb()
   Adverb()
   Adjective()
+  Nothing()
 }
 
 type AmbiguityTypes {
