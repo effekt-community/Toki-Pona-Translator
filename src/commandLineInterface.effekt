@@ -1,0 +1,29 @@
+module commandLineInterface
+
+import src/main
+import src/constructSyntaxTree
+import src/deconstructSyntaxTree
+import src/effects
+import io/console
+import src/convertSyntaxTree
+import src/syntaxTree
+
+
+/// Gives the ability to translate sentences from the command line
+def wrapper(): Unit = {
+  with console;
+  try {
+    while (true) {
+      var input = askQuestion("Enter a Toki Pona sentence or type 'q' to quit: ")
+      if (input == "q") do escapeContext("")
+      translateSentence(input).foreach { x => println(x) }
+    }
+  } with escapeContext { _ =>
+    ()
+  }
+}
+
+
+def main(): Unit = {
+  wrapper()
+}

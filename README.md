@@ -28,10 +28,12 @@ The translating will be done by creating syntax trees for the toki pona sentence
 ## User Documentation
 - Clone this Repository locally and open it in VSCode
 - Install the Effekt VSCode extension offered in the pop-up in the bottom right
+- To translate sentences over the command line, execute the main function of commandLineInterface.effekt
+- To translate sentences over the web interface, navigate into webUI, and execute `node server.js`
 
 
 ## Developer Documentation
-- See 
+- See ARCHITECTURE.md
 
 
 ## Current Progress

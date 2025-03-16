@@ -26,6 +26,7 @@ Takes a syntax tree with already translated words and turns it into an english s
 ### 'main.effekt"
 Calls functions in all the other files, to translate sentences directly and is also where the ambiguity effect is handled, with all possible sentences being collected into a list.
 
+
 ## Other Concerns
 
 ### ambiguity effect
@@ -34,6 +35,8 @@ ambiguity is a effect defined in effects.effekt, that takes multiple inputs, and
 ### Syntax Tree
 Syntax Tree is a type defined in syntaxTree.effekt, that follows the general convention of tree data types. They mostly follow the logic of Toki Pona Sentences, but there are also some types that only get used in the translation process to represent english grammar
 
-
 ### Tests
 To See what kind of sentences can currently be translated, look at test.effekt
+
+### Updating Code
+- The web UI needs a compiled Java Script file, so to update it it's necessary to compile main.effekt with 'effekt --build src/main.effekt' and copy the resulting files from './out' to './webUI'
