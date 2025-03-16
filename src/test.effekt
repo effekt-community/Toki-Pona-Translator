@@ -6,6 +6,7 @@ import src/syntaxTree
 import src/effects
 import src/deconstructSyntaxTree
 import src/main
+import src/convertSyntaxTree
 
 
 def main() = {
@@ -14,33 +15,35 @@ def main() = {
       // Tests for constructTree.effekt
       test("Construct Tree: simple sentence") {
         val l: List[String] = ["soweli", "li", "moku", "e", "moku"]
-        val t: SyntaxTree = Sentence([SubjectLeaf(["soweli"], [])], [Predicate(VerbLeaf([], ["moku"], []), [ObjectLeaf(["moku"], [])], [])])
+        val t: SyntaxTree = Sentence([SubjectLeaf(["soweli"], [])], [Predicate(TokiPonaVerbLeaf([], ["moku"], []), [ObjectLeaf(["moku"], [])], [])])
         assertEqual(constructSyntaxTree(l), t)
       }
       test("Construct Tree: sentence with complicated subject") {
         val l: List[String] = ["soweli", "pimeja", "suli", "en", "soweli", "li", "moku", "e", "moku"]
-        val t: SyntaxTree =  Sentence([SubjectLeaf(["soweli"], ["pimeja", "suli"]), SubjectLeaf(["soweli"], [])], [Predicate(VerbLeaf([], ["moku"], []), [ObjectLeaf(["moku"], [])], [])])
+        val t: SyntaxTree =  Sentence([SubjectLeaf(["soweli"], [ModifierLeaf(["pimeja"], []), ModifierLeaf(["suli"], [])]), SubjectLeaf(["soweli"], [])], [Predicate(TokiPonaVerbLeaf([], ["moku"], []), [ObjectLeaf(["moku"], [])], [])])
         assertEqual(constructSyntaxTree(l), t)
       }
       test("Construct Tree: sentence with complicae predicate") {
         val l: List[String] = ["soweli", "li", "wile", "moku", "pona", "e", "moku", "lili", "e", "kasi", "kepeken", "uta", "lili", "kepeken", "luka", "li", "moku", "e", "moku", "suli"]
-        val t: SyntaxTree = Sentence([SubjectLeaf(["soweli"], [])], [Predicate(VerbLeaf(["wile"], ["moku"], ["pona"]), [ObjectLeaf(["moku"], ["lili"]), ObjectLeaf(["kasi"], [])], [PrepositionsLeaf(["kepeken"], ["uta"], ["lili"]), PrepositionsLeaf(["kepeken"], ["luka"], [])]), Predicate(VerbLeaf([], ["moku"], []), [ObjectLeaf(["moku"], ["suli"])], [])])
+        val t: SyntaxTree = Sentence([SubjectLeaf(["soweli"], [])], [Predicate(TokiPonaVerbLeaf(["wile"], ["moku"], [ModifierLeaf(["pona"], [])]), [ObjectLeaf(["moku"], [ModifierLeaf(["lili"], [])]), ObjectLeaf(["kasi"], [])], [PrepositionsLeaf(["kepeken"], ["uta"], [ModifierLeaf(["lili"], [])]), PrepositionsLeaf(["kepeken"], ["luka"], [])]), Predicate(TokiPonaVerbLeaf([], ["moku"], []), [ObjectLeaf(["moku"], [ModifierLeaf(["suli"], [])])], [])])
         assertEqual(constructSyntaxTree(l), t)
       }
       // Tests for deconstructTree.effekt
       test("Deconstruct Tree: simple sentence") {
-        val s1: String = deconstructSyntaxTree(constructSyntaxTree(["soweli", "li", "moku", "e", "moku"]))
+        val s1: String = deconstructSyntaxTree(convertSyntaxTree(constructSyntaxTree(["soweli", "li", "moku", "e", "moku"])))
         val s2: String = "animal eats food "
         assertEqual(s1, s2)
       }
       test("Deconstruct Tree: sentence with complicated predicate") {
-        val s1: String = deconstructSyntaxTree(constructSyntaxTree(["soweli", "pimeja", "suli", "li", "moku", "pona", "e", "jan", "ale", "e", "kili", "kepeken", "uta", "suli"]))
+        val s1: String = deconstructSyntaxTree(convertSyntaxTree(constructSyntaxTree(["soweli", "pimeja", "suli", "li", "moku", "pona", "e", "jan", "ale", "e", "kili", "kepeken", "uta", "suli"])))
         val s2: String = "big dark animal eats all person and fruit well using big mouth "
+        val s3: String = "the big dark animal eats all the person and the fruit well using the big mouth "
         assertEqual(s1, s2)
       }
       test("Deconstruct Tree: sentence with complicated subject") {
-        val s1: String = deconstructSyntaxTree(constructSyntaxTree(["soweli", "pimeja", "suli", "en", "jan", "lili", "li", "moku", "e", "moku"]))
+        val s1: String = deconstructSyntaxTree(convertSyntaxTree(constructSyntaxTree(["soweli", "pimeja", "suli", "en", "jan", "lili", "li", "moku", "e", "moku"])))
         val s2: String = "big dark animal and small person eat food "
+        val s3: String = "the big dark animal and the small person eat food "
         assertEqual(s1, s2)
       }
       // Tests for translating full sentences
@@ -76,6 +79,18 @@ def main() = {
       val translationsSentence4: List[String] = translateSentence(sentence4)
         test("Option 1: jan li pali pilin e sitelen e lipu e kalama musi kepeken ilo wawa ") {
           assertEqual(translationsSentence4.get(2), "people build pictures and text and fun sounds with feeling using electric tool ")
+        }
+    // Sentence: poki pi telo seli
+    val sentence5: String = "poki pi telo seli"
+      val translationsSentence5: List[String] = translateSentence(sentence5)
+        test("Option 1: poki pi telo wawa ") {
+          assertEqual(translationsSentence5.get(3), "hot-water related container ")
+        }
+    // Sentence: mi pali ala
+    val sentence6: String = "mi pali ala"
+      val translationsSentence6: List[String] = translateSentence(sentence6)
+        test("Option 1: mi pali ala") {
+          assertEqual(translationsSentence6.get(0), "I dont build ")
         }
     }
   } with ambiguity{ ambiguities =>

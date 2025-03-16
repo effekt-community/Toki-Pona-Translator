@@ -4,10 +4,14 @@ import src/constructSyntaxTree
 import src/deconstructSyntaxTree
 import src/effects
 import io/console
+import src/convertSyntaxTree
+import src/syntaxTree
+import io/filesystem
+import io/error
 
 
 def translateSentenceHelper(sentence: String): String / { ambiguity, ambiguityVerbOnlyLi }  = {
-  deconstructSyntaxTree(constructSyntaxTree(split(sentence, " ")))
+  deconstructSyntaxTree(convertSyntaxTree(constructSyntaxTree(split(sentence, " "))))
 }
 
 
@@ -31,21 +35,23 @@ def translateSentence(sentence: String): List[String] = {
 }
 
 
-/// Gives the ability to translate sentences from the command line
-def wrapper(): Unit = {
-  with console;
+
+
+def safeToFile(): Unit = {
   try {
-    while (true) {
-      var input = askQuestion("Enter a Toki Pona sentence or type 'q' to quit: ")
-      if (input == "q") do escapeContext("")
-      translateSentence(input).foreach { x => println(x) }
+    var text = readFile("Data.txt").split("\n")
+    var output = ""
+    text.foreach { y => translateSentence(y).foreach { x => output = output ++ x ++ "\n" }}
+    writeFile("Data.txt", output)
+  }
+  with Exception[IOError] {
+    def raise(exception: IOError, msg: String) = {
+      println(msg)
     }
-  } with escapeContext { _ =>
-    ()
   }
 }
 
 
 def main(): Unit = {
-  wrapper()
+  safeToFile()
 }

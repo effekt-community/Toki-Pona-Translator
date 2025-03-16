@@ -49,17 +49,17 @@ def findAndRemoveSubjects(sentence: List[String]): List[String] / { append, sent
   else {
     sentence.getIndexOf("en") match {
       case Some(index) => {
-        do append(SubjectLeaf(sentence.take(1), sentence.slice(1, index)))
+        do append(SubjectLeaf(sentence.take(1), createModifiers(sentence.slice(1, index))))
         return findAndRemoveSubjects(sentence.drop(index + 1))
         }
       case None() => {
         sentence.getIndexOf("li") match {
           case Some(index) => {
-            do append(SubjectLeaf(sentence.take(1), sentence.slice(1, index)))
+            do append(SubjectLeaf(sentence.take(1), createModifiers(sentence.slice(1, index))))
             return sentence.drop(index + 1)
           }
           case None() => {
-            do append(SubjectLeaf(sentence.take(1), sentence.drop(1)))
+            do append(SubjectLeaf(sentence.take(1), createModifiers(sentence.drop(1))))
             return []
           }
         }
@@ -70,6 +70,7 @@ def findAndRemoveSubjects(sentence: List[String]): List[String] / { append, sent
 
 
 /// Checks if the Subject is only Mi or Sina
+/// TODO: Check if li is later in sentence
 def subjectOnlyMiOrSina(sentence: List[String]): Bool / sentenceError = {
   sentence match {
     case Cons("mi", Cons("li", _)) => do sentenceError("If mi is subject, li is not needed"); false
@@ -120,19 +121,20 @@ def findAndRemovePredicates(sentence: List[String]): List[String] / {append, sen
     }
   }
   val objects: List[SyntaxTree] = splitObjects(sentence.slice(endOfVerb + 1, endOfObjects))
-  val verb: SyntaxTree = VerbLeaf(sentence.take(endOfPreverbs), sentence.slice(endOfPreverbs, endOfPreverbs + 1), sentence.slice(endOfPreverbs + 1, endOfVerb))
+  val verb: SyntaxTree = TokiPonaVerbLeaf(sentence.take(endOfPreverbs), sentence.slice(endOfPreverbs, endOfPreverbs + 1), createModifiers(sentence.slice(endOfPreverbs + 1, endOfVerb)))
   val prepositions: List[SyntaxTree]  = splitPrepositions(sentence.slice(endOfObjects, endOfPredicate))
   val predicate = {
-    if (objects.size() == 0 and endOfPreverbs == 0 and endOfVerb != 0) { // If there aren't any objects or preverbs, the verb can also be interpeted as the object
-      if (do ambiguityVerbOnlyLi()) {
-        Predicate(verb, objects, prepositions)
-      } else {
-        Predicate(Empty(), [ObjectLeaf(sentence.take(1), sentence.slice(1, endOfObjects))], prepositions)
-      }
-    }
-    else {
-      Predicate(verb, objects, prepositions)
-    }
+    //if (objects.size() == 0 and endOfPreverbs == 0 and endOfVerb != 0) { // If there aren't any objects or preverbs, the verb can also be interpeted as the object
+    //  if (do ambiguityVerbOnlyLi()) {
+    //    Predicate(verb, objects, prepositions)
+    //  } else {
+    //    Predicate(Empty(), [ObjectLeaf(sentence.take(1), createModifiers(sentence.slice(1, endOfObjects)))], prepositions)
+    //  }
+    //}
+    //else {
+    //  Predicate(verb, objects, prepositions)
+    //}
+    Predicate(verb, objects, prepositions)
   }
   do append(predicate)
   if(endOfPredicate == sentence.size()) return []
@@ -151,12 +153,12 @@ def splitPrepositions(sentence: List[String]): List[SyntaxTree] = {
       else {
         sentence.drop(1).getIndexOf(["lon", "kepeken", "tawa", "tan", "sama"]) match {
           case Some(index) => {
-            do append(PrepositionsLeaf(sentence.take(1), sentence.slice(1, 2), sentence.slice(2, index + 1)))
+            do append(PrepositionsLeaf(sentence.take(1), sentence.slice(1, 2), createModifiers(sentence.slice(2, index + 1))))
             splitPrepositionsHelper(sentence.drop(index + 1))
             return ()
           }
           case None() => {
-            do append(PrepositionsLeaf(sentence.take(1), sentence.slice(1, 2), sentence.drop(2)))
+            do append(PrepositionsLeaf(sentence.take(1), sentence.slice(1, 2), createModifiers(sentence.drop(2))))
           }
         }
       } 
@@ -181,12 +183,12 @@ def splitObjects(sentence: List[String]): List[SyntaxTree] = {
       else {
         sentence.drop(1).getIndexOf("e") match {
           case Some(index) => {
-            do append(ObjectLeaf(sentence.take(1), sentence.slice(1, index + 1)))
+            do append(ObjectLeaf(sentence.take(1), createModifiers(sentence.slice(1, index + 1))))
             splitObjectsHelper(sentence.drop(index + 2))
             return ()
           }
           case None() => {
-            do append(ObjectLeaf(sentence.take(1), sentence.drop(1)))
+            do append(ObjectLeaf(sentence.take(1), createModifiers((sentence.drop(1)))))
           }
         }
       } 
@@ -196,5 +198,26 @@ def splitObjects(sentence: List[String]): List[SyntaxTree] = {
   } with append { n => 
     output = output.append([n])
     resume(())
+  }
+}
+
+def createModifiers(words: List[String]): List[SyntaxTree] = {
+  if (words.size() == 0) return []
+  else {
+    words.getIndexesOf("pi") match {
+      case Cons(0, Cons(index, _)) => return Cons(ModifierLeaf(words.drop(1).take(1), words.slice(2, index)), createModifiers(words.drop(index)))
+      case Cons(0, _) => return [ModifierLeaf(words.drop(1).take(1), words.drop(2))]
+      case _ => return Cons(ModifierLeaf(words.take(1), []), createModifiers(words.drop(1)))
+    }
+  }
+}
+
+
+def main(): Unit = {
+  try {
+    createModifiers(["i", "si", "li", "jan", "pi", "tomo", "ja", "pi", "moku", "a", "b", "pi", "c", "d"]).foreach { x => printSyntaxTree(x) }
+    printSyntaxTree(constructSyntaxTree(split("jan li pali pilin soweli e sitelen pi sitelen sitelen e lipu e kalama musi kepeken ilo wawa", " ")))
+  } with ambiguityVerbOnlyLi {
+    resume(true)
   }
 }
