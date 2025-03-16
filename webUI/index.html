@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modify Text in File</title>
+    <script>
+        function submitForm(event) {
+            event.preventDefault();
+            const inputText = document.getElementById("inputField").value;
+            if (!inputText) {
+                alert("Please enter some text!");
+                return;
+            }
+
+            fetch("/save", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: "inputText=" + encodeURIComponent(inputText)
+            })
+            .then(response => response.text())
+            .then(data => alert(data))
+            .catch(error => alert("Error: " + error));
+        }
+
+        function modifyText() {
+            fetch("/modify-text", {
+                method: "POST",
+            })
+            .then(response => response.text())
+            .then(data => alert(data))
+            .catch(error => alert("Error: " + error));
+        }
+
+        function displayText() {
+            fetch("/get-text")
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("textDisplay").innerText = data;
+                })
+                .catch(error => alert("Error fetching text: " + error));
+        }
+    </script>
+</head>
+<body>
+    <h1>Modify and Save Text</h1>
+    
+    <form onsubmit="submitForm(event)">
+        <input type="text" id="inputField" name="inputText" required>
+        <button type="submit">Save</button>
+    </form>
+    
+    <button onclick="modifyText()">Modify Text in File</button>
+    
+    <button onclick="displayText()">Display Saved Text</button>
+
+    <div id="textDisplay">
+        <h2>Saved Text from File:</h2>
+        <pre></pre>
+    </div>
+</body>
+</html>

@@ -6,6 +6,8 @@ import src/effects
 import io/console
 import src/convertSyntaxTree
 import src/syntaxTree
+import io/filesystem
+import io/error
 
 
 def translateSentenceHelper(sentence: String): String / { ambiguity, ambiguityVerbOnlyLi }  = {
@@ -47,7 +49,21 @@ def wrapper(): Unit = {
   }
 }
 
+def safeToFile(): Unit = {
+  try {
+    var text = readFile("Data.txt").split("\n")
+    var output = ""
+    text.foreach { y => translateSentence(y).foreach { x => output = output ++ x ++ "\n" }}
+    writeFile("Data.txt", output)
+  }
+  with Exception[IOError] {
+    def raise(exception: IOError, msg: String) = {
+      println(msg)
+    }
+  }
+}
+
 
 def main(): Unit = {
-  wrapper()
+  safeToFile()
 }
