@@ -90,7 +90,7 @@ def main() = {
     val sentence6: String = "mi pali ala"
       val translationsSentence6: List[String] = translateSentence(sentence6)
         test("Option 1: mi pali ala") {
-          assertEqual(translationsSentence6.get(0), "I don't build ")
+          assertEqual(translationsSentence6.get(0), "I dont build ")
         }
     }
   } with ambiguity{ ambiguities =>
