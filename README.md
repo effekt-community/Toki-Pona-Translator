@@ -43,14 +43,6 @@ The translating will be done by creating syntax trees for the toki pona sentence
     - Questions
     - Using prepositions as verbs
 - Examples for sentences that can currently be translated are in test.effekt
-- Future Plans
-    - Maybe articles (the, add to Syntax Tree)
-    - Loan Words
-    - Fix all TODOs
-    - Fix Negation
-    - Try different Phrases
-    - Write Architecture
-    - Write Website
 
 
 ## Plan
