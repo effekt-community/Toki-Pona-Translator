@@ -2,7 +2,7 @@
 
 ## General Overview
 
-(Image)
+![Untitled Diagram(5) drawio](https://github.com/user-attachments/assets/2f9768db-c849-4a99-8373-4931dd34d31a)
 
 The translator works by splitting up the toki pona sentence into a syntax tree, then translating the words into english, using it's parent nodes as context, and then forming an english sentence from the translated syntax tree.
 Crucially it doesn't just produce one sentence, but rather uses effekts resume every time a sentence is ambigous, continuing the programm for every possibility and collecting them in a list.
@@ -39,4 +39,4 @@ Syntax Tree is a type defined in syntaxTree.effekt, that follows the general con
 To See what kind of sentences can currently be translated, look at test.effekt
 
 ### Updating Code
-- The web UI needs a compiled Java Script file, so to update it it's necessary to compile main.effekt with 'effekt --build src/main.effekt' and copy the resulting files from './out' to './webUI'
+The web UI needs a compiled Java Script file, so to update it it's necessary to compile main.effekt with 'effekt --build src/main.effekt' and copy the resulting files from './out' to './webUI'
