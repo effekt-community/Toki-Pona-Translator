@@ -59,7 +59,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
   }
   try {
     word match {
-      /// Pronouns
+      // Pronouns
       case "mi" => {
         context match {
           case Subject() => {
@@ -91,7 +91,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case _ => do wrongContext("sina", context) 
         }
       }
-      /// Prepositions
+      // Prepositions
       case "ala" => {
         do negateNext(true)
         context match {
@@ -131,7 +131,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case _ => do wrongContext("tan", context) 
         }
       }
-      /// Preverbs
+      // Preverbs
       case "awen" => {
         context match {
           case Verb() => regularVerb("continue", newThirdPerson)
@@ -165,7 +165,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case _ => do wrongContext("tawa", context) 
         }
       }
-      /// Particles
+      // Particles
       case "ni" => {
         context match {
           case Subject() => "this"
@@ -175,7 +175,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case _ => do wrongContext("ni", context) 
         }
       }
-      /// Other Words
+      // Other Words
       case "akesi" => {
         context match {
           case Subject() => regularNoun("reptile")          
@@ -836,7 +836,7 @@ def translateWord(word: String, context: Context, thirdPerson: Bool, negate: Boo
           case Verb() => regularVerb("end", newThirdPerson)
           case Adjective() => "end"
           case _ => do wrongContext("pini", context) 
-          /// Add Preverb
+          // Add Preverb
         }
       }
       case "pipi" => {
